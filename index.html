@@ -1,138 +1,342 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fahrzeug Galerie</title>
-    <script>
-        function showDetails(vehicle) {
-            let year = prompt("Gib das Jahr für " + vehicle + " ein:");
-            let details = prompt("Gib Details für " + vehicle + " ein:");
-            if (year && details) {
-                localStorage.setItem(vehicle + "_" + year, details);
-                alert("Daten gespeichert!");
-            }
-        }
-        function loadDetails(vehicle) {
-            let year = prompt("Gib das Jahr ein, um Details für " + vehicle + " anzuzeigen:");
-            let details = localStorage.getItem(vehicle + "_" + year);
-            if (details) {
-                alert("Details für " + vehicle + " im Jahr " + year + ": " + details);
-            } else {
-                alert("Keine Daten für dieses Jahr gefunden.");
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            text-align: center;
-        }
-        h1 {
-            color: #2a7f2a;
-        }
-        .category {
-            background-color: #ff8c00;
-            padding: 10px;
-            margin: 20px auto;
-            border-radius: 10px;
-            width: 80%;
-            text-align: center;
-        }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .vehicle {
-            margin: 15px;
-            padding: 10px;
-            background-color: #e0f2e0;
-            border-radius: 10px;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
-            width: 300px;
-        }
-        img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        button {
-            margin-top: 5px;
-            padding: 5px 10px;
-            background-color: #2a7f2a;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fahrzeugpark Andy</title>
+  <!-- React und ReactDOM als UMD-Bundles -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <!-- Babel für die In-Browser-Compilation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Tailwind CSS für schnelles Styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Fahrzeug Galerie</h1>
-
-    <div class="category">
-        <h2>Autos</h2>
-        <div class="gallery">
-            <div class="vehicle">
-                <img src="Mercedes R107.jpeg" alt="Mercedes R107">
-                <button onclick="showDetails('Mercedes R107')">Daten eingeben</button>
-                <button onclick="loadDetails('Mercedes R107')">Daten abrufen</button>
-            </div>
-            <div class="vehicle">
-                <img src="Mercedes R129.jpeg" alt="Mercedes R129">
-                <button onclick="showDetails('Mercedes R129')">Daten eingeben</button>
-                <button onclick="loadDetails('Mercedes R129')">Daten abrufen</button>
-            </div>
-            <div class="vehicle">
-                <img src="Mercedes W113.jpeg" alt="Mercedes W113">
-                <button onclick="showDetails('Mercedes W113')">Daten eingeben</button>
-                <button onclick="loadDetails('Mercedes W113')">Daten abrufen</button>
-            </div>
-            <div class="vehicle">
-                <img src="Mercedes W208 CLK.jpeg" alt="Mercedes W208 CLK">
-                <button onclick="showDetails('Mercedes W208 CLK')">Daten eingeben</button>
-                <button onclick="loadDetails('Mercedes W208 CLK')">Daten abrufen</button>
-            </div>
-            <div class="vehicle">
-                <img src="VW T6.jpeg" alt="VW T6">
-                <button onclick="showDetails('VW T6')">Daten eingeben</button>
-                <button onclick="loadDetails('VW T6')">Daten abrufen</button>
-            </div>
+<body class="bg-gray-100">
+  <div id="root"></div>
+  <script type="text/babel">
+    // Landing Page Component mit hero Bild
+    function LandingPage({ onEnter }) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('https://source.unsplash.com/1600x900/?classic-cars')" }}>
+          <div className="bg-white bg-opacity-75 p-8 rounded shadow text-center">
+            <h1 className="text-4xl font-bold mb-4">Fahrzeugpark Andy</h1>
+            <p className="mb-4">Verwalten Sie Ihre Fahrzeuge, Wartungsdaten, Beratungsdienste und Bilder.</p>
+            <button onClick={onEnter} className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">
+              Enter App
+            </button>
+          </div>
         </div>
-    </div>
+      );
+    }
 
-    <div class="category">
-        <h2>Zweiräder</h2>
-        <div class="gallery">
-            <div class="vehicle">
-                <img src="BMW R80.jpeg" alt="BMW R80">
-                <button onclick="showDetails('BMW R80')">Daten eingeben</button>
-                <button onclick="loadDetails('BMW R80')">Daten abrufen</button>
-            </div>
-            <div class="vehicle">
-                <img src="BMW R1200GS.jpeg" alt="BMW R1200GS">
-                <button onclick="showDetails('BMW R1200GS')">Daten eingeben</button>
-                <button onclick="loadDetails('BMW R1200GS')">Daten abrufen</button>
-            </div>
-            <div class="vehicle">
-                <img src="Vespa 300.jpeg" alt="Vespa 300">
-                <button onclick="showDetails('Vespa 300')">Daten eingeben</button>
-                <button onclick="loadDetails('Vespa 300')">Daten abrufen</button>
-            </div>
-        </div>
-    </div>
+    // Main App Component – Fahrzeug- und Wartungsverwaltung
+    function MainApp() {
+      const garages = ["Spexarder Strasse", "Sparkasse Avenwedde", "Mumprow", "Amrumweg"];
+      // Fahrzeuge mit zusätzlichen Feldern: Marktpreis und Garage
+      const vehiclesDataInitial = [
+        {
+          id: 'mercedes-w113',
+          name: 'Mercedes W113 230 SL (Pagode)',
+          type: 'Auto',
+          technical: 'Klassischer 230 SL mit originalem Motor und eleganten Linien.',
+          imageUrl: 'https://via.placeholder.com/300?text=Mercedes+W113+230+SL',
+          marketPrice: '120.000€',
+          garage: garages[0]
+        },
+        {
+          id: 'mercedes-r107',
+          name: 'Mercedes R107 560 SL',
+          type: 'Auto',
+          technical: 'Leistungsstarker 560 SL, luxuriös und robust.',
+          imageUrl: 'https://via.placeholder.com/300?text=Mercedes+R107+560+SL',
+          marketPrice: '150.000€',
+          garage: garages[1]
+        },
+        {
+          id: 'mercedes-r129',
+          name: 'Mercedes R129 500 SL',
+          type: 'Auto',
+          technical: 'Sportlich-eleganter 500 SL mit modernem Komfort.',
+          imageUrl: 'https://via.placeholder.com/300?text=Mercedes+R129+500+SL',
+          marketPrice: '130.000€',
+          garage: garages[0]
+        },
+        {
+          id: 'mercedes-w208',
+          name: 'Mercedes W208 230 CLK',
+          type: 'Auto',
+          technical: 'Kompakter 230 CLK mit dynamischem Design.',
+          imageUrl: 'https://via.placeholder.com/300?text=Mercedes+W208+230+CLK',
+          marketPrice: '110.000€',
+          garage: garages[1]
+        },
+        {
+          id: 'vw-t6',
+          name: 'VW Bus T6 2.0 TDI (2017)',
+          type: 'Auto',
+          technical: 'Robuster VW Bus mit sparsamen 2.0 TDI, ideal für Reisen.',
+          imageUrl: 'https://via.placeholder.com/300?text=VW+Bus+T6+2.0+TDI',
+          marketPrice: '80.000€',
+          garage: garages[2]
+        },
+        {
+          id: 'man-traktor',
+          name: 'MAN Traktor 2N1',
+          type: 'Landmaschine',
+          technical: 'Leistungsstarker Traktor, vielseitig und robust im Landbetrieb.',
+          imageUrl: 'https://via.placeholder.com/300?text=MAN+Traktor+2N1',
+          marketPrice: '90.000€',
+          garage: garages[3]
+        },
+        {
+          id: 'bmw-r80',
+          name: 'BMW R80 Strich 7 (1984)',
+          type: 'Motorrad',
+          technical: 'Klassische BMW Maschine, robust und zeitlos im Design.',
+          imageUrl: 'https://via.placeholder.com/300?text=BMW+R80+Strich+7',
+          marketPrice: '20.000€',
+          garage: garages[0]
+        },
+        {
+          id: 'bmw-r1200gs',
+          name: 'BMW R1200GS (2014)',
+          type: 'Motorrad',
+          technical: 'Moderne Abenteuermaschine, zuverlässig und komfortabel.',
+          imageUrl: 'https://via.placeholder.com/300?text=BMW+R1200GS',
+          marketPrice: '25.000€',
+          garage: garages[1]
+        },
+        {
+          id: 'vespa-gts300',
+          name: 'Vespa GTS 300',
+          type: 'Roller',
+          technical: 'Stilvoller Roller, ideal für die Stadt, kombiniert klassischen Charme mit moderner Technik.',
+          imageUrl: 'https://via.placeholder.com/300?text=Vespa+GTS+300',
+          marketPrice: '8.000€',
+          garage: garages[2]
+        }
+      ];
 
-    <div class="category">
-        <h2>Traktoren</h2>
-        <div class="gallery">
-            <div class="vehicle">
-                <img src="man-traktor.jpeg" alt="MAN Traktor">
-                <button onclick="showDetails('MAN Traktor')">Daten eingeben</button>
-                <button onclick="loadDetails('MAN Traktor')">Daten abrufen</button>
+      // Zustand initialisieren (bei vorhandenem localStorage werden die Daten geladen)
+      const [vehiclesData, setVehiclesData] = React.useState(() => {
+        const saved = localStorage.getItem('vehiclesData');
+        return saved ? JSON.parse(saved) : vehiclesDataInitial;
+      });
+      const [activeVehicle, setActiveVehicle] = React.useState(vehiclesData[0].id);
+      // Wartungsdatenstruktur: { [vehicleId]: { [year]: { [task]: timestamp|null, ... }, beratung: string } }
+      const [maintenanceData, setMaintenanceData] = React.useState(() => {
+        const saved = localStorage.getItem('maintenanceData');
+        return saved ? JSON.parse(saved) : {};
+      });
+      const [selectedYear, setSelectedYear] = React.useState(2025);
+
+      // Default Wartungsaufgaben (können auch durch "Neuen Wartungsdienst hinzufügen" erweitert werden)
+      const defaultMaintenanceTasks = [
+        "Ölwechsel", "Zündkerzen prüfen", "Bremsen kontrollieren", "Reifendruck prüfen"
+      ];
+
+      // Speichere Änderungen in localStorage (Simulation eines dauerhaften Speichers)
+      React.useEffect(() => {
+        localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
+      }, [maintenanceData]);
+      React.useEffect(() => {
+        localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
+      }, [vehiclesData]);
+
+      // Funktion zum Umschalten von Wartungsaufgaben
+      const handleTaskToggle = (vehicleId, year, task) => {
+        setMaintenanceData(prev => {
+          const vehicleData = prev[vehicleId] || {};
+          const yearData = vehicleData[year] || {};
+          const currentStatus = yearData[task];
+          const newYearData = { ...yearData, [task]: currentStatus ? null : new Date().toISOString() };
+          return {
+            ...prev,
+            [vehicleId]: {
+              ...vehicleData,
+              [year]: newYearData,
+              // Erhalte den Beratungsinhalt, falls vorhanden
+              beratung: vehicleData.beratung || ""
+            }
+          };
+        });
+      };
+
+      // Aktives Fahrzeug ermitteln
+      const activeVehicleData = vehiclesData.find(v => v.id === activeVehicle);
+
+      // Array der Jahre von 2025 bis 2050
+      const years = [];
+      for (let y = 2025; y <= 2050; y++) {
+        years.push(y);
+      }
+
+      // Funktion zum Hochladen eines neuen Bildes
+      const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const newImageUrl = reader.result;
+            const updatedVehicles = vehiclesData.map(vehicle => {
+              if (vehicle.id === activeVehicle) {
+                return { ...vehicle, imageUrl: newImageUrl };
+              }
+              return vehicle;
+            });
+            setVehiclesData(updatedVehicles);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      // Funktion zur Änderung der Garage
+      const handleGarageChange = (e) => {
+        const newGarage = e.target.value;
+        const updatedVehicles = vehiclesData.map(vehicle => {
+          if (vehicle.id === activeVehicle) {
+            return { ...vehicle, garage: newGarage };
+          }
+          return vehicle;
+        });
+        setVehiclesData(updatedVehicles);
+      };
+
+      // Funktion zur Aktualisierung des Marktpreises
+      const handleMarketPriceChange = (e) => {
+        const newPrice = e.target.value;
+        const updatedVehicles = vehiclesData.map(vehicle => {
+          if (vehicle.id === activeVehicle) {
+            return { ...vehicle, marketPrice: newPrice };
+          }
+          return vehicle;
+        });
+        setVehiclesData(updatedVehicles);
+      };
+
+      // Funktion zum Hinzufügen eines neuen Wartungsdienstes
+      const handleAddTask = () => {
+        const newTask = prompt("Neuen Wartungsdienst eingeben:");
+        if (newTask) {
+          defaultMaintenanceTasks.push(newTask);
+          // Um ein Re-Rendern zu erzwingen, aktualisieren wir den Zustand (hier nicht optimal, aber zur Demonstration ausreichend)
+          setMaintenanceData({ ...maintenanceData });
+        }
+      };
+
+      return (
+        <div className="p-4">
+          <h1 className="text-3xl font-bold mb-4">Fahrzeugpark Andy</h1>
+          {/* Fahrzeugauswahl */}
+          <div className="mb-4">
+            <label className="mr-2 font-semibold">Fahrzeug wählen:</label>
+            <select value={activeVehicle} onChange={(e) => setActiveVehicle(e.target.value)}>
+              {vehiclesData.map(vehicle => (
+                <option key={vehicle.id} value={vehicle.id}>{vehicle.name}</option>
+              ))}
+            </select>
+          </div>
+          {/* Fahrzeugkarte */}
+          <div className="mb-4 border p-4 rounded shadow">
+            <img src={activeVehicleData.imageUrl} alt={activeVehicleData.name} className="w-full h-auto mb-2"/>
+            <h2 className="text-xl font-semibold">{activeVehicleData.name}</h2>
+            <p>{activeVehicleData.technical}</p>
+            <div className="mt-2">
+              <label className="mr-2">Marktpreis:</label>
+              <input type="text" value={activeVehicleData.marketPrice} onChange={handleMarketPriceChange} className="border rounded px-2 py-1"/>
             </div>
+            <div className="mt-2">
+              <label className="mr-2">Garage:</label>
+              <select value={activeVehicleData.garage} onChange={handleGarageChange}>
+                {garages.map((g, idx) => (
+                  <option key={idx} value={g}>{g}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mt-2">
+              <label className="mr-2">Bild hochladen:</label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+            </div>
+          </div>
+          {/* Wartungskalender */}
+          <div className="mb-4">
+            <label className="mr-2 font-semibold">Wartungskalender Jahr:</label>
+            <select value={selectedYear} onChange={(e) => setSelectedYear(parseInt(e.target.value))}>
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <h3 className="text-lg font-bold mb-2">Wartungsaufgaben für {selectedYear}</h3>
+            <ul>
+              {defaultMaintenanceTasks.map(task => {
+                const completedDate = maintenanceData[activeVehicle] &&
+                  maintenanceData[activeVehicle][selectedYear] &&
+                  maintenanceData[activeVehicle][selectedYear][task];
+                return (
+                  <li key={task} className="mb-2">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={!!completedDate}
+                        onChange={() => handleTaskToggle(activeVehicle, selectedYear, task)}
+                      />
+                      <span className="ml-2">
+                        {task} {completedDate && <span className="text-green-600">(Erledigt am {new Date(completedDate).toLocaleDateString()})</span>}
+                      </span>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+            <button onClick={handleAddTask} className="bg-blue-600 text-white px-4 py-2 rounded">
+              Neuen Wartungsdienst hinzufügen
+            </button>
+          </div>
+          {/* Beratungsdienste */}
+          <div className="mb-4">
+            <h3 className="text-lg font-bold mb-2">Beratungsdienste</h3>
+            <p>Geben Sie hier zusätzliche Beratungsinformationen für das Fahrzeug ein. (Die Daten werden in localStorage gespeichert.)</p>
+            <textarea 
+              placeholder="Beratungsdienste eingeben..."
+              className="w-full border rounded p-2"
+              value={maintenanceData[activeVehicle] && maintenanceData[activeVehicle]['beratung'] ? maintenanceData[activeVehicle]['beratung'] : ''}
+              onChange={(e) => {
+                const newText = e.target.value;
+                setMaintenanceData(prev => ({
+                  ...prev,
+                  [activeVehicle]: {
+                    ...prev[activeVehicle],
+                    'beratung': newText
+                  }
+                }));
+              }}
+            />
+          </div>
+          {/* Simulation des Speicherns (Hinweis: Bei einem echten Server wäre hier ein API-Call nötig) */}
+          <div className="mb-4">
+            <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={() => alert("Daten gespeichert! (Simulation)")}>
+              Daten speichern
+            </button>
+          </div>
         </div>
-    </div>
+      );
+    }
+
+    // App-Komponente, die zwischen Landing Page und Main App wechselt
+    function App() {
+      const [entered, setEntered] = React.useState(false);
+      return (
+        <>
+          {entered ? <MainApp /> : <LandingPage onEnter={() => setEntered(true)} />}
+        </>
+      );
+    }
+
+    // Rendering der App
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
 </body>
 </html>
