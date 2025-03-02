@@ -25,7 +25,7 @@
         "Amrumweg"
       ];
 
-      // Fahrzeugdaten – achte bitte genau auf die Dateinamen (Groß-/Kleinschreibung, Leerzeichen, Dateiendung)
+      // Fahrzeugdaten – achte bitte auf exakte Dateinamen (Groß-/Kleinschreibung, Leerzeichen, Dateiendung)
       const vehiclesDataInitial = [
         {
           id: "mercedes-w113",
@@ -80,7 +80,7 @@
           name: "Mercedes W208 230 CLK",
           type: "Auto",
           technical: "Kompakter 230 CLK – Kompressor – mit dynamischem Design.",
-          imageUrl: "./Mervedes W208 CLK.jpeg",
+          imageUrl: "./Mercedes W208 CLK.jpeg",
           marketPrice: "8.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -182,7 +182,7 @@
          2) Haupt-App-Komponente
       --------------------------- */
       function FuhrparkApp() {
-        // Zum Testen: Lösche alte localStorage-Daten (entferne diese Zeilen später, wenn die Speicherung dauerhaft sein soll)
+        // Zum Testen: Lösche alte localStorage-Daten – entferne diese Zeilen, wenn du dauerhafte Speicherung wünschst.
         React.useEffect(() => {
           localStorage.removeItem('vehiclesData');
           localStorage.removeItem('maintenanceData');
@@ -205,13 +205,25 @@
         const [newMaintenanceTask, setNewMaintenanceTask] = React.useState("");
         const [newMaintenanceDate, setNewMaintenanceDate] = React.useState("");
 
-        // Persistiere Daten in localStorage
+        // FEHLENDE Funktionen: closeModal und handleAddMaintenanceTask
+        const closeModal = () => {
+          setSelectedVehicleId(null);
+        };
+
+        const handleAddMaintenanceTask = () => {
+          const newTask = prompt("Neuen Wartungsdienst eingeben:");
+          if (newTask) {
+            setMaintenanceTasks([...maintenanceTasks, newTask]);
+          }
+        };
+
+        // Persistiere Zustände in localStorage
         React.useEffect(() => {
           localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
         }, [vehiclesData]);
         React.useEffect(() => {
           localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
-          // Simulierter API-Aufruf – hier durch echten Endpoint ersetzen
+          // Simulierter API-Aufruf – ersetze URL bei Bedarf
           saveMaintenanceToServer(maintenanceData);
         }, [maintenanceData]);
         React.useEffect(() => {
@@ -219,11 +231,10 @@
         }, [maintenanceTasks]);
         React.useEffect(() => {
           localStorage.setItem('maintenanceRecords', JSON.stringify(maintenanceRecords));
-          // Simulierter API-Aufruf – hier durch echten Endpoint ersetzen
           saveRecordsToServer(maintenanceRecords);
         }, [maintenanceRecords]);
 
-        // Simulierte Server-Funktionen
+        // Simulierte Server-Funktionen – ersetze Dummy-URLs durch echte Endpoints, wenn verfügbar
         function saveMaintenanceToServer(data) {
           fetch("https://example.com/api/saveMaintenance", {
             method: "POST",
@@ -277,14 +288,19 @@
           setNewMaintenanceDate("");
         };
 
-        // Öffne Modal (zentriert) beim Klick auf eine Fahrzeugkarte
-        const openModal = (vehicleId, event) => {
-          setSelectedVehicleId(vehicleId);
-        };
-
-        // Schließe Modal
-        const closeModal = () => {
-          setSelectedVehicleId(null);
+        // Bild hochladen
+        const handleImageUpload = (e, vehicleId) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const newImageUrl = reader.result;
+              setVehiclesData(vehiclesData.map(vehicle =>
+                vehicle.id === vehicleId ? { ...vehicle, imageUrl: newImageUrl } : vehicle
+              ));
+            };
+            reader.readAsDataURL(file);
+          }
         };
 
         // Jahre von 2025 bis 2050
