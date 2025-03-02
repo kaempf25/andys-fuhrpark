@@ -25,7 +25,7 @@
         "Amrumweg"
       ];
 
-      // Fahrzeugdaten – achte bitte auf exakte Dateinamen (Groß-/Kleinschreibung, Leerzeichen, Dateiendung)
+      // Fahrzeugdaten – Achte darauf, dass die Bilddateien exakt so heißen wie hier angegeben.
       const vehiclesDataInitial = [
         {
           id: "mercedes-w113",
@@ -173,7 +173,7 @@
         }
       ];
 
-      // Globale Wartungsaufgaben (Checkboxen)
+      // Globale Wartungsaufgaben (für Checkboxen)
       const defaultMaintenanceTasks = [
         "Ölwechsel", "Zündkerzen prüfen", "Bremsen kontrollieren", "Reifendruck prüfen"
       ];
@@ -182,7 +182,7 @@
          2) Haupt-App-Komponente
       --------------------------- */
       function FuhrparkApp() {
-        // Zum Testen: Lösche alte localStorage-Daten – entferne diese Zeilen, wenn du dauerhafte Speicherung wünschst.
+        // Zum Testen: Lösche alte localStorage-Daten – entferne diese Zeilen später, wenn du dauerhafte Speicherung wünschst.
         React.useEffect(() => {
           localStorage.removeItem('vehiclesData');
           localStorage.removeItem('maintenanceData');
@@ -190,7 +190,6 @@
           localStorage.removeItem('maintenanceRecords');
         }, []);
 
-        // Zustände
         const [vehiclesData, setVehiclesData] = React.useState(vehiclesDataInitial);
         const [maintenanceData, setMaintenanceData] = React.useState({});
         const [maintenanceTasks, setMaintenanceTasks] = React.useState(defaultMaintenanceTasks);
@@ -205,7 +204,7 @@
         const [newMaintenanceTask, setNewMaintenanceTask] = React.useState("");
         const [newMaintenanceDate, setNewMaintenanceDate] = React.useState("");
 
-        // FEHLENDE Funktionen: closeModal und handleAddMaintenanceTask
+        // Fehlende Funktionen
         const closeModal = () => {
           setSelectedVehicleId(null);
         };
@@ -223,7 +222,7 @@
         }, [vehiclesData]);
         React.useEffect(() => {
           localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
-          // Simulierter API-Aufruf – ersetze URL bei Bedarf
+          // Simulierter API-Aufruf – ersetze Dummy-URL bei Bedarf
           saveMaintenanceToServer(maintenanceData);
         }, [maintenanceData]);
         React.useEffect(() => {
@@ -301,6 +300,12 @@
             };
             reader.readAsDataURL(file);
           }
+        };
+
+        // Debug: Öffne Modal – füge console.log hinzu
+        const openModal = (vehicleId, event) => {
+          console.log("Öffne Modal für Fahrzeug:", vehicleId);
+          setSelectedVehicleId(vehicleId);
         };
 
         // Jahre von 2025 bis 2050
