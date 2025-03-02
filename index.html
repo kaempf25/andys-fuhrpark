@@ -18,7 +18,6 @@
       /* --------------------------
          1) Konfiguration und Daten
       --------------------------- */
-
       const garages = [
         "Spexarder_Strasse",
         "Sparkasse_Avenwedde",
@@ -26,7 +25,7 @@
         "Amrumweg"
       ];
 
-      // Fahrzeugdaten – Bilddateien müssen exakt so heißen und im gleichen Ordner liegen!
+      // Fahrzeugdaten – achte bitte genau auf die Dateinamen (Groß-/Kleinschreibung, Leerzeichen, Dateiendung)
       const vehiclesDataInitial = [
         {
           id: "mercedes-w113",
@@ -174,7 +173,7 @@
         }
       ];
 
-      // Globale Wartungsaufgaben (für Checkboxen – unverändert)
+      // Globale Wartungsaufgaben (Checkboxen)
       const defaultMaintenanceTasks = [
         "Ölwechsel", "Zündkerzen prüfen", "Bremsen kontrollieren", "Reifendruck prüfen"
       ];
@@ -182,9 +181,8 @@
       /* --------------------------
          2) Haupt-App-Komponente
       --------------------------- */
-
       function FuhrparkApp() {
-        // Zum Testen: Lösche alte localStorage-Daten (entferne diese Zeilen, wenn dauerhafte Speicherung gewünscht)
+        // Zum Testen: Lösche alte localStorage-Daten (entferne diese Zeilen später, wenn die Speicherung dauerhaft sein soll)
         React.useEffect(() => {
           localStorage.removeItem('vehiclesData');
           localStorage.removeItem('maintenanceData');
@@ -192,7 +190,7 @@
           localStorage.removeItem('maintenanceRecords');
         }, []);
 
-        // Zustand: Fahrzeuge, Wartungsaufgaben (Checkboxen) und Wartungsdatensätze (freie Einträge)
+        // Zustände
         const [vehiclesData, setVehiclesData] = React.useState(vehiclesDataInitial);
         const [maintenanceData, setMaintenanceData] = React.useState({});
         const [maintenanceTasks, setMaintenanceTasks] = React.useState(defaultMaintenanceTasks);
@@ -207,13 +205,13 @@
         const [newMaintenanceTask, setNewMaintenanceTask] = React.useState("");
         const [newMaintenanceDate, setNewMaintenanceDate] = React.useState("");
 
-        // Persistiere Zustände in localStorage
+        // Persistiere Daten in localStorage
         React.useEffect(() => {
           localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
         }, [vehiclesData]);
         React.useEffect(() => {
           localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
-          // Simulierter API-Call zum Speichern auf einem Server:
+          // Simulierter API-Aufruf – hier durch echten Endpoint ersetzen
           saveMaintenanceToServer(maintenanceData);
         }, [maintenanceData]);
         React.useEffect(() => {
@@ -221,11 +219,11 @@
         }, [maintenanceTasks]);
         React.useEffect(() => {
           localStorage.setItem('maintenanceRecords', JSON.stringify(maintenanceRecords));
-          // Simulierter API-Call für Wartungsdatensätze:
+          // Simulierter API-Aufruf – hier durch echten Endpoint ersetzen
           saveRecordsToServer(maintenanceRecords);
         }, [maintenanceRecords]);
 
-        // Simulierte Server-Funktionen (diese Endpunkte musst du mit einem echten Backend ersetzen)
+        // Simulierte Server-Funktionen
         function saveMaintenanceToServer(data) {
           fetch("https://example.com/api/saveMaintenance", {
             method: "POST",
@@ -279,8 +277,15 @@
           setNewMaintenanceDate("");
         };
 
-        // Aktives Fahrzeug-Objekt
-        const activeVehicleData = vehiclesData.find(v => v.id === selectedVehicleId) || vehiclesData[0];
+        // Öffne Modal (zentriert) beim Klick auf eine Fahrzeugkarte
+        const openModal = (vehicleId, event) => {
+          setSelectedVehicleId(vehicleId);
+        };
+
+        // Schließe Modal
+        const closeModal = () => {
+          setSelectedVehicleId(null);
+        };
 
         // Jahre von 2025 bis 2050
         const years = [];
@@ -293,13 +298,8 @@
           filterType === "Alle" ? true : vehicle.type === filterType
         );
 
-        // Öffne Modal (zentriert) beim Klick auf eine Fahrzeugkarte
-        const openModal = (vehicleId, event) => {
-          setSelectedVehicleId(vehicleId);
-        };
-        const closeModal = () => {
-          setSelectedVehicleId(null);
-        };
+        // Finde das aktuell ausgewählte Fahrzeug (für das Modal)
+        const modalVehicle = vehiclesData.find(v => v.id === selectedVehicleId) || vehiclesData[0];
 
         /* --------------------------
            3) Präsentations-Komponenten
@@ -418,21 +418,21 @@
                 <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
                 <div className="relative bg-white rounded p-6 w-11/12 max-w-lg shadow-xl overflow-y-auto max-h-full">
                   <button onClick={closeModal} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
-                  <h2 className="text-2xl font-bold mb-4">Detailansicht: {activeVehicleData.name}</h2>
+                  <h2 className="text-2xl font-bold mb-4">Detailansicht: {modalVehicle.name}</h2>
                   <img
-                    src={activeVehicleData.imageUrl}
-                    alt={activeVehicleData.name}
+                    src={modalVehicle.imageUrl}
+                    alt={modalVehicle.name}
                     className="w-full h-64 mb-4 object-contain border"
                   />
                   <div className="mb-4">
                     <label className="mr-2 font-semibold">Marktpreis:</label>
                     <input
                       type="text"
-                      value={activeVehicleData.marketPrice}
+                      value={modalVehicle.marketPrice}
                       onChange={(e) => {
                         const newPrice = e.target.value;
                         setVehiclesData(vehiclesData.map(vehicle =>
-                          vehicle.id === activeVehicleData.id ? { ...vehicle, marketPrice: newPrice } : vehicle
+                          vehicle.id === modalVehicle.id ? { ...vehicle, marketPrice: newPrice } : vehicle
                         ));
                       }}
                       className="border rounded px-2 py-1"
@@ -441,11 +441,11 @@
                   <div className="mb-4">
                     <label className="mr-2 font-semibold">Garage:</label>
                     <select
-                      value={activeVehicleData.garage}
+                      value={modalVehicle.garage}
                       onChange={(e) => {
                         const newGarage = e.target.value;
                         setVehiclesData(vehiclesData.map(vehicle =>
-                          vehicle.id === activeVehicleData.id ? { ...vehicle, garage: newGarage } : vehicle
+                          vehicle.id === modalVehicle.id ? { ...vehicle, garage: newGarage } : vehicle
                         ));
                       }}
                       className="border rounded px-2 py-1"
@@ -458,8 +458,8 @@
                   <div className="mb-4">
                     <label className="block font-semibold mb-1">Notizen:</label>
                     <textarea
-                      value={activeVehicleData.note}
-                      onChange={(e) => handleNoteChange(e, activeVehicleData.id)}
+                      value={modalVehicle.note}
+                      onChange={(e) => handleNoteChange(e, modalVehicle.id)}
                       className="w-full border rounded p-2"
                       placeholder="Hier Notizen zum Fahrzeug eingeben..."
                     />
@@ -469,12 +469,12 @@
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageUpload(e, activeVehicleData.id)}
+                      onChange={(e) => handleImageUpload(e, modalVehicle.id)}
                       className="border rounded px-2 py-1"
                     />
                   </div>
                   
-                  {/* Neuer Abschnitt für Wartungsdatensätze (freie Einträge) */}
+                  {/* Neuer Abschnitt für freie Wartungsdatensätze */}
                   <div className="mb-4 border-t pt-4">
                     <h3 className="text-xl font-bold mb-2">Wartungsdaten hinzufügen</h3>
                     <div className="flex flex-col space-y-2">
@@ -498,11 +498,11 @@
                         Eintrag hinzufügen
                       </button>
                     </div>
-                    {maintenanceRecords[activeVehicleData.id] && maintenanceRecords[activeVehicleData.id].length > 0 && (
+                    {maintenanceRecords[modalVehicle.id] && maintenanceRecords[modalVehicle.id].length > 0 && (
                       <div className="mt-4">
                         <h3 className="text-xl font-bold">Bisherige Wartungsdaten:</h3>
                         <ul className="list-disc pl-5">
-                          {maintenanceRecords[activeVehicleData.id].map((record, index) => (
+                          {maintenanceRecords[modalVehicle.id].map((record, index) => (
                             <li key={index} className="text-sm">
                               {record.task} am {new Date(record.date).toLocaleDateString()}
                             </li>
