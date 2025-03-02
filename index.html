@@ -3,222 +3,129 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fahrzeugpark Andy</title>
+    <title>Andys Fuhrpark</title>
+    
     <!-- React und ReactDOM als UMD-Bundles -->
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <!-- Babel für In-Browser-Compilation -->
+    
+    <!-- Babel für die direkte JSX-Kompilierung im Browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Tailwind CSS für schnelles Styling -->
+    
+    <!-- Optional: Tailwind CSS für einfaches Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-gray-100">
+  <body class="p-4">
     <div id="root"></div>
-    <script type="text/babel">
-      // Vordefinierte Garagen
-      const garages = [
-        "Spexarder Strasse",
-        "Sparkasse Avenwedde",
-        "Mumprow",
-        "Amrumweg"
-      ];
 
-      // Fahrzeugdaten inklusive technischer Details, Bild-URLs, Marktpreis, Garage und Spezifika
+    <!-- React-Code (ohne Imports, da React/ReactDOM global verfügbar sind) -->
+    <script type="text/babel">
+      // Fahrzeugdaten inklusive technischer Details, lokale Bilder und Typ
       const vehiclesDataInitial = [
         {
           id: 'mercedes-w113',
           name: 'Mercedes W113 230 SL (Pagode)',
           type: 'Auto',
           technical: 'Klassischer 230 SL mit originalem Motor und eleganten Linien.',
-          imageUrl: 'https://source.unsplash.com/300x200/?mercedes,w113',
-          marketPrice: '120.000€',
-          garage: 'Spexarder Strasse',
-          specs: {
-            Motor: '3,0L V8',
-            Leistung: '220 PS',
-            Baujahr: '1963',
-            Besonderheiten: 'Klassisches Design, seltene Edition'
-          }
+          imageUrl: 'Mercedes w113.jpeg'
         },
         {
           id: 'mercedes-r107',
           name: 'Mercedes R107 560 SL',
           type: 'Auto',
           technical: 'Leistungsstarker 560 SL, luxuriös und robust.',
-          imageUrl: 'https://source.unsplash.com/300x200/?mercedes,r107',
-          marketPrice: '150.000€',
-          garage: 'Sparkasse Avenwedde',
-          specs: {
-            Motor: '5,6L V8',
-            Leistung: '250 PS',
-            Baujahr: '1970',
-            Besonderheiten: 'Luxuriös, hoher Fahrkomfort'
-          }
+          imageUrl: 'Mercedes R107.jpeg'
         },
         {
           id: 'mercedes-r129',
           name: 'Mercedes R129 500 SL',
           type: 'Auto',
           technical: 'Sportlich-eleganter 500 SL mit modernem Komfort.',
-          imageUrl: 'https://source.unsplash.com/300x200/?mercedes,r129',
-          marketPrice: '130.000€',
-          garage: 'Spexarder Strasse',
-          specs: {
-            Motor: '5,0L V8',
-            Leistung: '240 PS',
-            Baujahr: '1989',
-            Besonderheiten: 'Sportlich, elegantes Cabriolet'
-          }
+          imageUrl: 'Mercedes R129.jpeg'
         },
         {
           id: 'mercedes-w208',
           name: 'Mercedes W208 230 CLK',
           type: 'Auto',
           technical: 'Kompakter 230 CLK mit dynamischem Design.',
-          imageUrl: 'https://source.unsplash.com/300x200/?mercedes,w208',
-          marketPrice: '110.000€',
-          garage: 'Sparkasse Avenwedde',
-          specs: {
-            Motor: '2,3L',
-            Leistung: '160 PS',
-            Baujahr: '1993',
-            Besonderheiten: 'Kompaktes Design, zuverlässig'
-          }
+          imageUrl: 'Mervedes W208 CLK.jpeg'
         },
         {
           id: 'vw-t6',
           name: 'VW Bus T6 2.0 TDI (2017)',
           type: 'Auto',
           technical: 'Robuster VW Bus mit sparsamen 2.0 TDI, ideal für Reisen.',
-          imageUrl: 'https://source.unsplash.com/300x200/?vw,bus',
-          marketPrice: '80.000€',
-          garage: 'Mumprow',
-          specs: {
-            Motor: '2,0L Diesel',
-            Leistung: '150 PS',
-            Baujahr: '2017',
-            Besonderheiten: 'Geräumig, vielseitig'
-          }
+          imageUrl: 'VW T6.jpeg'
         },
         {
           id: 'man-traktor',
           name: 'MAN Traktor 2N1',
           type: 'Landmaschine',
           technical: 'Leistungsstarker Traktor, vielseitig und robust im Landbetrieb.',
-          imageUrl: 'https://source.unsplash.com/300x200/?tractor',
-          marketPrice: '90.000€',
-          garage: 'Amrumweg',
-          specs: {
-            Motor: '6,0L Diesel',
-            Leistung: '200 PS',
-            Baujahr: '2005',
-            Besonderheiten: 'Robust, hohe Zugkraft'
-          }
+          imageUrl: 'man-traktor.jpeg'
         },
         {
           id: 'bmw-r80',
           name: 'BMW R80 Strich 7 (1984)',
           type: 'Motorrad',
           technical: 'Klassische BMW Maschine, robust und zeitlos im Design.',
-          imageUrl: 'https://source.unsplash.com/300x200/?bmw,motorcycle',
-          marketPrice: '20.000€',
-          garage: 'Spexarder Strasse',
-          specs: {
-            Motor: '800cc',
-            Leistung: '70 PS',
-            Baujahr: '1984',
-            Besonderheiten: 'Klassisch, Sammlerstück'
-          }
+          imageUrl: 'BMW R80.jpeg'
         },
         {
           id: 'bmw-r1200gs',
           name: 'BMW R1200GS (2014)',
           type: 'Motorrad',
           technical: 'Moderne Abenteuermaschine, zuverlässig und komfortabel.',
-          imageUrl: 'https://source.unsplash.com/300x200/?bmw,adventure',
-          marketPrice: '25.000€',
-          garage: 'Sparkasse Avenwedde',
-          specs: {
-            Motor: '1170cc',
-            Leistung: '125 PS',
-            Baujahr: '2014',
-            Besonderheiten: 'Abenteuerlich, komfortabel'
-          }
+          imageUrl: 'BMW R1200GS.jpeg'
         },
         {
           id: 'vespa-gts300',
           name: 'Vespa GTS 300',
           type: 'Roller',
           technical: 'Stilvoller Roller, ideal für die Stadt, kombiniert klassischen Charme mit moderner Technik.',
-          imageUrl: 'https://source.unsplash.com/300x200/?vespa',
-          marketPrice: '8.000€',
-          garage: 'Mumprow',
-          specs: {
-            Motor: '300cc',
-            Leistung: '23 PS',
-            Baujahr: '2020',
-            Besonderheiten: 'Stilvoll, wendig'
-          }
+          imageUrl: 'Vespa 300.jpeg'
         }
       ];
 
-      // Vordefinierte Wartungsaufgaben
+      // Standard-Wartungsaufgaben
       const defaultMaintenanceTasks = [
         "Ölwechsel", "Zündkerzen prüfen", "Bremsen kontrollieren", "Reifendruck prüfen"
       ];
 
-      // Komponente für Fahrzeugkarten im Stil von Spielkarten
-      function VehicleCard({ vehicle, isActive, onClick }) {
-        return (
-          <div 
-            className={`border rounded-lg shadow-lg p-4 bg-white cursor-pointer transform hover:scale-105 transition-transform ${isActive ? 'border-green-600' : 'border-gray-300'}`}
-            onClick={onClick}
-          >
-            <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
-            <h2 className="text-xl font-bold mt-2">{vehicle.name}</h2>
-            <p className="text-sm text-gray-700">{vehicle.technical}</p>
-            <div className="mt-2 text-sm">
-              <p><strong>Motor:</strong> {vehicle.specs.Motor}</p>
-              <p><strong>Leistung:</strong> {vehicle.specs.Leistung}</p>
-              <p><strong>Baujahr:</strong> {vehicle.specs.Baujahr}</p>
-              <p><strong>Besonderheiten:</strong> {vehicle.specs.Besonderheiten}</p>
-            </div>
-            <div className="mt-2">
-              <p><strong>Marktpreis:</strong> {vehicle.marketPrice}</p>
-              <p><strong>Garage:</strong> {vehicle.garage}</p>
-            </div>
-          </div>
-        );
-      }
-
-      function FuhrparkApp() {
+      function AndysFuhrpark() {
+        // Fahrzeuge aus localStorage laden (falls vorhanden) oder Standardwerte
         const [vehiclesData, setVehiclesData] = React.useState(() => {
           const saved = localStorage.getItem('vehiclesData');
           return saved ? JSON.parse(saved) : vehiclesDataInitial;
         });
+
+        // Aktives Fahrzeug, Wartungskalender-Daten (Struktur: { [vehicleId]: { [year]: { [task]: timestamp|null } } })
         const [activeVehicle, setActiveVehicle] = React.useState(vehiclesData[0].id);
-        // Wartungsdaten: { [vehicleId]: { [year]: { [task]: timestamp|null } } }
         const [maintenanceData, setMaintenanceData] = React.useState(() => {
           const saved = localStorage.getItem('maintenanceData');
           return saved ? JSON.parse(saved) : {};
         });
         const [selectedYear, setSelectedYear] = React.useState(2025);
 
-        // Persistenz in localStorage
-        React.useEffect(() => {
-          localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
-        }, [vehiclesData]);
+        // Datenänderungen in localStorage speichern
         React.useEffect(() => {
           localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
         }, [maintenanceData]);
 
-        // Umschalten der Wartungsaufgaben
+        React.useEffect(() => {
+          localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
+        }, [vehiclesData]);
+
+        // Funktion, um den Status einer Wartungsaufgabe umzuschalten (Datum hinzufügen oder entfernen)
         const handleTaskToggle = (vehicleId, year, task) => {
           setMaintenanceData(prev => {
             const vehicleData = prev[vehicleId] || {};
             const yearData = vehicleData[year] || {};
             const currentStatus = yearData[task];
-            const newYearData = { ...yearData, [task]: currentStatus ? null : new Date().toISOString() };
+            const newYearData = {
+              ...yearData,
+              [task]: currentStatus ? null : new Date().toISOString()
+            };
             return {
               ...prev,
               [vehicleId]: {
@@ -229,16 +136,16 @@
           });
         };
 
-        // Ermitteln des aktiven Fahrzeugs
+        // Aktives Fahrzeug-Datenobjekt
         const activeVehicleData = vehiclesData.find(v => v.id === activeVehicle);
 
-        // Array der Jahre 2025 bis 2050
+        // Array für Jahre 2025 bis 2050
         const years = [];
         for (let y = 2025; y <= 2050; y++) {
           years.push(y);
         }
 
-        // Bild-Upload
+        // Funktion zum Hochladen eines eigenen Bildes
         const handleImageUpload = (e) => {
           const file = e.target.files[0];
           if (file) {
@@ -257,78 +164,41 @@
           }
         };
 
-        // Garage ändern
-        const handleGarageChange = (e) => {
-          const newGarage = e.target.value;
-          const updatedVehicles = vehiclesData.map(vehicle => {
-            if (vehicle.id === activeVehicle) {
-              return { ...vehicle, garage: newGarage };
-            }
-            return vehicle;
-          });
-          setVehiclesData(updatedVehicles);
-        };
-
-        // Marktpreis ändern
-        const handleMarketPriceChange = (e) => {
-          const newPrice = e.target.value;
-          const updatedVehicles = vehiclesData.map(vehicle => {
-            if (vehicle.id === activeVehicle) {
-              return { ...vehicle, marketPrice: newPrice };
-            }
-            return vehicle;
-          });
-          setVehiclesData(updatedVehicles);
-        };
-
         return (
-          <div className="p-4">
-            <h1 className="text-3xl font-bold mb-6 text-center">Fahrzeugpark Andy</h1>
-            
-            {/* Grid der Fahrzeugkarten */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-              {vehiclesData.map(vehicle => (
-                <VehicleCard 
-                  key={vehicle.id} 
-                  vehicle={vehicle} 
-                  isActive={vehicle.id === activeVehicle} 
-                  onClick={() => setActiveVehicle(vehicle.id)}
-                />
-              ))}
+          <div>
+            <h1 className="text-2xl font-bold mb-4">Andys Fuhrpark</h1>
+
+            {/* Fahrzeugauswahl */}
+            <div className="mb-4">
+              <label className="mr-2">Fahrzeug wählen:</label>
+              <select value={activeVehicle} onChange={(e) => setActiveVehicle(e.target.value)}>
+                {vehiclesData.map(vehicle => (
+                  <option key={vehicle.id} value={vehicle.id}>
+                    {vehicle.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Detailbereich für aktives Fahrzeug */}
-            <div className="mb-6 border p-4 rounded shadow bg-white">
-              <h2 className="text-2xl font-bold mb-4">Detailansicht: {activeVehicleData.name}</h2>
-              <img src={activeVehicleData.imageUrl} alt={activeVehicleData.name} className="w-full h-auto mb-4" />
-              <div className="mb-4">
-                <label className="mr-2 font-semibold">Marktpreis:</label>
-                <input type="text" value={activeVehicleData.marketPrice} onChange={handleMarketPriceChange} className="border rounded px-2 py-1" />
-              </div>
-              <div className="mb-4">
-                <label className="mr-2 font-semibold">Garage:</label>
-                <select value={activeVehicleData.garage} onChange={handleGarageChange}>
-                  {garages.map((g, idx) => (
-                    <option key={idx} value={g}>{g}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className="mr-2 font-semibold">Bild hochladen:</label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} />
-              </div>
+            {/* Fahrzeugkarte */}
+            <div className="mb-4 border p-4">
+              <img src={activeVehicleData.imageUrl} alt={activeVehicleData.name} className="w-full h-auto mb-2" />
+              <h2 className="text-xl font-semibold">{activeVehicleData.name}</h2>
+              <p>{activeVehicleData.technical}</p>
             </div>
 
             {/* Wartungskalender */}
-            <div className="mb-6">
-              <label className="mr-2 font-semibold">Wartungskalender Jahr:</label>
+            <div className="mb-4">
+              <label className="mr-2">Wartungskalender Jahr:</label>
               <select value={selectedYear} onChange={(e) => setSelectedYear(parseInt(e.target.value))}>
                 {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
               </select>
             </div>
-            <div className="mb-6 bg-white p-4 rounded shadow">
+
+            {/* Wartungsaufgabenliste */}
+            <div className="mb-4">
               <h3 className="text-lg font-bold mb-2">Wartungsaufgaben für {selectedYear}</h3>
               <ul>
                 {defaultMaintenanceTasks.map(task => {
@@ -344,7 +214,12 @@
                           onChange={() => handleTaskToggle(activeVehicle, selectedYear, task)}
                         />
                         <span className="ml-2">
-                          {task} {completedDate && <span className="text-green-600">(Erledigt am {new Date(completedDate).toLocaleDateString()})</span>}
+                          {task}{" "}
+                          {completedDate && (
+                            <span className="text-green-600">
+                              (Erledigt am {new Date(completedDate).toLocaleDateString()})
+                            </span>
+                          )}
                         </span>
                       </label>
                     </li>
@@ -352,11 +227,18 @@
                 })}
               </ul>
             </div>
+
+            {/* Bild-Upload */}
+            <div className="mt-4">
+              <h3 className="text-lg font-bold mb-2">Bild hochladen</h3>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+            </div>
           </div>
         );
       }
 
-      ReactDOM.render(<FuhrparkApp />, document.getElementById('root'));
+      // Rendern der App
+      ReactDOM.render(<AndysFuhrpark />, document.getElementById('root'));
     </script>
   </body>
 </html>
