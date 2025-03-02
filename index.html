@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<test update>
-  git add index.html
-  git commit -m "Trigger GitHub Pages rebuild"
-  git push origin main
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -13,32 +9,32 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <!-- Babel für In-Browser-Compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Tailwind CSS für schnelles Styling -->
+    <!-- Tailwind CSS für schnelles, buntes Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100">
     <div id="root"></div>
     <script type="text/babel">
-      /* --- Konfiguration und Daten --- */
-
-      // Vordefinierte Garagen – hier ohne Leerzeichen (wichtig für Dateinamen/IDs)
+      /* --------------------------
+         Konfiguration und Daten
+      --------------------------- */
+      // Vordefinierte Garagen (ohne Leerzeichen, damit sie als Dateinamen/IDs funktionieren)
       const garages = [
         "Spexarder_Strasse",
         "Sparkasse_Avenwedde",
         "Mumprow",
-        "Amrumweg",
-        "Sonstige"
+        "Amrumweg"
       ];
 
-      // Fahrzeugdaten – inkl. Original-Bilddateien (muss im gleichen Ordner liegen)
-      // Zusätzlich: "note" als freies Textfeld für Notizen
+      // Fahrzeugdaten – benutze relative Pfade (./Dateiname) für die Original-Bilddateien,
+      // die im gleichen Verzeichnis wie die index.html liegen.
       const vehiclesDataInitial = [
         {
           id: "mercedes-w113",
           name: "Mercedes W113 230 SL (Pagode)",
           type: "Auto",
           technical: "Klassischer 230 SL mit einem 2,3-Liter Reihen-Sechszylinder-Motor und ca. 150 PS.",
-          imageUrl: "andys-fuhrpark/Mercedes_W113.jpeg",
+          imageUrl: "./Mercedes_W113.jpeg",
           marketPrice: "120.000€",
           garage: "Spexarder_Strasse",
           note: "",
@@ -54,7 +50,7 @@
           name: "Mercedes R107 560 SL",
           type: "Auto",
           technical: "Luxuriöses Cabriolet mit einem 5,6-Liter V8-Motor und ca. 250 PS.",
-          imageUrl: "Mercedes_R107.jpeg",
+          imageUrl: "./Mercedes_R107.jpeg",
           marketPrice: "150.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -62,7 +58,7 @@
             Motor: "5,6L V8",
             Leistung: "250 PS",
             Baujahr: "1986",
-            Besonderheiten: "Klassisches Design, hoher Komfort und luxuriöse Ausstattung"
+            Besonderheiten: "Hochkomfort, klassisches Design, luxuriöse Ausstattung"
           }
         },
         {
@@ -70,7 +66,7 @@
           name: "Mercedes R129 500 SL",
           type: "Auto",
           technical: "Modernes Cabriolet mit einem 5,0-Liter V8-Motor und ca. 240 PS.",
-          imageUrl: "Mercedes_R129.jpeg",
+          imageUrl: "./Mercedes_R129.jpeg",
           marketPrice: "130.000€",
           garage: "Spexarder_Strasse",
           note: "",
@@ -78,7 +74,7 @@
             Motor: "5,0L V8",
             Leistung: "240 PS",
             Baujahr: "1994",
-            Besonderheiten: "Fortschrittliche Technik, elegantes Design und moderne Sicherheitseinrichtungen"
+            Besonderheiten: "Fortschrittliche Technik, elegantes Design, moderne Sicherheit"
           }
         },
         {
@@ -86,7 +82,7 @@
           name: "Mercedes W208 230 CLK",
           type: "Auto",
           technical: "Kompakter 230 CLK mit dynamischem Design.",
-          imageUrl: "Mercedes_W208_CLK.jpeg",
+          imageUrl: "./Mercedes_W208_CLK.jpeg",
           marketPrice: "110.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -94,7 +90,7 @@
             Motor: "2,3L",
             Leistung: "160 PS",
             Baujahr: "1993",
-            Besonderheiten: "Kompaktes Design, zuverlässig"
+            Besonderheiten: "Kompakt, zuverlässig, dynamisch"
           }
         },
         {
@@ -102,7 +98,7 @@
           name: "VW Bus T6 2.0 TDI (2017)",
           type: "Auto",
           technical: "Robuster VW Bus mit einem 2,0-Liter Diesel-Motor und ca. 150 PS, ideal für Reisen.",
-          imageUrl: "VW_T6.jpeg",
+          imageUrl: "./VW_T6.jpeg",
           marketPrice: "80.000€",
           garage: "Mumprow",
           note: "",
@@ -110,15 +106,15 @@
             Motor: "2,0L Diesel",
             Leistung: "150 PS",
             Baujahr: "2017",
-            Besonderheiten: "Geräumig, vielseitig"
+            Besonderheiten: "Geräumig, vielseitig, ideal für Familienreisen"
           }
         },
         {
           id: "man-traktor",
           name: "MAN Traktor 2N1",
           type: "Landmaschine",
-          technical: "Robuster Traktor mit einem ca. 4,5-Liter Dieselmotor und ca. 65 PS – ideal für landwirtschaftliche Anwendungen.",
-          imageUrl: "man-traktor.jpeg",
+          technical: "Robuster Traktor mit einem ca. 4,5-Liter Diesel-Motor und ca. 65 PS – ideal für die Landwirtschaft.",
+          imageUrl: "./man-traktor.jpeg",
           marketPrice: "90.000€",
           garage: "Amrumweg",
           note: "",
@@ -126,7 +122,7 @@
             Motor: "ca. 4,5L Diesel",
             Leistung: "ca. 65 PS",
             Baujahr: "1962",
-            Besonderheiten: "Hervorragende Robustheit und Wartungsfreundlichkeit"
+            Besonderheiten: "Extrem robust, wartungsfreundlich, ideal für den harten Einsatz"
           }
         },
         {
@@ -134,7 +130,7 @@
           name: "BMW R80",
           type: "Motorrad",
           technical: "Kultiges Motorrad mit einem 800cc-Motor und ca. 70 PS – ein begehrtes Sammlerstück.",
-          imageUrl: "BMW_R80.jpeg",
+          imageUrl: "./BMW_R80.jpeg",
           marketPrice: "20.000€",
           garage: "Spexarder_Strasse",
           note: "",
@@ -142,7 +138,7 @@
             Motor: "800cc",
             Leistung: "70 PS",
             Baujahr: "1982",
-            Besonderheiten: "Robust, zeitlos und ein Klassiker unter den Motorrädern"
+            Besonderheiten: "Robust, zeitlos, klassischer Look"
           }
         },
         {
@@ -150,7 +146,7 @@
           name: "BMW R1200 GS",
           type: "Motorrad",
           technical: "Modernes Adventure-Motorrad mit einem 1170cc-Motor und ca. 125 PS, ideal für lange Touren und Offroad.",
-          imageUrl: "BMW_R1200GS.jpeg",
+          imageUrl: "./BMW_R1200GS.jpeg",
           marketPrice: "25.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -158,7 +154,7 @@
             Motor: "1170cc",
             Leistung: "125 PS",
             Baujahr: "2014",
-            Besonderheiten: "Hohe Geländegängigkeit, moderner Komfort und innovative Elektronik"
+            Besonderheiten: "Hohe Geländegängigkeit, moderner Komfort, innovative Elektronik"
           }
         },
         {
@@ -166,7 +162,7 @@
           name: "Vespa GTS 300",
           type: "Roller",
           technical: "Stilvoller Roller mit einem 278cc-Motor und ca. 23 PS, der klassisches Vespa-Design mit moderner Technik kombiniert.",
-          imageUrl: "Vespa_GTS_300.jpeg",
+          imageUrl: "./Vespa_GTS_300.jpeg",
           marketPrice: "8.000€",
           garage: "Mumprow",
           note: "",
@@ -174,44 +170,46 @@
             Motor: "278cc",
             Leistung: "23 PS",
             Baujahr: "2014",
-            Besonderheiten: "Hoher Fahrkomfort und ikonisches Design"
+            Besonderheiten: "Hoher Fahrkomfort, ikonisches Design, wendig"
           }
         }
       ];
 
-      // Vordefinierte Wartungsaufgaben (wird global verwaltet – kann erweitert werden)
+      // Vordefinierte Wartungsaufgaben (global erweiterbar)
       const defaultMaintenanceTasks = [
         "Ölwechsel", "Zündkerzen prüfen", "Bremsen kontrollieren", "Reifendruck prüfen"
       ];
 
-      /* --- Komponenten --- */
+      /* --------------------------
+         Komponenten
+      --------------------------- */
 
-      // Fahrzeugkarte im spielkartenähnlichen Layout
+      // Fahrzeugkarte im spielkartenähnlichen Layout – buntere Darstellung
       function VehicleCard({ vehicle, isActive, onClick }) {
         return (
           <div 
-            className={`border rounded-lg shadow-lg p-4 bg-white cursor-pointer transform hover:scale-105 transition-transform ${isActive ? 'border-green-600' : 'border-gray-300'}`}
+            className={`border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 cursor-pointer transform hover:scale-105 transition-transform ${isActive ? 'border-green-600' : 'border-gray-300'}`}
             onClick={onClick}
           >
             <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
-            <h2 className="text-xl font-bold mt-2">{vehicle.name}</h2>
+            <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
             <p className="text-sm text-gray-700">{vehicle.technical}</p>
-            <div className="mt-2 text-sm">
+            <div className="mt-2 text-sm text-gray-800">
               <p><strong>Motor:</strong> {vehicle.specs.Motor}</p>
               <p><strong>Leistung:</strong> {vehicle.specs.Leistung}</p>
               <p><strong>Baujahr:</strong> {vehicle.specs.Baujahr}</p>
               <p><strong>Besonderheiten:</strong> {vehicle.specs.Besonderheiten}</p>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 text-sm">
               <p><strong>Marktpreis:</strong> {vehicle.marketPrice}</p>
-              <p><strong>Garage:</strong> {vehicle.garage}</p>
+              <p><strong>Garage:</strong> {vehicle.garage.replace(/_/g, " ")}</p>
             </div>
           </div>
         );
       }
 
       function FuhrparkApp() {
-        // Zustand der Fahrzeugdaten (inkl. Notizen) – aus localStorage oder initial
+        // Fahrzeugdaten und Notizen (aus localStorage oder initial)
         const [vehiclesData, setVehiclesData] = React.useState(() => {
           const saved = localStorage.getItem('vehiclesData');
           return saved ? JSON.parse(saved) : vehiclesDataInitial;
@@ -292,13 +290,32 @@
           ));
         };
 
+        // Funktion: Bild-Upload zum Ändern des Fahrzeugfotos
+        const handleImageUpload = (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const newImageUrl = reader.result;
+              const updatedVehicles = vehiclesData.map(vehicle => {
+                if (vehicle.id === activeVehicle) {
+                  return { ...vehicle, imageUrl: newImageUrl };
+                }
+                return vehicle;
+              });
+              setVehiclesData(updatedVehicles);
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+
         return (
           <div className="p-4">
-            <h1 className="text-3xl font-bold mb-6 text-center">Fahrzeugpark Andy</h1>
+            <h1 className="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded">Fahrzeugpark Andy</h1>
             
             {/* Filter nach Fahrzeugtyp */}
             <div className="mb-4 flex items-center justify-center space-x-4">
-              <label className="font-semibold">Fahrzeugtyp:</label>
+              <label className="font-semibold text-lg">Fahrzeugtyp:</label>
               <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="border rounded px-2 py-1">
                 <option value="Alle">Alle</option>
                 <option value="Auto">Auto</option>
@@ -324,7 +341,7 @@
             {activeVehicleData && (
               <div className="mb-6 border p-4 rounded shadow bg-white">
                 <h2 className="text-2xl font-bold mb-4">Detailansicht: {activeVehicleData.name}</h2>
-                <img src={activeVehicleData.imageUrl} alt={activeVehicleData.name} className="w-full h-auto mb-4 object-contain" />
+                <img src={activeVehicleData.imageUrl} alt={activeVehicleData.name} className="w-full h-64 mb-4 object-contain border" />
                 <div className="mb-4">
                   <label className="mr-2 font-semibold">Marktpreis:</label>
                   <input 
@@ -336,7 +353,7 @@
                         vehicle.id === activeVehicle ? { ...vehicle, marketPrice: newPrice } : vehicle
                       ));
                     }} 
-                    className="border rounded px-2 py-1" 
+                    className="border rounded px-2 py-1"
                   />
                 </div>
                 <div className="mb-4">
@@ -364,6 +381,10 @@
                     className="w-full border rounded p-2"
                     placeholder="Hier kannst du Notizen zum Fahrzeug eingeben..."
                   />
+                </div>
+                <div className="mb-4">
+                  <label className="mr-2 font-semibold">Foto ändern:</label>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="border rounded px-2 py-1" />
                 </div>
               </div>
             )}
