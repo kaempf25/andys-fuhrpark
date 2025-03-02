@@ -16,9 +16,9 @@
     <div id="root"></div>
     <script type="text/babel">
       /* --------------------------
-         Konfiguration und Daten
+         1) Garagen und Daten
       --------------------------- */
-      // Vordefinierte Garagen (ohne Leerzeichen, damit sie als Dateinamen/IDs funktionieren)
+
       const garages = [
         "Spexarder_Strasse",
         "Sparkasse_Avenwedde",
@@ -26,15 +26,15 @@
         "Amrumweg"
       ];
 
-      // Fahrzeugdaten – benutze relative Pfade (./Dateiname) für die Original-Bilddateien,
-      // die im gleichen Verzeichnis wie die index.html liegen.
+      // Hier wurden die Dateinamen an die GitHub-Dateien angepasst:
+      // (z. B. "Mercedes W113.jpeg" statt "Mercedes_W113.jpeg")
       const vehiclesDataInitial = [
         {
           id: "mercedes-w113",
           name: "Mercedes W113 230 SL (Pagode)",
           type: "Auto",
-          technical: "Klassischer 230 SL mit einem 2,3-Liter Reihen-Sechszylinder-Motor und ca. 150 PS.",
-          imageUrl: "./Mercedes_W113.jpeg",
+          technical: "Klassischer 230 SL mit 2,3-Liter Reihen-Sechszylinder und ca. 150 PS.",
+          imageUrl: "./Mercedes W113.jpeg",
           marketPrice: "120.000€",
           garage: "Spexarder_Strasse",
           note: "",
@@ -42,15 +42,15 @@
             Motor: "2,3L Reihen-Sechszylinder",
             Leistung: "150 PS",
             Baujahr: "1963",
-            Besonderheiten: "Ikonisches Pagoden-Design, elegantes und zeitloses Erscheinungsbild"
+            Besonderheiten: "Ikonisches Pagoden-Design, zeitloses Erscheinungsbild"
           }
         },
         {
           id: "mercedes-r107",
           name: "Mercedes R107 560 SL",
           type: "Auto",
-          technical: "Luxuriöses Cabriolet mit einem 5,6-Liter V8-Motor und ca. 250 PS.",
-          imageUrl: "./Mercedes_R107.jpeg",
+          technical: "Luxuriöses Cabriolet mit 5,6-Liter V8 und ca. 250 PS.",
+          imageUrl: "./Mercedes R107.jpeg",
           marketPrice: "150.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -65,8 +65,8 @@
           id: "mercedes-r129",
           name: "Mercedes R129 500 SL",
           type: "Auto",
-          technical: "Modernes Cabriolet mit einem 5,0-Liter V8-Motor und ca. 240 PS.",
-          imageUrl: "./Mercedes_R129.jpeg",
+          technical: "Modernes Cabriolet mit 5,0-Liter V8 und ca. 240 PS.",
+          imageUrl: "./Mercedes R129.jpeg",
           marketPrice: "130.000€",
           garage: "Spexarder_Strasse",
           note: "",
@@ -82,7 +82,7 @@
           name: "Mercedes W208 230 CLK",
           type: "Auto",
           technical: "Kompakter 230 CLK mit dynamischem Design.",
-          imageUrl: "./Mercedes_W208_CLK.jpeg",
+          imageUrl: "./Mercedes W208 CLK.jpeg",
           marketPrice: "110.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -97,8 +97,8 @@
           id: "vw-t6",
           name: "VW Bus T6 2.0 TDI (2017)",
           type: "Auto",
-          technical: "Robuster VW Bus mit einem 2,0-Liter Diesel-Motor und ca. 150 PS, ideal für Reisen.",
-          imageUrl: "./VW_T6.jpeg",
+          technical: "Robuster VW Bus (2,0-Liter Diesel, ca. 150 PS) – ideal für Reisen.",
+          imageUrl: "./VW T6.jpeg",
           marketPrice: "80.000€",
           garage: "Mumprow",
           note: "",
@@ -113,7 +113,7 @@
           id: "man-traktor",
           name: "MAN Traktor 2N1",
           type: "Landmaschine",
-          technical: "Robuster Traktor mit einem ca. 4,5-Liter Diesel-Motor und ca. 65 PS – ideal für die Landwirtschaft.",
+          technical: "Robuster Traktor (ca. 4,5-Liter Diesel, ca. 65 PS) – ideal für Landwirtschaft.",
           imageUrl: "./man-traktor.jpeg",
           marketPrice: "90.000€",
           garage: "Amrumweg",
@@ -129,8 +129,8 @@
           id: "bmw-r80",
           name: "BMW R80",
           type: "Motorrad",
-          technical: "Kultiges Motorrad mit einem 800cc-Motor und ca. 70 PS – ein begehrtes Sammlerstück.",
-          imageUrl: "./BMW_R80.jpeg",
+          technical: "Kultiges Motorrad (800cc, ca. 70 PS) – begehrtes Sammlerstück.",
+          imageUrl: "./BMW R80.jpeg",
           marketPrice: "20.000€",
           garage: "Spexarder_Strasse",
           note: "",
@@ -145,8 +145,8 @@
           id: "bmw-r1200gs",
           name: "BMW R1200 GS",
           type: "Motorrad",
-          technical: "Modernes Adventure-Motorrad mit einem 1170cc-Motor und ca. 125 PS, ideal für lange Touren und Offroad.",
-          imageUrl: "./BMW_R1200GS.jpeg",
+          technical: "Modernes Adventure-Bike (1170cc, ca. 125 PS), ideal für Touren und Offroad.",
+          imageUrl: "./BMW R1200GS.jpeg",
           marketPrice: "25.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
@@ -154,15 +154,15 @@
             Motor: "1170cc",
             Leistung: "125 PS",
             Baujahr: "2014",
-            Besonderheiten: "Hohe Geländegängigkeit, moderner Komfort, innovative Elektronik"
+            Besonderheiten: "Geländegängig, moderner Komfort, innovative Elektronik"
           }
         },
         {
           id: "vespa-gts300",
           name: "Vespa GTS 300",
           type: "Roller",
-          technical: "Stilvoller Roller mit einem 278cc-Motor und ca. 23 PS, der klassisches Vespa-Design mit moderner Technik kombiniert.",
-          imageUrl: "./Vespa_GTS_300.jpeg",
+          technical: "Stilvoller Roller (278cc, ca. 23 PS), vereint klassisches Design mit moderner Technik.",
+          imageUrl: "./Vespa GTS 300.jpeg",
           marketPrice: "8.000€",
           garage: "Mumprow",
           note: "",
@@ -175,63 +175,36 @@
         }
       ];
 
-      // Vordefinierte Wartungsaufgaben (global erweiterbar)
+      // Wartungsaufgaben (global)
       const defaultMaintenanceTasks = [
         "Ölwechsel", "Zündkerzen prüfen", "Bremsen kontrollieren", "Reifendruck prüfen"
       ];
 
       /* --------------------------
-         Komponenten
+         2) Haupt-App-Komponente
       --------------------------- */
-
-      // Fahrzeugkarte im spielkartenähnlichen Layout – buntere Darstellung
-      function VehicleCard({ vehicle, isActive, onClick }) {
-        return (
-          <div 
-            className={`border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 cursor-pointer transform hover:scale-105 transition-transform ${isActive ? 'border-green-600' : 'border-gray-300'}`}
-            onClick={onClick}
-          >
-            <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
-            <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
-            <p className="text-sm text-gray-700">{vehicle.technical}</p>
-            <div className="mt-2 text-sm text-gray-800">
-              <p><strong>Motor:</strong> {vehicle.specs.Motor}</p>
-              <p><strong>Leistung:</strong> {vehicle.specs.Leistung}</p>
-              <p><strong>Baujahr:</strong> {vehicle.specs.Baujahr}</p>
-              <p><strong>Besonderheiten:</strong> {vehicle.specs.Besonderheiten}</p>
-            </div>
-            <div className="mt-2 text-sm">
-              <p><strong>Marktpreis:</strong> {vehicle.marketPrice}</p>
-              <p><strong>Garage:</strong> {vehicle.garage.replace(/_/g, " ")}</p>
-            </div>
-          </div>
-        );
-      }
-
       function FuhrparkApp() {
-        // Fahrzeugdaten und Notizen (aus localStorage oder initial)
-        const [vehiclesData, setVehiclesData] = React.useState(() => {
-          const saved = localStorage.getItem('vehiclesData');
-          return saved ? JSON.parse(saved) : vehiclesDataInitial;
-        });
-        // Aktives Fahrzeug (ID)
+        // *** HINWEIS: Dies löscht beim Laden einmalig alle alten localStorage-Daten,
+        // um sicherzustellen, dass die hier definierten Werte wirklich angezeigt werden. ***
+        // Entferne diese Zeilen, sobald du möchtest, dass Änderungen (z. B. neu hochgeladene Bilder)
+        // dauerhaft erhalten bleiben.
+        React.useEffect(() => {
+          localStorage.removeItem('vehiclesData');
+          localStorage.removeItem('maintenanceData');
+          localStorage.removeItem('maintenanceTasks');
+        }, []);
+
+        // Zustand für Fahrzeuge, Wartungsdaten, Wartungsdienste
+        const [vehiclesData, setVehiclesData] = React.useState(vehiclesDataInitial);
+        const [maintenanceData, setMaintenanceData] = React.useState({});
+        const [maintenanceTasks, setMaintenanceTasks] = React.useState(defaultMaintenanceTasks);
+
+        // Aktives Fahrzeug, ausgewähltes Jahr, Filter
         const [activeVehicle, setActiveVehicle] = React.useState(vehiclesData[0].id);
-        // Wartungsdaten: { [vehicleId]: { [year]: { [task]: timestamp|null } } }
-        const [maintenanceData, setMaintenanceData] = React.useState(() => {
-          const saved = localStorage.getItem('maintenanceData');
-          return saved ? JSON.parse(saved) : {};
-        });
-        // Wartungsdienste (global – erweiterbar)
-        const [maintenanceTasks, setMaintenanceTasks] = React.useState(() => {
-          const saved = localStorage.getItem('maintenanceTasks');
-          return saved ? JSON.parse(saved) : defaultMaintenanceTasks;
-        });
-        // Auswahljahr für Wartung (2025 bis 2050)
         const [selectedYear, setSelectedYear] = React.useState(2025);
-        // Filter nach Fahrzeugtyp (Alle, Auto, Motorrad, Roller, Landmaschine)
         const [filterType, setFilterType] = React.useState("Alle");
 
-        // Persistenz in localStorage
+        // Speichere Zustand bei Änderungen in localStorage
         React.useEffect(() => {
           localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
         }, [vehiclesData]);
@@ -242,7 +215,7 @@
           localStorage.setItem('maintenanceTasks', JSON.stringify(maintenanceTasks));
         }, [maintenanceTasks]);
 
-        // Umschalten der Wartungsaufgaben
+        // Wartungsaufgabe umschalten
         const handleTaskToggle = (vehicleId, year, task) => {
           setMaintenanceData(prev => {
             const vehicleData = prev[vehicleId] || {};
@@ -259,21 +232,21 @@
           });
         };
 
-        // Ermitteln des aktiven Fahrzeugs
+        // Aktives Fahrzeug-Objekt
         const activeVehicleData = vehiclesData.find(v => v.id === activeVehicle);
 
-        // Array der Jahre von 2025 bis 2050
+        // Jahre von 2025 bis 2050
         const years = [];
         for (let y = 2025; y <= 2050; y++) {
           years.push(y);
         }
 
-        // Gefilterte Fahrzeuge basierend auf filterType
+        // Nach Fahrzeugtyp filtern
         const filteredVehicles = vehiclesData.filter(vehicle =>
           filterType === "Alle" ? true : vehicle.type === filterType
         );
 
-        // Funktion: Neuen Wartungsdienst hinzufügen (global)
+        // Neuen Wartungsdienst hinzufügen
         const handleAddMaintenanceTask = () => {
           const newTask = prompt("Neuen Wartungsdienst eingeben:");
           if (newTask) {
@@ -282,7 +255,7 @@
           }
         };
 
-        // Funktion: Notiz für aktives Fahrzeug ändern
+        // Notiz ändern
         const handleNoteChange = (e) => {
           const newNote = e.target.value;
           setVehiclesData(vehiclesData.map(vehicle =>
@@ -290,7 +263,7 @@
           ));
         };
 
-        // Funktion: Bild-Upload zum Ändern des Fahrzeugfotos
+        // Bild hochladen
         const handleImageUpload = (e) => {
           const file = e.target.files[0];
           if (file) {
@@ -309,14 +282,49 @@
           }
         };
 
+        /* --------------------------
+           3) Präsentations-Komponenten
+        --------------------------- */
+        function VehicleCard({ vehicle, isActive, onClick }) {
+          return (
+            <div 
+              className={`border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 cursor-pointer transform hover:scale-105 transition-transform ${isActive ? 'border-green-600' : 'border-gray-300'}`}
+              onClick={onClick}
+            >
+              <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
+              <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
+              <p className="text-sm text-gray-700">{vehicle.technical}</p>
+              <div className="mt-2 text-sm text-gray-800">
+                <p><strong>Motor:</strong> {vehicle.specs.Motor}</p>
+                <p><strong>Leistung:</strong> {vehicle.specs.Leistung}</p>
+                <p><strong>Baujahr:</strong> {vehicle.specs.Baujahr}</p>
+                <p><strong>Besonderheiten:</strong> {vehicle.specs.Besonderheiten}</p>
+              </div>
+              <div className="mt-2 text-sm">
+                <p><strong>Marktpreis:</strong> {vehicle.marketPrice}</p>
+                <p><strong>Garage:</strong> {vehicle.garage.replace(/_/g, " ")}</p>
+              </div>
+            </div>
+          );
+        }
+
+        /* --------------------------
+           4) Render-Funktion
+        --------------------------- */
         return (
           <div className="p-4">
-            <h1 className="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded">Fahrzeugpark Andy</h1>
+            <h1 className="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded">
+              Fahrzeugpark Andy
+            </h1>
             
             {/* Filter nach Fahrzeugtyp */}
             <div className="mb-4 flex items-center justify-center space-x-4">
               <label className="font-semibold text-lg">Fahrzeugtyp:</label>
-              <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="border rounded px-2 py-1">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
                 <option value="Alle">Alle</option>
                 <option value="Auto">Auto</option>
                 <option value="Motorrad">Motorrad</option>
@@ -337,32 +345,36 @@
               ))}
             </div>
 
-            {/* Detailbereich für aktives Fahrzeug */}
+            {/* Detailansicht aktives Fahrzeug */}
             {activeVehicleData && (
               <div className="mb-6 border p-4 rounded shadow bg-white">
                 <h2 className="text-2xl font-bold mb-4">Detailansicht: {activeVehicleData.name}</h2>
-                <img src={activeVehicleData.imageUrl} alt={activeVehicleData.name} className="w-full h-64 mb-4 object-contain border" />
+                <img
+                  src={activeVehicleData.imageUrl}
+                  alt={activeVehicleData.name}
+                  className="w-full h-64 mb-4 object-contain border"
+                />
                 <div className="mb-4">
                   <label className="mr-2 font-semibold">Marktpreis:</label>
-                  <input 
-                    type="text" 
-                    value={activeVehicleData.marketPrice} 
+                  <input
+                    type="text"
+                    value={activeVehicleData.marketPrice}
                     onChange={(e) => {
                       const newPrice = e.target.value;
-                      setVehiclesData(vehiclesData.map(vehicle => 
+                      setVehiclesData(vehiclesData.map(vehicle =>
                         vehicle.id === activeVehicle ? { ...vehicle, marketPrice: newPrice } : vehicle
                       ));
-                    }} 
+                    }}
                     className="border rounded px-2 py-1"
                   />
                 </div>
                 <div className="mb-4">
                   <label className="mr-2 font-semibold">Garage:</label>
-                  <select 
-                    value={activeVehicleData.garage} 
+                  <select
+                    value={activeVehicleData.garage}
                     onChange={(e) => {
                       const newGarage = e.target.value;
-                      setVehiclesData(vehiclesData.map(vehicle => 
+                      setVehiclesData(vehiclesData.map(vehicle =>
                         vehicle.id === activeVehicle ? { ...vehicle, garage: newGarage } : vehicle
                       ));
                     }}
@@ -375,8 +387,8 @@
                 </div>
                 <div className="mb-4">
                   <label className="block font-semibold mb-1">Notizen:</label>
-                  <textarea 
-                    value={activeVehicleData.note} 
+                  <textarea
+                    value={activeVehicleData.note}
                     onChange={handleNoteChange}
                     className="w-full border rounded p-2"
                     placeholder="Hier kannst du Notizen zum Fahrzeug eingeben..."
@@ -384,7 +396,12 @@
                 </div>
                 <div className="mb-4">
                   <label className="mr-2 font-semibold">Foto ändern:</label>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="border rounded px-2 py-1" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="border rounded px-2 py-1"
+                  />
                 </div>
               </div>
             )}
@@ -392,8 +409,8 @@
             {/* Wartungskalender */}
             <div className="mb-6">
               <label className="mr-2 font-semibold">Wartungskalender Jahr:</label>
-              <select 
-                value={selectedYear} 
+              <select
+                value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                 className="border rounded px-2 py-1"
               >
@@ -418,13 +435,21 @@
                           onChange={() => handleTaskToggle(activeVehicle, selectedYear, task)}
                           className="mr-2"
                         />
-                        {task} {completedDate && <span className="text-green-600">(Erledigt am {new Date(completedDate).toLocaleDateString()})</span>}
+                        {task}{" "}
+                        {completedDate && (
+                          <span className="text-green-600">
+                            (Erledigt am {new Date(completedDate).toLocaleDateString()})
+                          </span>
+                        )}
                       </label>
                     </li>
                   );
                 })}
               </ul>
-              <button onClick={handleAddMaintenanceTask} className="bg-blue-600 text-white px-4 py-2 rounded mt-2">
+              <button
+                onClick={handleAddMaintenanceTask}
+                className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+              >
                 Neuen Wartungsdienst hinzufügen
               </button>
             </div>
@@ -432,7 +457,7 @@
         );
       }
 
-      // Rendering der App in den "root"-Container
+      // App rendern
       ReactDOM.render(<FuhrparkApp />, document.getElementById('root'));
     </script>
   </body>
