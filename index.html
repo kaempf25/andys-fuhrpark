@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fahrzeug Galerie</title>
+    <script>
+        function showDetails(vehicle) {
+            let year = prompt("Gib das Jahr für " + vehicle + " ein:");
+            let details = prompt("Gib Details für " + vehicle + " ein:");
+            if (year && details) {
+                localStorage.setItem(vehicle + "_" + year, details);
+                alert("Daten gespeichert!");
+            }
+        }
+        function loadDetails(vehicle) {
+            let year = prompt("Gib das Jahr ein, um Details für " + vehicle + " anzuzeigen:");
+            let details = localStorage.getItem(vehicle + "_" + year);
+            if (details) {
+                alert("Details für " + vehicle + " im Jahr " + year + ": " + details);
+            } else {
+                alert("Keine Daten für dieses Jahr gefunden.");
+            }
+        }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,6 +58,15 @@
             width: 100%;
             border-radius: 10px;
         }
+        button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #2a7f2a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -47,27 +75,63 @@
     <div class="category">
         <h2>Autos</h2>
         <div class="gallery">
-            <div class="vehicle"><img src="Mercedes R107.jpeg" alt="Mercedes R107"></div>
-            <div class="vehicle"><img src="Mercedes R129.jpeg" alt="Mercedes R129"></div>
-            <div class="vehicle"><img src="Mercedes W113.jpeg" alt="Mercedes W113"></div>
-            <div class="vehicle"><img src="Mercedes W208 CLK.jpeg" alt="Mercedes W208 CLK"></div>
-            <div class="vehicle"><img src="VW T6.jpeg" alt="VW T6"></div>
+            <div class="vehicle">
+                <img src="Mercedes R107.jpeg" alt="Mercedes R107">
+                <button onclick="showDetails('Mercedes R107')">Daten eingeben</button>
+                <button onclick="loadDetails('Mercedes R107')">Daten abrufen</button>
+            </div>
+            <div class="vehicle">
+                <img src="Mercedes R129.jpeg" alt="Mercedes R129">
+                <button onclick="showDetails('Mercedes R129')">Daten eingeben</button>
+                <button onclick="loadDetails('Mercedes R129')">Daten abrufen</button>
+            </div>
+            <div class="vehicle">
+                <img src="Mercedes W113.jpeg" alt="Mercedes W113">
+                <button onclick="showDetails('Mercedes W113')">Daten eingeben</button>
+                <button onclick="loadDetails('Mercedes W113')">Daten abrufen</button>
+            </div>
+            <div class="vehicle">
+                <img src="Mercedes W208 CLK.jpeg" alt="Mercedes W208 CLK">
+                <button onclick="showDetails('Mercedes W208 CLK')">Daten eingeben</button>
+                <button onclick="loadDetails('Mercedes W208 CLK')">Daten abrufen</button>
+            </div>
+            <div class="vehicle">
+                <img src="VW T6.jpeg" alt="VW T6">
+                <button onclick="showDetails('VW T6')">Daten eingeben</button>
+                <button onclick="loadDetails('VW T6')">Daten abrufen</button>
+            </div>
         </div>
     </div>
 
     <div class="category">
         <h2>Zweiräder</h2>
         <div class="gallery">
-            <div class="vehicle"><img src="BMW R80.jpeg" alt="BMW R80"></div>
-            <div class="vehicle"><img src="BMW R1200GS.jpeg" alt="BMW R1200GS"></div>
-            <div class="vehicle"><img src="Vespa 300.jpeg" alt="Vespa 300"></div>
+            <div class="vehicle">
+                <img src="BMW R80.jpeg" alt="BMW R80">
+                <button onclick="showDetails('BMW R80')">Daten eingeben</button>
+                <button onclick="loadDetails('BMW R80')">Daten abrufen</button>
+            </div>
+            <div class="vehicle">
+                <img src="BMW R1200GS.jpeg" alt="BMW R1200GS">
+                <button onclick="showDetails('BMW R1200GS')">Daten eingeben</button>
+                <button onclick="loadDetails('BMW R1200GS')">Daten abrufen</button>
+            </div>
+            <div class="vehicle">
+                <img src="Vespa 300.jpeg" alt="Vespa 300">
+                <button onclick="showDetails('Vespa 300')">Daten eingeben</button>
+                <button onclick="loadDetails('Vespa 300')">Daten abrufen</button>
+            </div>
         </div>
     </div>
 
     <div class="category">
         <h2>Traktoren</h2>
         <div class="gallery">
-            <div class="vehicle"><img src="man-traktor.jpeg" alt="MAN Traktor"></div>
+            <div class="vehicle">
+                <img src="man-traktor.jpeg" alt="MAN Traktor">
+                <button onclick="showDetails('MAN Traktor')">Daten eingeben</button>
+                <button onclick="loadDetails('MAN Traktor')">Daten abrufen</button>
+            </div>
         </div>
     </div>
 </body>
