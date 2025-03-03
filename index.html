@@ -182,84 +182,106 @@
          2) Haupt-App-Komponente
       --------------------------- */
       function FuhrparkApp() {
-        // Zum Testen: Lösche alte localStorage-Daten – entferne diese Zeilen später, wenn du dauerhafte Speicherung wünschst.
-        React.useEffect(() => {
-          localStorage.removeItem('vehiclesData');
-          localStorage.removeItem('maintenanceData');
-          localStorage.removeItem('maintenanceTasks');
-          localStorage.removeItem('maintenanceRecords');
-        }, []);
-
-        const [vehiclesData, setVehiclesData] = React.useState(vehiclesDataInitial);
-        const [maintenanceData, setMaintenanceData] = React.useState({});
-        const [maintenanceTasks, setMaintenanceTasks] = React.useState(defaultMaintenanceTasks);
-        const [maintenanceRecords, setMaintenanceRecords] = React.useState(() => {
-          const saved = localStorage.getItem('maintenanceRecords');
-          return saved ? JSON.parse(saved) : {};
+        // States für die verschiedenen Daten
+        const [vehiclesData, setVehiclesData] = React.useState(() => {
+          const savedData = localStorage.getItem('vehiclesData');
+          return savedData ? JSON.parse(savedData) : vehiclesDataInitial;
         });
+        
+        const [maintenanceData, setMaintenanceData] = React.useState(() => {
+          const savedData = localStorage.getItem('maintenanceData');
+          return savedData ? JSON.parse(savedData) : {};
+        });
+        
+        const [maintenanceTasks, setMaintenanceTasks] = React.useState(() => {
+          const savedTasks = localStorage.getItem('maintenanceTasks');
+          return savedTasks ? JSON.parse(savedTasks) : defaultMaintenanceTasks;
+        });
+        
+        const [maintenanceRecords, setMaintenanceRecords] = React.useState(() => {
+          const savedRecords = localStorage.getItem('maintenanceRecords');
+          return savedRecords ? JSON.parse(savedRecords) : {};
+        });
+        
         const [selectedYear, setSelectedYear] = React.useState(2025);
         const [filterType, setFilterType] = React.useState("Alle");
         const [selectedVehicleId, setSelectedVehicleId] = React.useState(null);
-        // Zustände für neue Wartungsdatensätze (freie Einträge)
+        const [showMaintenanceModalId, setShowMaintenanceModalId] = React.useState(null);
+        const [showAllMaintenanceHistory, setShowAllMaintenanceHistory] = React.useState(false);
+        
+        // States für neue Wartungsdatensätze
         const [newMaintenanceTask, setNewMaintenanceTask] = React.useState("");
         const [newMaintenanceDate, setNewMaintenanceDate] = React.useState("");
 
-        // Fehlende Funktionen
-        const closeModal = () => {
-          setSelectedVehicleId(null);
-        };
-
-        const handleAddMaintenanceTask = () => {
-          const newTask = prompt("Neuen Wartungsdienst eingeben:");
-          if (newTask) {
-            setMaintenanceTasks([...maintenanceTasks, newTask]);
-          }
-        };
-
-        // Persistiere Zustände in localStorage
+        // Speichere Änderungen in localStorage und sende sie an den Server
         React.useEffect(() => {
           localStorage.setItem('vehiclesData', JSON.stringify(vehiclesData));
         }, [vehiclesData]);
+
         React.useEffect(() => {
           localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
-          // Simulierter API-Aufruf – ersetze Dummy-URL bei Bedarf
-          saveMaintenanceToServer(maintenanceData);
+          saveToServer('maintenanceData', maintenanceData);
         }, [maintenanceData]);
+
         React.useEffect(() => {
           localStorage.setItem('maintenanceTasks', JSON.stringify(maintenanceTasks));
         }, [maintenanceTasks]);
+
         React.useEffect(() => {
           localStorage.setItem('maintenanceRecords', JSON.stringify(maintenanceRecords));
-          saveRecordsToServer(maintenanceRecords);
+          saveToServer('maintenanceRecords', maintenanceRecords);
         }, [maintenanceRecords]);
 
-        // Simulierte Server-Funktionen – ersetze Dummy-URLs durch echte Endpoints, wenn verfügbar
-        function saveMaintenanceToServer(data) {
-          fetch("https://example.com/api/saveMaintenance", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => console.log("Wartungs-Checkbox-Daten gespeichert:", response))
-          .catch(error => console.error("Fehler beim Speichern (Checkbox):", error));
-        }
-        function saveRecordsToServer(data) {
-          fetch("https://example.com/api/saveRecords", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: { "Content-Type": "application/json" }
-          })
-          .then(response => console.log("Wartungsdatensätze gespeichert:", response))
-          .catch(error => console.error("Fehler beim Speichern (Records):", error));
-        }
+        // Speichern auf dem Server
+        const saveToServer = (dataType, data) => {
+          // In einer echten Anwendung würde hier ein API-Endpunkt konfiguriert werden
+          const endpoint = `https://your-server.com/api/save-${dataType}`;
+          
+          // In dieser Demo-Version simulieren wir nur den Serveraufruf
+          console.log(`Speichere ${dataType} auf dem Server:`, data);
+          
+          // Simuliere Speichern in einer Datei (in einer echten Anwendung)
+          const jsonData = JSON.stringify(data, null, 2);
+          
+          // Erstelle einen downloadbaren Link als Beispiel (in einer echten Anwendung würde
+          // dieser Code durch eine tatsächliche API-Anfrage ersetzt werden)
+          const blob = new Blob([jsonData], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${dataType}.json`;
+          // Entkommentiere die nächste Zeile, um die Datei herunterzuladen
+          // a.click();
+        };
 
-        // Umschalten von Wartungsaufgaben (Checkboxen)
+        // Modals schließen
+        const closeModal = () => {
+          setSelectedVehicleId(null);
+          setShowMaintenanceModalId(null);
+          setShowAllMaintenanceHistory(false);
+        };
+
+        // Neue Wartungsaufgabe hinzufügen
+        const handleAddMaintenanceTask = () => {
+          const newTask = prompt("Neuen Wartungsdienst eingeben:");
+          if (newTask && newTask.trim()) {
+            setMaintenanceTasks([...maintenanceTasks, newTask.trim()]);
+          }
+        };
+
+        // Warte Wartungsaufgabe umschalten (Checkbox)
         const handleTaskToggle = (vehicleId, year, task) => {
           setMaintenanceData(prev => {
             const vehicleData = prev[vehicleId] || {};
             const yearData = vehicleData[year] || {};
             const currentStatus = yearData[task];
-            const newYearData = { ...yearData, [task]: currentStatus ? null : new Date().toISOString() };
+            
+            // Setze das aktuelle Datum, wenn die Aufgabe abgehakt wird, ansonsten null
+            const newYearData = { 
+              ...yearData, 
+              [task]: currentStatus ? null : new Date().toISOString() 
+            };
+            
             return {
               ...prev,
               [vehicleId]: {
@@ -270,19 +292,29 @@
           });
         };
 
-        // Neuen Wartungsdatensatz hinzufügen (freie Einträge)
-        const handleAddMaintenanceRecord = () => {
+        // Neuen Wartungsdatensatz hinzufügen
+        const handleAddMaintenanceRecord = (vehicleId) => {
           if (!newMaintenanceTask || !newMaintenanceDate) {
             alert("Bitte Wartungsdienst und Datum angeben.");
             return;
           }
-          const record = { task: newMaintenanceTask, date: newMaintenanceDate };
-          const currentRecords = maintenanceRecords[selectedVehicleId] || [];
+          
+          // Erstelle neuen Wartungsdatensatz
+          const record = { 
+            task: newMaintenanceTask, 
+            date: newMaintenanceDate,
+            vehicleId: vehicleId,
+            timestamp: new Date().toISOString() 
+          };
+          
+          const currentRecords = maintenanceRecords[vehicleId] || [];
           const updatedRecords = [...currentRecords, record];
+          
           setMaintenanceRecords({
             ...maintenanceRecords,
-            [selectedVehicleId]: updatedRecords
+            [vehicleId]: updatedRecords
           });
+          
           setNewMaintenanceTask("");
           setNewMaintenanceDate("");
         };
@@ -302,10 +334,28 @@
           }
         };
 
-        // Debug: Öffne Modal – füge console.log hinzu
-        const openModal = (vehicleId, event) => {
-          console.log("Öffne Modal für Fahrzeug:", vehicleId);
+        // Notiz ändern
+        const handleNoteChange = (e, vehicleId) => {
+          const newNote = e.target.value;
+          setVehiclesData(vehiclesData.map(vehicle =>
+            vehicle.id === vehicleId ? { ...vehicle, note: newNote } : vehicle
+          ));
+        };
+
+        // Fahrzeugdetails öffnen
+        const openVehicleDetails = (vehicleId) => {
           setSelectedVehicleId(vehicleId);
+        };
+
+        // Wartungsfenster öffnen
+        const openMaintenanceModal = (vehicleId, e) => {
+          e.stopPropagation(); // Verhindere Bubbling zum übergeordneten Click-Handler
+          setShowMaintenanceModalId(vehicleId);
+        };
+
+        // Gesamtwartungshistorie öffnen
+        const openAllMaintenanceHistory = () => {
+          setShowAllMaintenanceHistory(true);
         };
 
         // Jahre von 2025 bis 2050
@@ -319,226 +369,454 @@
           filterType === "Alle" ? true : vehicle.type === filterType
         );
 
-        // Finde das aktuell ausgewählte Fahrzeug (für das Modal)
-        const modalVehicle = vehiclesData.find(v => v.id === selectedVehicleId) || vehiclesData[0];
+        // Finde das aktuell ausgewählte Fahrzeug
+        const selectedVehicle = vehiclesData.find(v => v.id === selectedVehicleId);
+        const maintenanceModalVehicle = vehiclesData.find(v => v.id === showMaintenanceModalId);
+
+        // Alle Wartungseinträge für die Gesamthistorie sammeln
+        const allMaintenanceEntries = [];
+        
+        // Sammle Checkbox-basierte Wartungen
+        Object.entries(maintenanceData).forEach(([vehicleId, yearData]) => {
+          const vehicle = vehiclesData.find(v => v.id === vehicleId);
+          if (!vehicle) return;
+          
+          Object.entries(yearData).forEach(([year, tasks]) => {
+            Object.entries(tasks).forEach(([taskName, completedDate]) => {
+              if (completedDate) {
+                allMaintenanceEntries.push({
+                  vehicleId,
+                  vehicleName: vehicle.name,
+                  year,
+                  task: taskName,
+                  date: new Date(completedDate),
+                  type: 'checkbox'
+                });
+              }
+            });
+          });
+        });
+        
+        // Sammle manuelle Wartungseinträge
+        Object.entries(maintenanceRecords).forEach(([vehicleId, records]) => {
+          const vehicle = vehiclesData.find(v => v.id === vehicleId);
+          if (!vehicle) return;
+          
+          records.forEach(record => {
+            allMaintenanceEntries.push({
+              vehicleId,
+              vehicleName: vehicle.name,
+              task: record.task,
+              date: new Date(record.date),
+              type: 'manual'
+            });
+          });
+        });
+        
+        // Sortiere alle Einträge nach Datum (neueste zuerst)
+        allMaintenanceEntries.sort((a, b) => b.date - a.date);
 
         /* --------------------------
-           3) Präsentations-Komponenten
+           3) Komponenten für Fahrzeugkarten und Wartungsdaten
         --------------------------- */
-        function VehicleCard({ vehicle, isActive, onClick }) {
+        function VehicleCard({ vehicle, onClick, onMaintenanceClick }) {
           return (
-            <div 
-              className={`border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 cursor-pointer transform hover:scale-105 transition-transform ${isActive ? 'border-green-600' : 'border-gray-300'}`}
-              onClick={onClick}
-            >
-              <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
-              <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
-              <p className="text-sm text-gray-700">{vehicle.technical}</p>
-              <div className="mt-2 text-sm text-gray-800">
-                <p><strong>Motor:</strong> {vehicle.specs.Motor}</p>
-                <p><strong>Leistung:</strong> {vehicle.specs.Leistung}</p>
-                <p><strong>Baujahr:</strong> {vehicle.specs.Baujahr}</p>
-                <p><strong>Besonderheiten:</strong> {vehicle.specs.Besonderheiten}</p>
+            <div className="border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 relative">
+              <div className="cursor-pointer" onClick={onClick}>
+                <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
+                <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
+                <p className="text-sm text-gray-700">{vehicle.technical}</p>
+                <div className="mt-2 text-sm text-gray-800">
+                  <p><strong>Motor:</strong> {vehicle.specs.Motor}</p>
+                  <p><strong>Leistung:</strong> {vehicle.specs.Leistung}</p>
+                  <p><strong>Baujahr:</strong> {vehicle.specs.Baujahr}</p>
+                  <p><strong>Besonderheiten:</strong> {vehicle.specs.Besonderheiten}</p>
+                </div>
+                <div className="mt-2 text-sm">
+                  <p><strong>Marktpreis:</strong> {vehicle.marketPrice}</p>
+                  <p><strong>Garage:</strong> {vehicle.garage.replace(/_/g, " ")}</p>
+                </div>
               </div>
-              <div className="mt-2 text-sm">
-                <p><strong>Marktpreis:</strong> {vehicle.marketPrice}</p>
-                <p><strong>Garage:</strong> {vehicle.garage.replace(/_/g, " ")}</p>
-              </div>
+              
+              {/* Wartungsbutton */}
+              <button 
+                onClick={onMaintenanceClick}
+                className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full shadow-md hover:bg-green-600"
+              >
+                Wartung
+              </button>
             </div>
           );
         }
 
-        /* --------------------------
-           4) Render-Funktion
-        --------------------------- */
-        return (
-          <div className="p-4 flex flex-col items-center">
-            <h1 className="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded w-full max-w-4xl">
-              Fahrzeugpark Andy
-            </h1>
-            
-            {/* Filter */}
-            <div className="mb-4 flex items-center justify-center space-x-4 w-full max-w-4xl">
-              <label className="font-semibold text-lg">Fahrzeugtyp:</label>
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="border rounded px-2 py-1"
-              >
-                <option value="Alle">Alle</option>
-                <option value="Auto">Auto</option>
-                <option value="Motorrad">Motorrad</option>
-                <option value="Roller">Roller</option>
-                <option value="Landmaschine">Landmaschine</option>
-              </select>
-            </div>
-
-            {/* Grid der Fahrzeugkarten */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8 w-full max-w-4xl">
-              {filteredVehicles.map(vehicle => (
-                <div key={vehicle.id} onClick={(e) => openModal(vehicle.id, e)}>
-                  <VehicleCard 
-                    vehicle={vehicle} 
-                    isActive={vehicle.id === selectedVehicleId} 
-                  />
+        function MaintenanceModal({ vehicle, year, tasks, maintenanceData, onToggleTask, onClose }) {
+          return (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
+              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg shadow-2xl">
+                <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
+                <h2 className="text-2xl font-bold mb-4 text-blue-800">Wartung: {vehicle.name}</h2>
+                
+                {/* Jahrauswahl */}
+                <div className="mb-4">
+                  <label className="mr-2 font-semibold">Jahr:</label>
+                  <select
+                    value={year}
+                    onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    className="border rounded px-2 py-1"
+                  >
+                    {years.map(y => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
                 </div>
-              ))}
-            </div>
-
-            {/* Wartungskalender (Checkboxen) */}
-            <div className="mb-6 w-full max-w-4xl">
-              <label className="mr-2 font-semibold">Wartungskalender Jahr:</label>
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="border rounded px-2 py-1"
-              >
-                {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-6 bg-white p-4 rounded shadow w-full max-w-4xl">
-              <h3 className="text-lg font-bold mb-2">Wartungsaufgaben (Checkboxen) für {selectedYear}</h3>
-              <ul>
-                {maintenanceTasks.map(task => {
-                  const completedDate = maintenanceData[selectedVehicleId] &&
-                    maintenanceData[selectedVehicleId][selectedYear] &&
-                    maintenanceData[selectedVehicleId][selectedYear][task];
-                  return (
-                    <li key={task} className="mb-2">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={!!completedDate}
-                          onChange={() => handleTaskToggle(selectedVehicleId, selectedYear, task)}
-                          className="mr-2"
-                        />
-                        {task}{" "}
-                        {completedDate && (
-                          <span className="text-green-600">
-                            (Erledigt am {new Date(completedDate).toLocaleDateString()})
+                
+                {/* Wartungsliste */}
+                <div className="mb-6 bg-gray-50 p-4 rounded shadow">
+                  <h3 className="text-lg font-bold mb-3">Wartungstasks {year}</h3>
+                  <ul className="space-y-2">
+                    {tasks.map(task => {
+                      const vehicleMaintenanceData = maintenanceData[vehicle.id] || {};
+                      const yearData = vehicleMaintenanceData[year] || {};
+                      const completedDate = yearData[task];
+                      
+                      return (
+                        <li key={task} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={!!completedDate}
+                            onChange={() => onToggleTask(vehicle.id, year, task)}
+                            className="mr-3 h-5 w-5"
+                          />
+                          <span className={completedDate ? "line-through text-green-600" : ""}>
+                            {task}
                           </span>
-                        )}
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-              <button
-                onClick={handleAddMaintenanceTask}
-                className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
-              >
-                Neuen Wartungsdienst hinzufügen
-              </button>
-            </div>
-
-            {/* Modal für Fahrzeugdetails und Wartungsdatensätze */}
-            {selectedVehicleId && (
-              <div className="fixed inset-0 flex items-center justify-center z-50">
-                <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
-                <div className="relative bg-white rounded p-6 w-11/12 max-w-lg shadow-xl overflow-y-auto max-h-full">
-                  <button onClick={closeModal} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
-                  <h2 className="text-2xl font-bold mb-4">Detailansicht: {modalVehicle.name}</h2>
-                  <img
-                    src={modalVehicle.imageUrl}
-                    alt={modalVehicle.name}
-                    className="w-full h-64 mb-4 object-contain border"
-                  />
-                  <div className="mb-4">
-                    <label className="mr-2 font-semibold">Marktpreis:</label>
+                          {completedDate && (
+                            <span className="ml-2 text-sm text-green-600">
+                              (am {new Date(completedDate).toLocaleDateString()})
+                            </span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                
+                {/* Neue Wartung hinzufügen */}
+                <div className="mb-4 border-t pt-4">
+                  <h3 className="text-lg font-bold mb-2">Neue Wartung eintragen</h3>
+                  <div className="flex flex-col space-y-2">
                     <input
                       type="text"
-                      value={modalVehicle.marketPrice}
+                      placeholder="Wartungsdienst beschreiben..."
+                      value={newMaintenanceTask}
+                      onChange={(e) => setNewMaintenanceTask(e.target.value)}
+                      className="border rounded px-3 py-2"
+                    />
+                    <input
+                      type="date"
+                      value={newMaintenanceDate}
+                      onChange={(e) => setNewMaintenanceDate(e.target.value)}
+                      className="border rounded px-3 py-2"
+                    />
+                    <button
+                      onClick={() => handleAddMaintenanceRecord(vehicle.id)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                      Wartung hinzufügen
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Wartungshistorie für dieses Fahrzeug */}
+                {maintenanceRecords[vehicle.id] && maintenanceRecords[vehicle.id].length > 0 && (
+                  <div className="mt-4 border-t pt-4">
+                    <h3 className="text-lg font-bold mb-2">Wartungshistorie:</h3>
+                    <ul className="list-disc pl-5 max-h-40 overflow-y-auto">
+                      {maintenanceRecords[vehicle.id].map((record, index) => (
+                        <li key={index} className="text-sm mb-1">
+                          {record.task} am {new Date(record.date).toLocaleDateString()}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        }
+        
+        function AllMaintenanceHistoryModal({ entries, onClose }) {
+          return (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
+              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+                <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
+                <h2 className="text-2xl font-bold mb-4 text-blue-800">Gesamte Wartungshistorie</h2>
+                
+                {/* Filtermöglichkeiten könnten hier hinzugefügt werden */}
+                
+                <div className="border rounded shadow">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="p-2 text-left">Datum</th>
+                        <th className="p-2 text-left">Fahrzeug</th>
+                        <th className="p-2 text-left">Wartungsdienst</th>
+                        <th className="p-2 text-left">Art</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {entries.map((entry, index) => (
+                        <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : ""}>
+                          <td className="p-2 border-t">{entry.date.toLocaleDateString()}</td>
+                          <td className="p-2 border-t">{entry.vehicleName}</td>
+                          <td className="p-2 border-t">{entry.task}</td>
+                          <td className="p-2 border-t">
+                            {entry.type === 'checkbox' ? 'Standard' : 'Manuell'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                
+                {entries.length === 0 && (
+                  <p className="text-center p-4 text-gray-500">Keine Wartungsdaten vorhanden</p>
+                )}
+              </div>
+            </div>
+          );
+        }
+        
+        function VehicleDetailsModal({ vehicle, onClose, onImageUpload, onNoteChange }) {
+          if (!vehicle) return null;
+          
+          return (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
+              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+                <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
+                <h2 className="text-2xl font-bold mb-4">{vehicle.name}</h2>
+                
+                <img 
+                  src={vehicle.imageUrl} 
+                  alt={vehicle.name}
+                  className="w-full h-64 object-contain mb-4 border rounded"
+                />
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-semibold mb-1">Marktpreis:</label>
+                    <input
+                      type="text"
+                      value={vehicle.marketPrice}
                       onChange={(e) => {
                         const newPrice = e.target.value;
-                        setVehiclesData(vehiclesData.map(vehicle =>
-                          vehicle.id === modalVehicle.id ? { ...vehicle, marketPrice: newPrice } : vehicle
+                        setVehiclesData(vehiclesData.map(v =>
+                          v.id === vehicle.id ? { ...v, marketPrice: newPrice } : v
                         ));
                       }}
-                      className="border rounded px-2 py-1"
+                      className="border rounded px-3 py-2 w-full"
                     />
                   </div>
-                  <div className="mb-4">
-                    <label className="mr-2 font-semibold">Garage:</label>
+                  
+                  <div>
+                    <label className="block font-semibold mb-1">Garage:</label>
                     <select
-                      value={modalVehicle.garage}
+                      value={vehicle.garage}
                       onChange={(e) => {
                         const newGarage = e.target.value;
-                        setVehiclesData(vehiclesData.map(vehicle =>
-                          vehicle.id === modalVehicle.id ? { ...vehicle, garage: newGarage } : vehicle
+                        setVehiclesData(vehiclesData.map(v =>
+                          v.id === vehicle.id ? { ...v, garage: newGarage } : v
                         ));
                       }}
-                      className="border rounded px-2 py-1"
+                      className="border rounded px-3 py-2 w-full"
                     >
                       {garages.map((g, idx) => (
                         <option key={idx} value={g}>{g.replace(/_/g, " ")}</option>
                       ))}
                     </select>
                   </div>
-                  <div className="mb-4">
+                  
+                  <div>
                     <label className="block font-semibold mb-1">Notizen:</label>
                     <textarea
-                      value={modalVehicle.note}
-                      onChange={(e) => handleNoteChange(e, modalVehicle.id)}
-                      className="w-full border rounded p-2"
-                      placeholder="Hier Notizen zum Fahrzeug eingeben..."
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="mr-2 font-semibold">Foto ändern:</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageUpload(e, modalVehicle.id)}
-                      className="border rounded px-2 py-1"
+                      value={vehicle.note}
+                      onChange={(e) => onNoteChange(e, vehicle.id)}
+                      className="w-full border rounded p-2 h-24"
+                      placeholder="Notizen zum Fahrzeug..."
                     />
                   </div>
                   
-                  {/* Neuer Abschnitt für freie Wartungsdatensätze */}
-                  <div className="mb-4 border-t pt-4">
-                    <h3 className="text-xl font-bold mb-2">Wartungsdaten hinzufügen</h3>
-                    <div className="flex flex-col space-y-2">
-                      <input
-                        type="text"
-                        placeholder="Wartungsdienst (z. B. Ölwechsel)"
-                        value={newMaintenanceTask}
-                        onChange={(e) => setNewMaintenanceTask(e.target.value)}
-                        className="border rounded px-2 py-1"
-                      />
-                      <input
-                        type="date"
-                        value={newMaintenanceDate}
-                        onChange={(e) => setNewMaintenanceDate(e.target.value)}
-                        className="border rounded px-2 py-1"
-                      />
-                      <button
-                        onClick={handleAddMaintenanceRecord}
-                        className="bg-blue-600 text-white px-4 py-2 rounded"
-                      >
-                        Eintrag hinzufügen
-                      </button>
-                    </div>
-                    {maintenanceRecords[modalVehicle.id] && maintenanceRecords[modalVehicle.id].length > 0 && (
-                      <div className="mt-4">
-                        <h3 className="text-xl font-bold">Bisherige Wartungsdaten:</h3>
-                        <ul className="list-disc pl-5">
-                          {maintenanceRecords[modalVehicle.id].map((record, index) => (
-                            <li key={index} className="text-sm">
-                              {record.task} am {new Date(record.date).toLocaleDateString()}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                  <div>
+                    <label className="block font-semibold mb-1">Foto ändern:</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => onImageUpload(e, vehicle.id)}
+                      className="w-full"
+                    />
                   </div>
-
-                  <button onClick={closeModal} className="bg-green-600 text-white px-4 py-2 rounded w-full">
-                    Änderungen speichern und schließen
+                  
+                  <button 
+                    onClick={onClose}
+                    className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+                  >
+                    Speichern und schließen
                   </button>
                 </div>
               </div>
+            </div>
+          );
+        }
+
+        /* --------------------------
+           4) Haupt-Render-Funktion
+        --------------------------- */
+       
+
+<header className="w-full max-w-4xl py-4">
+              <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded">
+                Fahrzeugpark Andy
+              </h1>
+              
+              {/* Globale Aktionen */}
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex items-center space-x-3">
+                  <label className="font-semibold">Fahrzeugtyp:</label>
+                  <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    className="border rounded px-2 py-1"
+                  >
+                    <option value="Alle">Alle</option>
+                    <option value="Auto">Auto</option>
+                    <option value="Motorrad">Motorrad</option>
+                    <option value="Roller">Roller</option>
+                    <option value="Landmaschine">Landmaschine</option>
+                  </select>
+                </div>
+                
+                <button 
+                  onClick={openAllMaintenanceHistory}
+                  className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                >
+                  Gesamte Wartungshistorie
+                </button>
+              </div>
+            </header>
+            
+            {/* Fahrzeug-Grid */}
+            <main className="w-full max-w-4xl">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                {filteredVehicles.map(vehicle => (
+                  <VehicleCard
+                    key={vehicle.id}
+                    vehicle={vehicle}
+                    onClick={() => openVehicleDetails(vehicle.id)}
+                    onMaintenanceClick={(e) => openMaintenanceModal(vehicle.id, e)}
+                  />
+                ))}
+              </div>
+              
+              {/* Wartungskalender-Kurzübersicht */}
+              <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-xl font-bold text-blue-800">Übersicht: Anstehende Wartungen</h2>
+                  <div className="flex items-center">
+                    <label className="mr-2">Jahr:</label>
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      {years.map(y => (
+                        <option key={y} value={y}>{y}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="p-2 text-left border">Fahrzeug</th>
+                        {maintenanceTasks.map(task => (
+                          <th key={task} className="p-2 text-left border">
+                            {task}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredVehicles.map(vehicle => (
+                        <tr key={vehicle.id} className="hover:bg-gray-50">
+                          <td className="p-2 border font-medium">{vehicle.name}</td>
+                          {maintenanceTasks.map(task => {
+                            const vehicleData = maintenanceData[vehicle.id] || {};
+                            const yearData = vehicleData[selectedYear] || {};
+                            const isComplete = !!yearData[task];
+                            
+                            return (
+                              <td key={task} className="p-2 border text-center">
+                                <span className={isComplete ? "text-green-600" : "text-red-600"}>
+                                  {isComplete ? "✓" : "✗"}
+                                </span>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div className="mt-3 text-right">
+                  <button
+                    onClick={handleAddMaintenanceTask}
+                    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
+                  >
+                    Wartungsdienst hinzufügen
+                  </button>
+                </div>
+              </div>
+            </main>
+            
+            {/* Modals */}
+            {selectedVehicle && (
+              <VehicleDetailsModal
+                vehicle={selectedVehicle}
+                onClose={closeModal}
+                onImageUpload={handleImageUpload}
+                onNoteChange={handleNoteChange}
+              />
             )}
+            
+            {maintenanceModalVehicle && (
+              <MaintenanceModal
+                vehicle={maintenanceModalVehicle}
+                year={selectedYear}
+                tasks={maintenanceTasks}
+                maintenanceData={maintenanceData}
+                onToggleTask={handleTaskToggle}
+                onClose={closeModal}
+              />
+            )}
+            
+            {showAllMaintenanceHistory && (
+              <AllMaintenanceHistoryModal
+                entries={allMaintenanceEntries}
+                onClose={closeModal}
+              />
+            )}
+            
+            {/* Footer mit Copyright-Info */}
+            <footer className="w-full max-w-4xl mt-8 py-4 text-center text-gray-500 text-sm">
+              <p>© {new Date().getFullYear()} Andys Fuhrpark - Alle Rechte vorbehalten</p>
+              <p>Version 1.0.0</p>
+            </footer>
           </div>
         );
       }
