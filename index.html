@@ -33,7 +33,7 @@
           type: "Auto",
           technical: "Klassischer 230 SL mit 2,3-Liter Reihen-Sechszylinder und ca. 150 PS.",
           imageUrl: "./Mercedes w113.jpeg",
-          marketPrice: "120.000€",
+          marketPrice: "80.000€",
           garage: "Spexarder_Strasse",
           note: "",
           specs: {
@@ -49,7 +49,7 @@
           type: "Auto",
           technical: "Luxuriöses Cabriolet mit 5,6-Liter V8 und ca. 230 PS.",
           imageUrl: "./Mercedes R107.jpeg",
-          marketPrice: "150.000€",
+          marketPrice: "30.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
           specs: {
@@ -97,7 +97,7 @@
           type: "Auto",
           technical: "Robuster VW Bus (2,0-Liter Diesel, ca. 150 PS) – ideal für Reisen.",
           imageUrl: "./VW T6.jpeg",
-          marketPrice: "80.000€",
+          marketPrice: "17.000€",
           garage: "Mumprow",
           note: "",
           specs: {
@@ -271,29 +271,28 @@
           });
         };
 
+        // Wartungsdatensatz hinzufügen – wenn Felder leer sind, wird das Modal trotzdem geschlossen.
         const handleAddMaintenanceRecord = (vehicleId) => {
-          if (!newMaintenanceTask || !newMaintenanceDate) {
-            alert("Bitte Wartungsdienst und Datum angeben.");
-            return;
+          if (newMaintenanceTask && newMaintenanceDate) {
+            const record = { 
+              task: newMaintenanceTask, 
+              date: newMaintenanceDate,
+              vehicleId: vehicleId,
+              timestamp: new Date().toISOString() 
+            };
+            
+            const currentRecords = maintenanceRecords[vehicleId] || [];
+            const updatedRecords = [...currentRecords, record];
+            
+            setMaintenanceRecords({
+              ...maintenanceRecords,
+              [vehicleId]: updatedRecords
+            });
           }
-          
-          const record = { 
-            task: newMaintenanceTask, 
-            date: newMaintenanceDate,
-            vehicleId: vehicleId,
-            timestamp: new Date().toISOString() 
-          };
-          
-          const currentRecords = maintenanceRecords[vehicleId] || [];
-          const updatedRecords = [...currentRecords, record];
-          
-          setMaintenanceRecords({
-            ...maintenanceRecords,
-            [vehicleId]: updatedRecords
-          });
-          
+          // Schließe das Modal unabhängig von der Eingabe
           setNewMaintenanceTask("");
           setNewMaintenanceDate("");
+          closeModal();
         };
 
         const handleImageUpload = (e, vehicleId) => {
@@ -410,9 +409,9 @@
 
         function MaintenanceModal({ vehicle, year, tasks, maintenanceData, onToggleTask, onClose }) {
           return (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg shadow-2xl">
+            <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
+              <div className="absolute inset-0 bg-black opacity-50"></div>
+              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg shadow-2xl" onClick={(e)=>e.stopPropagation()}>
                 <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
                 <h2 className="text-2xl font-bold mb-4 text-blue-800">Wartung: {vehicle.name}</h2>
                 <div className="mb-4">
@@ -456,7 +455,7 @@
                   </ul>
                 </div>
                 <div className="mb-4 border-t pt-4">
-                  <h3 className="text-lg font-bold mb-2">Neue Wartung eintragen</h3>
+                  <h3 className="text-lg font-bold mb-2">Neue Wartung eintragen (optional)</h3>
                   <div className="flex flex-col space-y-2">
                     <input
                       type="text"
@@ -475,7 +474,7 @@
                       onClick={() => handleAddMaintenanceRecord(vehicle.id)}
                       className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                     >
-                      Wartung hinzufügen
+                      Wartung hinzufügen &amp; schließen
                     </button>
                   </div>
                 </div>
@@ -498,9 +497,9 @@
 
         function AllMaintenanceHistoryModal({ entries, onClose }) {
           return (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
+              <div className="absolute inset-0 bg-black opacity-50"></div>
+              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e)=>e.stopPropagation()}>
                 <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
                 <h2 className="text-2xl font-bold mb-4 text-blue-800">Gesamte Wartungshistorie</h2>
                 <div className="border rounded shadow">
@@ -538,9 +537,9 @@
         function VehicleDetailsModal({ vehicle, onClose, onImageUpload, onNoteChange }) {
           if (!vehicle) return null;
           return (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="fixed inset-0 flex items-center justify-center z-50" onClick={onClose}>
+              <div className="absolute inset-0 bg-black opacity-50"></div>
+              <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e)=>e.stopPropagation()}>
                 <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">&times;</button>
                 <h2 className="text-2xl font-bold mb-4">{vehicle.name}</h2>
                 <img 
