@@ -32,9 +32,10 @@
           type: "Auto",
           technical: "Klassischer 230 SL mit 2,3-Liter Reihen-Sechszylinder und ca. 150 PS.",
           imageUrl: "./Mercedes w113.jpeg",
-          marketPrice: "120.000€",
+          marketPrice: "80.000€",
           garage: "Spexarder_Strasse",
           note: "",
+          tuevDate: "", // Neues Feld für TÜV-Termin
           specs: {
             Motor: "2,3L Reihen-Sechszylinder",
             Leistung: "150 PS",
@@ -48,14 +49,32 @@
           type: "Auto",
           technical: "Luxuriöses Cabriolet mit 5,6-Liter V8 und ca. 230 PS.",
           imageUrl: "./Mercedes R107.jpeg",
-          marketPrice: "150.000€",
+          marketPrice: "30.000€",
           garage: "Sparkasse_Avenwedde",
           note: "",
+          tuevDate: "", // Neues Feld für TÜV-Termin
           specs: {
             Motor: "5,6L V8",
             Leistung: "230 PS",
             Baujahr: "1986",
             Besonderheiten: "Hochkomfort, klassisches Design, luxuriöse Ausstattung"
+          }
+        },
+        {
+          id: "anhaenger-2004",
+          name: "Anhänger (2004)",
+          type: "Anhänger",
+          technical: "Nutzlastanhänger Baujahr 2004",
+          imageUrl: "./anhaenger.jpg",
+          marketPrice: "1.200€",
+          garage: "Mumprow",
+          note: "",
+          tuevDate: "",
+          specs: {
+            Motor: "Ohne",
+            Leistung: "-",
+            Baujahr: "2004",
+            Besonderheiten: "Nutzlast bis 750kg"
           }
         },
         // ... weitere Fahrzeuge ...
@@ -67,6 +86,54 @@
         "Bremsen kontrollieren", 
         "Reifendruck prüfen"
       ];
+
+      /* ----------------------------------------------------
+         1.1) Hilfsfunktionen für TÜV-Erinnerungen und Benachrichtigungen
+      ----------------------------------------------------- */
+
+      // Prüft, ob der TÜV innerhalb des nächsten Monats fällig ist
+      const isTuevDueSoon = (tuevDate) => {
+        if (!tuevDate) return false;
+        
+        const today = new Date();
+        const tuev = new Date(tuevDate);
+        
+        // Setze Vergleichsdatum auf 1 Monat in der Zukunft
+        const oneMonthLater = new Date();
+        oneMonthLater.setMonth(today.getMonth() + 1);
+        
+        // TÜV ist fällig, wenn das Datum zwischen heute und in einem Monat liegt
+        return tuev >= today && tuev <= oneMonthLater;
+      };
+
+      // Prüft, ob wir Browser-Benachrichtigungen senden können
+      const canSendNotifications = () => {
+        return "Notification" in window;
+      };
+
+      // Fordert Benachrichtigungsberechtigungen an
+      const requestNotificationPermission = async () => {
+        if (!canSendNotifications()) return false;
+        
+        const permission = await Notification.requestPermission();
+        return permission === "granted";
+      };
+
+      // Sendet eine Browser-Benachrichtigung
+      const sendNotification = (title, options) => {
+        if (Notification.permission === "granted") {
+          new Notification(title, options);
+          return true;
+        }
+        return false;
+      };
+
+      // Erstellt einen E-Mail-Link mit vorbefülltem Inhalt
+      const createTuevEmailLink = (vehicle) => {
+        const subject = `TÜV-Erinnerung: ${vehicle.name}`;
+        const body = `Der TÜV für Ihr Fahrzeug ${vehicle.name} ist am ${new Date(vehicle.tuevDate).toLocaleDateString()} fällig.`;
+        return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      };
 
       /* ----------------------------------------------------
          2) Haupt-App-Komponente
@@ -99,6 +166,10 @@
         const [selectedVehicleId, setSelectedVehicleId] = React.useState(null);
         const [showMaintenanceModalId, setShowMaintenanceModalId] = React.useState(null);
         const [showAllMaintenanceHistory, setShowAllMaintenanceHistory] = React.useState(false);
+        const [showTuevReminders, setShowTuevReminders] = React.useState(false);
+        const [notificationsPermission, setNotificationsPermission] = React.useState(
+          Notification.permission === "granted"
+        );
 
         // -- Effekte: lokale Speicherung + (optionales) Server-Log --
         React.useEffect(() => {
@@ -119,6 +190,52 @@
           saveToServer("maintenanceRecords", maintenanceRecords);
         }, [maintenanceRecords]);
 
+        // -- Überprüfung auf fällige TÜV-Termine bei Laden und in Intervallen --
+        React.useEffect(() => {
+          // Prüfe fällige TÜV-Termine, wenn die App geladen wird
+          checkTuevDates();
+
+          // Prüfe täglich auf fällige TÜV-Termine
+          const interval = setInterval(checkTuevDates, 24 * 60 * 60 * 1000);
+
+          return () => clearInterval(interval);
+        }, [vehiclesData]);
+
+        // -- Effekt: Frage nach Benachrichtigungsberechtigung --
+        React.useEffect(() => {
+          const askForNotificationPermission = async () => {
+            if (canSendNotifications() && Notification.permission === "default") {
+              const granted = await requestNotificationPermission();
+              setNotificationsPermission(granted);
+            }
+          };
+          
+          askForNotificationPermission();
+        }, []);
+
+        // -- Prüfe TÜV-Termine und zeige Benachrichtigungen --
+        const checkTuevDates = () => {
+          const dueSoonVehicles = vehiclesData.filter(
+            vehicle => vehicle.tuevDate && isTuevDueSoon(vehicle.tuevDate)
+          );
+
+          if (dueSoonVehicles.length > 0) {
+            // Zeige Banner in der App
+            setShowTuevReminders(true);
+
+            // Sende Browser-Benachrichtigungen, wenn erlaubt
+            if (notificationsPermission) {
+              dueSoonVehicles.forEach(vehicle => {
+                const tuevDate = new Date(vehicle.tuevDate).toLocaleDateString();
+                sendNotification(`TÜV fällig: ${vehicle.name}`, {
+                  body: `Der TÜV für ${vehicle.name} ist am ${tuevDate} fällig.`,
+                  icon: vehicle.imageUrl
+                });
+              });
+            }
+          }
+        };
+
         // -- Mock: "Speichern auf dem Server" --
         const saveToServer = (dataType, data) => {
           console.log(`Speichere ${dataType} auf dem Server:`, data);
@@ -136,6 +253,11 @@
           setSelectedVehicleId(null);
           setShowMaintenanceModalId(null);
           setShowAllMaintenanceHistory(false);
+        };
+
+        // -- TÜV-Erinnerungsbanner schließen --
+        const closeTuevReminders = () => {
+          setShowTuevReminders(false);
         };
 
         // -- MaintenanceTask hinzufügen (global) --
@@ -203,6 +325,15 @@
           );
         };
 
+        // -- TÜV-Datum ändern (global) --
+        const handleTuevDateChange = (vehicleId, newTuevDate) => {
+          setVehiclesData((prev) =>
+            prev.map((vehicle) =>
+              vehicle.id === vehicleId ? { ...vehicle, tuevDate: newTuevDate } : vehicle
+            )
+          );
+        };
+
         // -- Marktpreis oder Garage ändern (global) --
         const handleVehicleUpdate = (vehicleId, updates) => {
           setVehiclesData((prev) =>
@@ -240,6 +371,11 @@
         // -- Selektion --
         const selectedVehicle = vehiclesData.find((v) => v.id === selectedVehicleId);
         const maintenanceModalVehicle = vehiclesData.find((v) => v.id === showMaintenanceModalId);
+
+        // -- TÜV-relevante Daten --
+        const vehiclesWithUpcomingTuev = vehiclesData.filter(
+          vehicle => vehicle.tuevDate && isTuevDueSoon(vehicle.tuevDate)
+        );
 
         // -- Gesamte Wartungshistorie (Tabelle) --
         const allMaintenanceEntries = [];
@@ -303,16 +439,74 @@
                     <option value="Motorrad">Motorrad</option>
                     <option value="Roller">Roller</option>
                     <option value="Landmaschine">Landmaschine</option>
+                    <option value="Anhänger">Anhänger</option>
                   </select>
                 </div>
-                <button
-                  onClick={openAllMaintenanceHistory}
-                  className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-                >
-                  Gesamte Wartungshistorie
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={openAllMaintenanceHistory}
+                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                  >
+                    Gesamte Wartungshistorie
+                  </button>
+                  <button
+                    onClick={() => requestNotificationPermission().then(setNotificationsPermission)}
+                    className={`py-2 px-4 rounded ${
+                      notificationsPermission 
+                        ? "bg-green-600 hover:bg-green-700" 
+                        : "bg-yellow-500 hover:bg-yellow-600"
+                    } text-white`}
+                    title={
+                      notificationsPermission
+                        ? "Benachrichtigungen sind aktiviert"
+                        : "Benachrichtigungen aktivieren"
+                    }
+                  >
+                    {notificationsPermission ? "Benachrichtigungen ✓" : "Benachrichtigungen aktivieren"}
+                  </button>
+                </div>
               </div>
             </header>
+
+            {/* TÜV-ERINNERUNGEN BANNER */}
+            {showTuevReminders && vehiclesWithUpcomingTuev.length > 0 && (
+              <div className="w-full max-w-4xl mx-auto mb-6">
+                <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded shadow-md relative">
+                  <button
+                    onClick={closeTuevReminders}
+                    className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                  >
+                    &times;
+                  </button>
+                  <h3 className="text-xl font-bold text-yellow-800 mb-2">
+                    TÜV-Erinnerung
+                  </h3>
+                  <p className="mb-3">Die folgenden Fahrzeuge haben bald TÜV-Termine:</p>
+                  <ul className="space-y-2">
+                    {vehiclesWithUpcomingTuev.map((vehicle) => (
+                      <li key={vehicle.id} className="flex justify-between items-center">
+                        <div>
+                          <span className="font-semibold">{vehicle.name}:</span>{" "}
+                          <span className="text-yellow-700">
+                            {new Date(vehicle.tuevDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div>
+                          <a
+                            href={createTuevEmailLink(vehicle)}
+                            className="text-blue-600 hover:text-blue-800 underline text-sm ml-4"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            E-Mail-Erinnerung senden
+                          </a>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
 
             {/* FAHRZEUG-ÜBERSICHT */}
             <main className="w-full max-w-4xl mx-auto">
@@ -323,6 +517,7 @@
                     vehicle={vehicle}
                     onClick={() => openVehicleDetails(vehicle.id)}
                     onMaintenanceClick={(e) => openMaintenanceModal(vehicle.id, e)}
+                    isTuevDueSoon={vehicle.tuevDate && isTuevDueSoon(vehicle.tuevDate)}
                   />
                 ))}
               </div>
@@ -357,6 +552,7 @@
                             {task}
                           </th>
                         ))}
+                        <th className="p-2 text-left border">TÜV</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -376,6 +572,15 @@
                                 </td>
                               );
                             })}
+                            <td className="p-2 border text-center">
+                              {vehicle.tuevDate ? (
+                                <span className={isTuevDueSoon(vehicle.tuevDate) ? "text-yellow-600 font-bold" : ""}>
+                                  {new Date(vehicle.tuevDate).toLocaleDateString()}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">Nicht eingetragen</span>
+                              )}
+                            </td>
                           </tr>
                         );
                       })}
@@ -403,6 +608,7 @@
                 onImageUpload={handleImageUpload}
                 onUpdateVehicle={handleVehicleUpdate}
                 onNoteChange={handleNoteChange}
+                onTuevDateChange={handleTuevDateChange}
               />
             )}
 
@@ -429,7 +635,7 @@
             {/* FOOTER */}
             <footer className="w-full max-w-4xl mx-auto mt-8 py-4 text-center text-gray-500 text-sm">
               <p>© {new Date().getFullYear()} Andys Fuhrpark - Alle Rechte vorbehalten</p>
-              <p>Version 1.0.0</p>
+              <p>Version 1.1.0</p>
             </footer>
           </div>
         );
@@ -440,7 +646,7 @@
       ----------------------------------------------------- */
 
       // -- Fahrzeug-Karte --
-      function VehicleCard({ vehicle, onClick, onMaintenanceClick }) {
+      function VehicleCard({ vehicle, onClick, onMaintenanceClick, isTuevDueSoon }) {
         return (
           <div
             className="border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 relative cursor-pointer"
@@ -470,6 +676,12 @@
               <p>
                 <strong>Garage:</strong> {vehicle.garage?.replace(/_/g, " ")}
               </p>
+              {vehicle.tuevDate && (
+                <p className={isTuevDueSoon ? "font-bold text-yellow-700" : ""}>
+                  <strong>TÜV:</strong> {new Date(vehicle.tuevDate).toLocaleDateString()}
+                  {isTuevDueSoon && " (bald fällig!)"}
+                </p>
+              )}
             </div>
             <button
               onClick={onMaintenanceClick}
@@ -477,31 +689,46 @@
             >
               Wartung
             </button>
+            {isTuevDueSoon && (
+              <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full shadow-md">
+                TÜV!
+              </div>
+            )}
           </div>
         );
       }
 
-      // -- Modal: Fahrzeugdetails (Preis, Garage, Notizen, Bild) --
+      // -- Modal: Fahrzeugdetails (Preis, Garage, Notizen, Bild und neu: TÜV-Termin) --
       function VehicleDetailsModal({
         vehicle,
         onClose,
         garages,
         onImageUpload,
         onUpdateVehicle,
-        onNoteChange
+        onNoteChange,
+        onTuevDateChange
       }) {
         // Lokale States für Eingabefelder
         const [localPrice, setLocalPrice] = React.useState(vehicle.marketPrice || "");
         const [localGarage, setLocalGarage] = React.useState(vehicle.garage || "");
         const [localNote, setLocalNote] = React.useState(vehicle.note || "");
+        const [localTuevDate, setLocalTuevDate] = React.useState(vehicle.tuevDate || "");
 
-        // Wird aufgerufen, wenn Nutzer „Speichern & Schließen“ klickt
+        // Formatiere TÜV-Datum für HTML-Datumseingabe
+        const formatDateForInput = (dateString) => {
+          if (!dateString) return "";
+          const date = new Date(dateString);
+          return date.toISOString().split('T')[0];
+        };
+
+        // Wird aufgerufen, wenn Nutzer „Speichern & Schließen" klickt
         const handleSaveAndClose = () => {
           onUpdateVehicle(vehicle.id, {
             marketPrice: localPrice,
             garage: localGarage
           });
           onNoteChange(vehicle.id, localNote);
+          onTuevDateChange(vehicle.id, localTuevDate);
           onClose();
         };
 
@@ -542,6 +769,20 @@
                       </option>
                     ))}
                   </select>
+                </div>
+                <div>
+                  <label className="block font-semibold mb-1">TÜV-Termin:</label>
+                  <input
+                    type="date"
+                    value={formatDateForInput(localTuevDate)}
+                    onChange={(e) => setLocalTuevDate(e.target.value)}
+                    className="border rounded px-3 py-2 w-full"
+                  />
+                  {isTuevDueSoon(localTuevDate) && (
+                    <p className="text-yellow-600 text-sm mt-1">
+                      Dieser TÜV-Termin ist innerhalb des nächsten Monats fällig!
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold mb-1">Notizen:</label>
@@ -588,7 +829,7 @@
         const [localTask, setLocalTask] = React.useState("");
         const [localDate, setLocalDate] = React.useState("");
 
-        // Beim Klick auf „Hinzufügen & schließen“
+        // Beim Klick auf „Hinzufügen & schließen"
         const handleAddRecordAndClose = () => {
           // Wenn beides ausgefüllt ist, speichern wir es
           if (localTask && localDate) {
