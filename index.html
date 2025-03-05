@@ -27,6 +27,23 @@
 
       const vehiclesDataInitial = [
         {
+          id: "anhaenger-2004",
+          name: "Anhänger (2004)",
+          type: "Anhänger",
+          technical: "Nutzlastanhänger Baujahr 2004",
+          imageUrl: "./anhaenger.jpg",
+          marketPrice: "200€",
+          garage: "Mumprow",
+          note: "",
+          tuevDate: "",
+          specs: {
+            Motor: "Ohne",
+            Leistung: "-",
+            Baujahr: "2004",
+            Besonderheiten: "Nutzlast bis 750kg"
+          }
+        },
+        {
           id: "mercedes-w113",
           name: "Mercedes W113 230 SL (Pagode)",
           type: "Auto",
@@ -127,23 +144,6 @@
             Baujahr: "1963",
             Besonderheiten: "Restaurierter Zustand, Originalteile"
           }
-        },
-        {
-          id: "anhaenger-2004",
-          name: "Anhänger (2004)",
-          type: "Anhänger",
-          technical: "Nutzlastanhänger Baujahr 2004",
-          imageUrl: "./anhaenger.jpg",
-          marketPrice: "200€",
-          garage: "Mumprow",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "Ohne",
-            Leistung: "-",
-            Baujahr: "2004",
-            Besonderheiten: "Nutzlast bis 750kg"
-          }
         }
       ];
 
@@ -208,8 +208,11 @@
       function FuhrparkApp() {
         // -- Haupt-State für Fahrzeuge und Wartungen --
         const [vehiclesData, setVehiclesData] = React.useState(() => {
+          console.log("Initializing vehiclesData state");
           const savedData = localStorage.getItem("vehiclesData");
-          return savedData ? JSON.parse(savedData) : vehiclesDataInitial;
+          const initialData = savedData ? JSON.parse(savedData) : vehiclesDataInitial;
+          console.log("Initial vehicles:", initialData);
+          return initialData;
         });
 
         const [maintenanceData, setMaintenanceData] = React.useState(() => {
@@ -431,9 +434,10 @@
         }
 
         // -- Filterung --
-        const filteredVehicles = vehiclesData.filter((v) =>
-          filterType === "Alle" ? true : v.type === filterType
-        );
+        const filteredVehicles = vehiclesData.filter((v) => {
+          console.log(`Filtering vehicle: ${v.name}, type: ${v.type}, current filter: ${filterType}`);
+          return filterType === "Alle" ? true : v.type === filterType;
+        });
 
         // -- Selektion --
         const selectedVehicle = vehiclesData.find((v) => v.id === selectedVehicleId);
