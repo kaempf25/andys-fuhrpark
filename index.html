@@ -1,1132 +1,378 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Fahrzeugpark Andy</title>
-    <!-- Production React für bessere Performance -->
-    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <!-- Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-      /* Mobile-freundliche Stile */
-      body {
-        -webkit-text-size-adjust: 100%;
-        overscroll-behavior-y: contain;
-      }
-      /* Sicherstellen, dass Bilder korrekt geladen werden oder einen Fallback haben */
-      .img-container {
-        background-color: #f3f4f6;
-        position: relative;
-      }
-      /* Verhindert Tap-Highlight auf iOS */
-      * {
-        -webkit-tap-highlight-color: transparent;
-      }
+        .vehicle-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to bottom right, #e0f2fe, #f3e8ff);
+            position: relative;
+        }
+        .vehicle-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 0.375rem;
+            background-color: #f3f4f6;
+        }
+        .header-gradient {
+            background: linear-gradient(to right, #9333ea, #ec4899);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.75rem;
+        }
+        .tuev-alert {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background-color: #f59e0b;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        .maintenance-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #22c55e;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        .filter-select {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f3f4f6;
+        }
+        .check-complete {
+            color: #16a34a;
+        }
+        .check-incomplete {
+            color: #dc2626;
+        }
+        .vehicle-detail {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        .vehicle-specs {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
     </style>
-  </head>
-  <body class="bg-gray-100">
-    <div id="root">
-      <!-- App wird hier geladen -->
-      <div class="flex justify-center items-center h-screen">
-        <p class="text-xl text-gray-600">Lade Fahrzeugpark...</p>
-      </div>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="container mx-auto max-w-4xl">
+        <!-- Header -->
+        <header>
+            <h1 class="header-gradient">Fahrzeugpark Andy</h1>
+            <div class="flex justify-between items-center flex-wrap">
+                <div>
+                    <label for="filter" class="font-semibold">Fahrzeugtyp:</label>
+                    <select id="filter" class="filter-select">
+                        <option value="Alle">Alle</option>
+                        <option value="Auto">Auto</option>
+                        <option value="Motorrad">Motorrad</option>
+                        <option value="Roller">Roller</option>
+                        <option value="Landmaschine">Landmaschine</option>
+                        <option value="Anhänger">Anhänger</option>
+                    </select>
+                </div>
+                <button id="history-btn" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mb-2">
+                    Wartungshistorie
+                </button>
+            </div>
+        </header>
+
+        <!-- Fahrzeuge -->
+        <main>
+            <h2 class="section-title mt-4">Fahrzeuge</h2>
+            <div id="vehicles-container">
+                <!-- Fahrzeuge werden hier eingefügt -->
+            </div>
+
+            <!-- Wartungsübersicht -->
+            <div class="bg-white rounded-lg shadow-md p-4 mb-6 mt-8">
+                <h2 class="section-title">Übersicht: Anstehende Wartungen</h2>
+                <div class="mb-2">
+                    <label for="year-select">Jahr:</label>
+                    <select id="year-select" class="filter-select">
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fahrzeug</th>
+                                <th>Ölwechsel</th>
+                                <th>Zündkerzen</th>
+                                <th>Bremsen</th>
+                                <th>Reifen</th>
+                                <th>TÜV</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenance-table">
+                            <!-- Wartungsdaten werden hier eingefügt -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 text-right">
+                    <button id="add-task-btn" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
+                        Wartungsdienst hinzufügen
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-8 py-4 text-center text-gray-500 text-sm">
+            <p>© 2025 Andys Fuhrpark - Alle Rechte vorbehalten</p>
+            <p>Version 1.2.1</p>
+        </footer>
     </div>
 
-    <script type="text/babel">
-      // Grundlegende Daten
-      const garages = [
-        "Spexarder_Strasse",
-        "Sparkasse_Avenwedde",
-        "Mumprow",
-        "Amrumweg"
-      ];
-
-      const initialVehicles = [
-        {
-          id: "anhaenger-2004",
-          name: "Anhänger (2004)",
-          type: "Anhänger",
-          technical: "Nutzlastanhänger Baujahr 2004",
-          imageUrl: "./anhaenger.jpg",
-          marketPrice: "200€",
-          garage: "Mumprow",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "Ohne",
-            Leistung: "-",
-            Baujahr: "2004",
-            Besonderheiten: "Nutzlast bis 750kg"
-          }
-        },
-        {
-          id: "mercedes-w113",
-          name: "Mercedes W113 230 SL (Pagode)",
-          type: "Auto",
-          technical: "Klassischer 230 SL mit 2,3-Liter Reihen-Sechszylinder und ca. 150 PS.",
-          imageUrl: "./Mercedes w113.jpeg",
-          marketPrice: "80.000€",
-          garage: "Spexarder_Strasse",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "2,3L Reihen-Sechszylinder",
-            Leistung: "150 PS",
-            Baujahr: "1963",
-            Besonderheiten: "Ikonisches Pagoden-Design, zeitloses Erscheinungsbild"
-          }
-        },
-        {
-          id: "mercedes-r107",
-          name: "Mercedes R107 560 SL",
-          type: "Auto",
-          technical: "Luxuriöses Cabriolet mit 5,6-Liter V8 und ca. 230 PS.",
-          imageUrl: "./Mercedes R107.jpeg",
-          marketPrice: "30.000€",
-          garage: "Sparkasse_Avenwedde",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "5,6L V8",
-            Leistung: "230 PS",
-            Baujahr: "1986",
-            Besonderheiten: "Hochkomfort, klassisches Design, luxuriöse Ausstattung"
-          }
-        },
-        {
-          id: "mercedes-r129",
-          name: "Mercedes R129 SL",
-          type: "Auto",
-          technical: "Sportlicher Roadster mit modernster Technik und elegantem Design.",
-          imageUrl: "./Mercedes R129.jpeg",
-          marketPrice: "25.000€",
-          garage: "Spexarder_Strasse",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "3,0L V6",
-            Leistung: "320 PS",
-            Baujahr: "1993",
-            Besonderheiten: "Hydraulisches Verdeck, automatischer Überrollbügel"
-          }
-        },
-        {
-          id: "mercedes-clk",
-          name: "Mercedes CLK Cabrio",
-          type: "Auto",
-          technical: "Elegantes Cabriolet mit sportlichem Charakter.",
-          imageUrl: "./Mercedes CLK.jpeg",
-          marketPrice: "12.000€",
-          garage: "Sparkasse_Avenwedde",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "3,2L V6",
-            Leistung: "198 PS",
-            Baujahr: "2005",
-            Besonderheiten: "Elektrisches Verdeck, Lederausstattung"
-          }
-        },
-        {
-          id: "vw-t6",
-          name: "VW T6 Multivan",
-          type: "Auto",
-          technical: "Vielseitiger Transporter mit Wohnmobilausstattung.",
-          imageUrl: "./VW T6.jpeg",
-          marketPrice: "18.000€",
-          garage: "Mumprow",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "2,0L TDI",
-            Leistung: "150 PS",
-            Baujahr: "2019",
-            Besonderheiten: "Campingausbau, Aufstelldach, Küche"
-          }
-        },
-        {
-          id: "man-traktor-201",
-          name: "MAN Traktor 201",
-          type: "Landmaschine",
-          technical: "Klassischer Traktor für Feldarbeiten und leichte Transportaufgaben.",
-          imageUrl: "./MAN Traktor.jpeg",
-          marketPrice: "4.500€",
-          garage: "Amrumweg",
-          note: "",
-          tuevDate: "",
-          specs: {
-            Motor: "2,8L Diesel",
-            Leistung: "28 PS",
-            Baujahr: "1963",
-            Besonderheiten: "Restaurierter Zustand, Originalteile"
-          }
-        }
-      ];
-
-      const defaultMaintenanceTasks = [
-        "Ölwechsel", 
-        "Zündkerzen prüfen", 
-        "Bremsen kontrollieren", 
-        "Reifendruck prüfen"
-      ];
-
-      // Hilfsfunktionen
-      const isTuevDueSoon = (tuevDate) => {
-        if (!tuevDate) return false;
-        
-        const today = new Date();
-        const tuev = new Date(tuevDate);
-        
-        const oneMonthLater = new Date();
-        oneMonthLater.setMonth(today.getMonth() + 1);
-        
-        return tuev >= today && tuev <= oneMonthLater;
-      };
-
-      const canSendNotifications = () => {
-        return "Notification" in window;
-      };
-
-      const requestNotificationPermission = async () => {
-        if (!canSendNotifications()) return false;
-        
-        const permission = await Notification.requestPermission();
-        return permission === "granted";
-      };
-
-      const sendNotification = (title, options) => {
-        if (Notification.permission === "granted") {
-          new Notification(title, options);
-          return true;
-        }
-        return false;
-      };
-
-      const createTuevEmailLink = (vehicle) => {
-        const subject = `TÜV-Erinnerung: ${vehicle.name}`;
-        const body = `Der TÜV für Ihr Fahrzeug ${vehicle.name} ist am ${new Date(vehicle.tuevDate).toLocaleDateString()} fällig.`;
-        return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      };
-
-      // Placeholder-Bild für fehlerhafte Bilder
-      const placeholderImage = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f3f4f6"/><path fill="%23cccccc" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
-
-      // Fahrzeug-Karte Komponente
-      function VehicleCard({ vehicle, onClick, onMaintenanceClick, isTuevDueSoon }) {
-        const [imageError, setImageError] = React.useState(false);
-
-        const handleImageError = () => {
-          console.log(`Error loading image for ${vehicle.name}`);
-          setImageError(true);
-        };
-
-        return (
-          <div
-            className="border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 relative cursor-pointer"
-            onClick={onClick}
-          >
-            <div className="w-full h-40 bg-gray-200 rounded overflow-hidden img-container">
-              <img 
-                src={imageError ? placeholderImage : vehicle.imageUrl} 
-                alt={vehicle.name} 
-                className="w-full h-40 object-cover"
-                onError={handleImageError}
-              />
-            </div>
-            <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
-            <p className="text-sm text-gray-700">{vehicle.technical}</p>
-            <div className="mt-2 text-sm text-gray-800">
-              <p>
-                <strong>Motor:</strong> {vehicle.specs?.Motor || "N/A"}
-              </p>
-              <p>
-                <strong>Leistung:</strong> {vehicle.specs?.Leistung || "N/A"}
-              </p>
-              <p>
-                <strong>Baujahr:</strong> {vehicle.specs?.Baujahr || "N/A"}
-              </p>
-              <p>
-                <strong>Besonderheiten:</strong> {vehicle.specs?.Besonderheiten || "N/A"}
-              </p>
-            </div>
-            <div className="mt-2 text-sm">
-              <p>
-                <strong>Marktpreis:</strong> {vehicle.marketPrice || "N/A"}
-              </p>
-              <p>
-                <strong>Garage:</strong> {vehicle.garage?.replace(/_/g, " ") || "N/A"}
-              </p>
-              {vehicle.tuevDate && (
-                <p className={isTuevDueSoon ? "font-bold text-yellow-700" : ""}>
-                  <strong>TÜV:</strong> {new Date(vehicle.tuevDate).toLocaleDateString()}
-                  {isTuevDueSoon && " (bald fällig!)"}
-                </p>
-              )}
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMaintenanceClick(e);
-              }}
-              className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full shadow-md hover:bg-green-600"
-            >
-              Wartung
-            </button>
-            {isTuevDueSoon && (
-              <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full shadow-md">
-                TÜV!
-              </div>
-            )}
-          </div>
-        );
-      }
-
-      // Fahrzeugdetails-Modal
-      function VehicleDetailsModal({
-        vehicle,
-        onClose,
-        garages,
-        onImageUpload,
-        onUpdateVehicle,
-        onNoteChange,
-        onTuevDateChange
-      }) {
-        const [localPrice, setLocalPrice] = React.useState(vehicle.marketPrice || "");
-        const [localGarage, setLocalGarage] = React.useState(vehicle.garage || "");
-        const [localNote, setLocalNote] = React.useState(vehicle.note || "");
-        const [localTuevDate, setLocalTuevDate] = React.useState(vehicle.tuevDate || "");
-        const [imageError, setImageError] = React.useState(false);
-
-        const formatDateForInput = (dateString) => {
-          if (!dateString) return "";
-          const date = new Date(dateString);
-          return date.toISOString().split('T')[0];
-        };
-
-        const handleSaveAndClose = () => {
-          onUpdateVehicle(vehicle.id, {
-            marketPrice: localPrice,
-            garage: localGarage
-          });
-          onNoteChange(vehicle.id, localNote);
-          onTuevDateChange(vehicle.id, localTuevDate);
-          onClose();
-        };
-
-        const handleImageError = () => {
-          console.log(`Error loading image in modal for ${vehicle.name}`);
-          setImageError(true);
-        };
-
-        return (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-            <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
-              <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">
-                &times;
-              </button>
-              <h2 className="text-2xl font-bold mb-4">{vehicle.name}</h2>
-              <div className="w-full h-64 bg-gray-200 rounded overflow-hidden mb-4 border">
-                <img
-                  src={imageError ? placeholderImage : vehicle.imageUrl}
-                  alt={vehicle.name}
-                  className="w-full h-64 object-contain"
-                  onError={handleImageError}
-                />
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-semibold mb-1">Marktpreis:</label>
-                  <input
-                    type="text"
-                    value={localPrice}
-                    onChange={(e) => setLocalPrice(e.target.value)}
-                    className="border rounded px-3 py-2 w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1">Garage:</label>
-                  <select
-                    value={localGarage}
-                    onChange={(e) => setLocalGarage(e.target.value)}
-                    className="border rounded px-3 py-2 w-full"
-                  >
-                    {garages.map((g, idx) => (
-                      <option key={idx} value={g}>
-                        {g.replace(/_/g, " ")}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1">TÜV-Termin:</label>
-                  <input
-                    type="date"
-                    value={formatDateForInput(localTuevDate)}
-                    onChange={(e) => setLocalTuevDate(e.target.value)}
-                    className="border rounded px-3 py-2 w-full"
-                  />
-                  {isTuevDueSoon(localTuevDate) && (
-                    <p className="text-yellow-600 text-sm mt-1">
-                      Dieser TÜV-Termin ist innerhalb des nächsten Monats fällig!
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1">Notizen:</label>
-                  <textarea
-                    value={localNote}
-                    onChange={(e) => setLocalNote(e.target.value)}
-                    className="w-full border rounded p-2 h-24"
-                    placeholder="Notizen zum Fahrzeug..."
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold mb-1">Foto ändern:</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => onImageUpload(e, vehicle.id)}
-                    className="w-full"
-                  />
-                </div>
-                <button
-                  onClick={handleSaveAndClose}
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-                >
-                  Speichern und schließen
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      // Wartungs-Modal
-      function MaintenanceModal({
-        vehicle,
-        year,
-        setYear,
-        tasks,
-        maintenanceData,
-        onToggleTask,
-        onClose,
-        onAddMaintenanceRecord
-      }) {
-        const [localTask, setLocalTask] = React.useState("");
-        const [localDate, setLocalDate] = React.useState("");
-
-        const handleAddRecordAndClose = () => {
-          if (localTask && localDate) {
-            const record = {
-              task: localTask,
-              date: localDate,
-              timestamp: new Date().toISOString()
-            };
-            onAddMaintenanceRecord(vehicle.id, record);
-          }
-          onClose();
-        };
-
-        return (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-            <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
-              <button onClick={onClose} className="absolute top-2 right-2 text-red-600 font-bold text-xl">
-                &times;
-              </button>
-              <h2 className="text-2xl font-bold mb-4 text-blue-800">
-                Wartung: {vehicle.name}
-              </h2>
-              <div className="mb-4">
-                <label className="mr-2 font-semibold">Jahr:</label>
-                <select
-                  value={year}
-                  onChange={(e) => setYear(parseInt(e.target.value))}
-                  className="border rounded px-2 py-1"
-                >
-                  {[...Array(26)].map((_, i) => {
-                    const y = 2025 + i;
-                    return (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              {/* Checkliste */}
-              <div className="mb-6 bg-gray-50 p-4 rounded shadow">
-                <h3 className="text-lg font-bold mb-3">Wartungstasks {year}</h3>
-                <ul className="space-y-2">
-                  {tasks.map((task) => {
-                    const vehicleMaintenanceData = maintenanceData[vehicle.id] || {};
-                    const yearData = vehicleMaintenanceData[year] || {};
-                    const completedDate = yearData[task];
-                    return (
-                      <li key={task} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={!!completedDate}
-                          onChange={() => onToggleTask(vehicle.id, year, task)}
-                          className="mr-3 h-5 w-5"
-                        />
-                        <span className={completedDate ? "line-through text-green-600" : ""}>
-                          {task}
-                        </span>
-                        {completedDate && (
-                          <span className="ml-2 text-sm text-green-600">
-                            (am {new Date(completedDate).toLocaleDateString()})
-                          </span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-              {/* Neue Wartung eintragen */}
-              <div className="mb-4 border-t pt-4">
-                <h3 className="text-lg font-bold mb-2">
-                  Neue Wartung eintragen (optional)
-                </h3>
-                <div className="flex flex-col space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Wartungsdienst beschreiben..."
-                    value={localTask}
-                    onChange={(e) => setLocalTask(e.target.value)}
-                    className="border rounded px-3 py-2"
-                  />
-                  <input
-                    type="date"
-                    value={localDate}
-                    onChange={(e) => setLocalDate(e.target.value)}
-                    className="border rounded px-3 py-2"
-                  />
-                  <button
-                    onClick={handleAddRecordAndClose}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  >
-                    Wartung hinzufügen &amp; schließen
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
-      // Wartungshistorie-Modal
-      function AllMaintenanceHistoryModal({ entries, onClose }) {
-        return (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
-            <div className="relative bg-white rounded-lg p-6 w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-              <button
-                onClick={onClose}
-                className="absolute top-2 right-2 text-red-600 font-bold text-xl"
-              >
-                &times;
-              </button>
-              <h2 className="text-2xl font-bold mb-4 text-blue-800">
-                Gesamte Wartungshistorie
-              </h2>
-              <div className="border rounded shadow overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="p-2 text-left">Datum</th>
-                      <th className="p-2 text-left">Fahrzeug</th>
-                      <th className="p-2 text-left">Wartungsdienst</th>
-                      <th className="p-2 text-left">Art</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {entries.map((entry, index) => (
-                      <tr
-                        key={index}
-                        className={index % 2 === 0 ? "bg-gray-50" : ""}
-                      >
-                        <td className="p-2 border-t">
-                          {entry.date.toLocaleDateString()}
-                        </td>
-                        <td className="p-2 border-t">{entry.vehicleName}</td>
-                        <td className="p-2 border-t">{entry.task}</td>
-                        <td className="p-2 border-t">
-                          {entry.type === "checkbox" ? "Standard" : "Manuell"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {entries.length === 0 && (
-                <p className="text-center p-4 text-gray-500">
-                  Keine Wartungsdaten vorhanden
-                </p>
-              )}
-            </div>
-          </div>
-        );
-      }
-
-      // Haupt-App-Komponente
-      function FuhrparkApp() {
-        console.log("FuhrparkApp wird initialisiert");
-        
-        // Haupt-State für Fahrzeuge und Wartungen
-        const [vehiclesData, setVehiclesData] = React.useState(() => {
-          console.log("Fahrzeugdaten werden initialisiert");
-          try {
-            const savedData = localStorage.getItem("vehiclesData");
-            const parsedData = savedData ? JSON.parse(savedData) : initialVehicles;
-            console.log("Geladene Fahrzeuge:", parsedData.length);
-            return parsedData;
-          } catch (error) {
-            console.error("Fehler beim Laden der Fahrzeugdaten:", error);
-            return initialVehicles;
-          }
-        });
-
-        const [maintenanceData, setMaintenanceData] = React.useState(() => {
-          try {
-            const savedData = localStorage.getItem("maintenanceData");
-            return savedData ? JSON.parse(savedData) : {};
-          } catch (error) {
-            console.error("Fehler beim Laden der Wartungsdaten:", error);
-            return {};
-          }
-        });
-
-        const [maintenanceTasks, setMaintenanceTasks] = React.useState(() => {
-          try {
-            const savedTasks = localStorage.getItem("maintenanceTasks");
-            return savedTasks ? JSON.parse(savedTasks) : defaultMaintenanceTasks;
-          } catch (error) {
-            console.error("Fehler beim Laden der Wartungsaufgaben:", error);
-            return defaultMaintenanceTasks;
-          }
-        });
-
-        const [maintenanceRecords, setMaintenanceRecords] = React.useState(() => {
-          try {
-            const savedRecords = localStorage.getItem("maintenanceRecords");
-            return savedRecords ? JSON.parse(savedRecords) : {};
-          } catch (error) {
-            console.error("Fehler beim Laden der Wartungsaufzeichnungen:", error);
-            return {};
-          }
-        });
-
-        // Filter und Modals
-        const [filterType, setFilterType] = React.useState("Alle");
-        const [selectedYear, setSelectedYear] = React.useState(2025);
-        const [selectedVehicleId, setSelectedVehicleId] = React.useState(null);
-        const [showMaintenanceModalId, setShowMaintenanceModalId] = React.useState(null);
-        const [showAllMaintenanceHistory, setShowAllMaintenanceHistory] = React.useState(false);
-        const [showTuevReminders, setShowTuevReminders] = React.useState(false);
-        const [notificationsPermission, setNotificationsPermission] = React.useState(
-          Notification.permission === "granted"
-        );
-
-        // Speichern in localStorage
-        React.useEffect(() => {
-          try {
-            localStorage.setItem("vehiclesData", JSON.stringify(vehiclesData));
-            console.log("Fahrzeugdaten gespeichert, Anzahl:", vehiclesData.length);
-          } catch (error) {
-            console.error("Fehler beim Speichern der Fahrzeugdaten:", error);
-          }
-        }, [vehiclesData]);
-
-        React.useEffect(() => {
-          try {
-            localStorage.setItem("maintenanceData", JSON.stringify(maintenanceData));
-          } catch (error) {
-            console.error("Fehler beim Speichern der Wartungsdaten:", error);
-          }
-        }, [maintenanceData]);
-
-        React.useEffect(() => {
-          try {
-            localStorage.setItem("maintenanceTasks", JSON.stringify(maintenanceTasks));
-          } catch (error) {
-            console.error("Fehler beim Speichern der Wartungsaufgaben:", error);
-          }
-        }, [maintenanceTasks]);
-
-        React.useEffect(() => {
-          try {
-            localStorage.setItem("maintenanceRecords", JSON.stringify(maintenanceRecords));
-          } catch (error) {
-            console.error("Fehler beim Speichern der Wartungsaufzeichnungen:", error);
-          }
-        }, [maintenanceRecords]);
-
-        // TÜV-Termine prüfen
-        React.useEffect(() => {
-          const checkTuevDates = () => {
-            const dueSoonVehicles = vehiclesData.filter(
-              vehicle => vehicle.tuevDate && isTuevDueSoon(vehicle.tuevDate)
-            );
-
-            if (dueSoonVehicles.length > 0) {
-              setShowTuevReminders(true);
-
-              if (notificationsPermission) {
-                dueSoonVehicles.forEach(vehicle => {
-                  const tuevDate = new Date(vehicle.tuevDate).toLocaleDateString();
-                  sendNotification(`TÜV fällig: ${vehicle.name}`, {
-                    body: `Der TÜV für ${vehicle.name} ist am ${tuevDate} fällig.`,
-                    icon: vehicle.imageUrl
-                  });
-                });
-              }
-            }
-          };
-
-          checkTuevDates();
-
-          const interval = setInterval(checkTuevDates, 24 * 60 * 60 * 1000);
-          return () => clearInterval(interval);
-        }, [vehiclesData, notificationsPermission]);
-
-        // Benachrichtigungsberechtigung
-        React.useEffect(() => {
-          const askForNotificationPermission = async () => {
-            if (canSendNotifications() && Notification.permission === "default") {
-              const granted = await requestNotificationPermission();
-              setNotificationsPermission(granted);
-            }
-          };
-          
-          askForNotificationPermission();
-        }, []);
-
-        // Modals schließen
-        const closeModal = () => {
-          setSelectedVehicleId(null);
-          setShowMaintenanceModalId(null);
-          setShowAllMaintenanceHistory(false);
-        };
-
-        // TÜV-Erinnerungsbanner schließen
-        const closeTuevReminders = () => {
-          setShowTuevReminders(false);
-        };
-
-        // MaintenanceTask hinzufügen
-        const handleAddMaintenanceTask = () => {
-          const newTask = prompt("Neuen Wartungsdienst eingeben:");
-          if (newTask && newTask.trim()) {
-            setMaintenanceTasks((prev) => [...prev, newTask.trim()]);
-          }
-        };
-
-        // Checkbox an- und abwählen
-        const handleTaskToggle = (vehicleId, year, task) => {
-          setMaintenanceData((prev) => {
-            const vehicleData = prev[vehicleId] || {};
-            const yearData = vehicleData[year] || {};
-            const currentStatus = yearData[task];
-            const newYearData = {
-              ...yearData,
-              [task]: currentStatus ? null : new Date().toISOString()
-            };
-            return {
-              ...prev,
-              [vehicleId]: {
-                ...vehicleData,
-                [year]: newYearData
-              }
-            };
-          });
-        };
-
-        // Wartungshistorie manuell hinzufügen
-        const addMaintenanceRecordGlobal = (vehicleId, record) => {
-          setMaintenanceRecords((prev) => {
-            const currentRecords = prev[vehicleId] || [];
-            return {
-              ...prev,
-              [vehicleId]: [...currentRecords, record]
-            };
-          });
-        };
-
-        // Bild hochladen
-        const handleImageUpload = (e, vehicleId) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const newImageUrl = reader.result;
-              setVehiclesData((prev) =>
-                prev.map((vehicle) =>
-                  vehicle.id === vehicleId ? { ...vehicle, imageUrl: newImageUrl } : vehicle
-                )
-              );
-            };
-            reader.readAsDataURL(file);
-          }
-        };
-
-        // Notiz ändern
-        const handleNoteChange = (vehicleId, newNote) => {
-          setVehiclesData((prev) =>
-            prev.map((vehicle) =>
-              vehicle.id === vehicleId ? { ...vehicle, note: newNote } : vehicle
-            )
-          );
-        };
-
-        // TÜV-Datum ändern
-        const handleTuevDateChange = (vehicleId, newTuevDate) => {
-          setVehiclesData((prev) =>
-            prev.map((vehicle) =>
-              vehicle.id === vehicleId ? { ...vehicle, tuevDate: newTuevDate } : vehicle
-            )
-          );
-        };
-
-        // Marktpreis oder Garage ändern
-        const handleVehicleUpdate = (vehicleId, updates) => {
-          setVehiclesData((prev) =>
-            prev.map((vehicle) =>
-              vehicle.id === vehicleId ? { ...vehicle, ...updates } : vehicle
-            )
-          );
-        };
-
-        // Modals öffnen
-        const openVehicleDetails = (vehicleId) => {
-          setSelectedVehicleId(vehicleId);
-        };
-
-        const openMaintenanceModal = (vehicleId, e) => {
-          setShowMaintenanceModalId(vehicleId);
-        };
-
-        const openAllMaintenanceHistory = () => {
-          setShowAllMaintenanceHistory(true);
-        };
-
-        // Jahresliste
-        const years = [];
-        for (let y = 2025; y <= 2050; y++) {
-          years.push(y);
-        }
-
-        // Filterung
-        const filteredVehicles = vehiclesData.filter((v) => {
-          return filterType === "Alle" ? true : v.type === filterType;
-        });
-        
-        console.log("Gefilterte Fahrzeuge:", filteredVehicles.length, "Filter:", filterType);
-
-        // Selektion
-        const selectedVehicle = vehiclesData.find((v) => v.id === selectedVehicleId);
-        const maintenanceModalVehicle = vehiclesData.find((v) => v.id === showMaintenanceModalId);
-
-        // TÜV-relevante Daten
-        const vehiclesWithUpcomingTuev = vehiclesData.filter(
-          vehicle => vehicle.tuevDate && isTuevDueSoon(vehicle.tuevDate)
-        );
-
-        // Gesamte Wartungshistorie
-        const allMaintenanceEntries = [];
-
-        // CheckBox-basierte Wartungen
-        Object.entries(maintenanceData).forEach(([vehicleId, yearData]) => {
-          const vehicle = vehiclesData.find((v) => v.id === vehicleId);
-          if (!vehicle) return;
-          Object.entries(yearData).forEach(([year, tasks]) => {
-            Object.entries(tasks).forEach(([taskName, completedDate]) => {
-              if (completedDate) {
-                allMaintenanceEntries.push({
-                  vehicleId,
-                  vehicleName: vehicle.name,
-                  year,
-                  task: taskName,
-                  date: new Date(completedDate),
-                  type: "checkbox"
-                });
-              }
-            });
-          });
-        });
-
-        // Manuelle Wartungseinträge
-        Object.entries(maintenanceRecords).forEach(([vehicleId, records]) => {
-          const vehicle = vehiclesData.find((v) => v.id === vehicleId);
-          if (!vehicle) return;
-          records.forEach((record) => {
-            allMaintenanceEntries.push({
-              vehicleId,
-              vehicleName: vehicle.name,
-              task: record.task,
-              date: new Date(record.date),
-              type: "manual"
-            });
-          });
-        });
-
-        // Sortieren (neueste zuerst)
-        allMaintenanceEntries.sort((a, b) => b.date - a.date);
-
-        return (
-          <div className="container mx-auto p-4">
-            {/* HEADER */}
-            <header className="w-full max-w-4xl py-4 mx-auto">
-              <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded">
-                Fahrzeugpark Andy
-              </h1>
-              <div className="flex flex-col md:flex-row justify-between items-center mt-4 space-y-2 md:space-y-0">
-                <div className="flex items-center space-x-3">
-                  <label className="font-semibold">Fahrzeugtyp:</label>
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    className="border rounded px-2 py-1"
-                  >
-                    <option value="Alle">Alle</option>
-                    <option value="Auto">Auto</option>
-                    <option value="Motorrad">Motorrad</option>
-                    <option value="Roller">Roller</option>
-                    <option value="Landmaschine">Landmaschine</option>
-                    <option value="Anhänger">Anhänger</option>
-                  </select>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={openAllMaintenanceHistory}
-                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-                  >
-                    Wartungshistorie
-                  </button>
-                  <button
-                    onClick={() => requestNotificationPermission().then(setNotificationsPermission)}
-                    className={`py-2 px-4 rounded ${
-                      notificationsPermission 
-                        ? "bg-green-600 hover:bg-green-700" 
-                        : "bg-yellow-500 hover:bg-yellow-600"
-                    } text-white`}
-                    title={
-                      notificationsPermission
-                        ? "Benachrichtigungen sind aktiviert"
-                        : "Benachrichtigungen aktivieren"
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fahrzeugdaten
+            const vehicles = [
+                {
+                    id: "anhaenger-2004",
+                    name: "Anhänger (2004)",
+                    type: "Anhänger",
+                    technical: "Nutzlastanhänger Baujahr 2004",
+                    imageUrl: "./anhaenger.jpg",
+                    marketPrice: "200€",
+                    garage: "Mumprow",
+                    specs: {
+                        Motor: "Ohne",
+                        Leistung: "-",
+                        Baujahr: "2004",
+                        Besonderheiten: "Nutzlast bis 750kg"
                     }
-                  >
-                    {notificationsPermission ? "Benachrichtigungen ✓" : "Benachrichtigungen"}
-                  </button>
-                </div>
-              </div>
-            </header>
+                },
+                {
+                    id: "mercedes-w113",
+                    name: "Mercedes W113 230 SL (Pagode)",
+                    type: "Auto",
+                    technical: "Klassischer 230 SL mit 2,3-Liter Reihen-Sechszylinder und ca. 150 PS.",
+                    imageUrl: "./Mercedes w113.jpeg",
+                    marketPrice: "80.000€",
+                    garage: "Spexarder_Strasse",
+                    specs: {
+                        Motor: "2,3L Reihen-Sechszylinder",
+                        Leistung: "150 PS",
+                        Baujahr: "1963",
+                        Besonderheiten: "Ikonisches Pagoden-Design, zeitloses Erscheinungsbild"
+                    }
+                },
+                {
+                    id: "mercedes-r107",
+                    name: "Mercedes R107 560 SL",
+                    type: "Auto",
+                    technical: "Luxuriöses Cabriolet mit 5,6-Liter V8 und ca. 230 PS.",
+                    imageUrl: "./Mercedes R107.jpeg",
+                    marketPrice: "30.000€",
+                    garage: "Sparkasse_Avenwedde",
+                    specs: {
+                        Motor: "5,6L V8",
+                        Leistung: "230 PS",
+                        Baujahr: "1986",
+                        Besonderheiten: "Hochkomfort, klassisches Design, luxuriöse Ausstattung"
+                    }
+                },
+                {
+                    id: "mercedes-r129",
+                    name: "Mercedes R129 SL",
+                    type: "Auto",
+                    technical: "Sportlicher Roadster mit modernster Technik und elegantem Design.",
+                    imageUrl: "./Mercedes R129.jpeg",
+                    marketPrice: "25.000€",
+                    garage: "Spexarder_Strasse",
+                    specs: {
+                        Motor: "3,0L V6",
+                        Leistung: "320 PS",
+                        Baujahr: "1993",
+                        Besonderheiten: "Hydraulisches Verdeck, automatischer Überrollbügel"
+                    }
+                },
+                {
+                    id: "mercedes-clk",
+                    name: "Mercedes CLK Cabrio",
+                    type: "Auto",
+                    technical: "Elegantes Cabriolet mit sportlichem Charakter.",
+                    imageUrl: "./Mercedes CLK.jpeg",
+                    marketPrice: "12.000€",
+                    garage: "Sparkasse_Avenwedde",
+                    specs: {
+                        Motor: "3,2L V6",
+                        Leistung: "198 PS",
+                        Baujahr: "2005",
+                        Besonderheiten: "Elektrisches Verdeck, Lederausstattung"
+                    }
+                },
+                {
+                    id: "vw-t6",
+                    name: "VW T6 Multivan",
+                    type: "Auto",
+                    technical: "Vielseitiger Transporter mit Wohnmobilausstattung.",
+                    imageUrl: "./VW T6.jpeg",
+                    marketPrice: "18.000€",
+                    garage: "Mumprow",
+                    specs: {
+                        Motor: "2,0L TDI",
+                        Leistung: "150 PS",
+                        Baujahr: "2019",
+                        Besonderheiten: "Campingausbau, Aufstelldach, Küche"
+                    }
+                },
+                {
+                    id: "man-traktor-201",
+                    name: "MAN Traktor 201",
+                    type: "Landmaschine",
+                    technical: "Klassischer Traktor für Feldarbeiten und leichte Transportaufgaben.",
+                    imageUrl: "./MAN Traktor.jpeg",
+                    marketPrice: "4.500€",
+                    garage: "Amrumweg",
+                    specs: {
+                        Motor: "2,8L Diesel",
+                        Leistung: "28 PS",
+                        Baujahr: "1963",
+                        Besonderheiten: "Restaurierter Zustand, Originalteile"
+                    }
+                }
+            ];
 
-            {/* TÜV-ERINNERUNGEN BANNER */}
-            {showTuevReminders && vehiclesWithUpcomingTuev.length > 0 && (
-              <div className="w-full max-w-4xl mx-auto mb-6">
-                <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded shadow-md relative">
-                  <button
-                    onClick={closeTuevReminders}
-                    className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-                  >
-                    &times;
-                  </button>
-                  <h3 className="text-xl font-bold text-yellow-800 mb-2">
-                    TÜV-Erinnerung
-                  </h3>
-                  <p className="mb-3">Die folgenden Fahrzeuge haben bald TÜV-Termine:</p>
-                  <ul className="space-y-2">
-                    {vehiclesWithUpcomingTuev.map((vehicle) => (
-                      <li key={vehicle.id} className="flex flex-col md:flex-row md:justify-between md:items-center">
-                        <div>
-                          <span className="font-semibold">{vehicle.name}:</span>{" "}
-                          <span className="text-yellow-700">
-                            {new Date(vehicle.tuevDate).toLocaleDateString()}
-                          </span>
+            // Wartungstasks
+            const maintenanceTasks = [
+                "Ölwechsel", 
+                "Zündkerzen prüfen", 
+                "Bremsen kontrollieren", 
+                "Reifendruck prüfen"
+            ];
+
+            // DOM-Elemente
+            const vehiclesContainer = document.getElementById('vehicles-container');
+            const maintenanceTable = document.getElementById('maintenance-table');
+            const filterSelect = document.getElementById('filter');
+            const yearSelect = document.getElementById('year-select');
+
+            // Fahrzeuge anzeigen
+            function displayVehicles(vehiclesToShow) {
+                vehiclesContainer.innerHTML = '';
+                if(vehiclesToShow.length === 0) {
+                    vehiclesContainer.innerHTML = '<p class="text-center p-4">Keine Fahrzeuge gefunden.</p>';
+                    return;
+                }
+                
+                vehiclesToShow.forEach(vehicle => {
+                    const vehicleCard = document.createElement('div');
+                    vehicleCard.className = 'vehicle-card';
+                    
+                    // Fallback für fehlgeschlagene Bild-Ladungen
+                    const imgSrc = vehicle.imageUrl || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f3f4f6"/><path fill="%23cccccc" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
+                    
+                    vehicleCard.innerHTML = `
+                        <img src="${imgSrc}" alt="${vehicle.name}" class="vehicle-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" viewBox=\"0 0 24 24\"><rect width=\"24\" height=\"24\" fill=\"%23f3f4f6\"/><path fill=\"%23cccccc\" d=\"M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z\"/></svg>'">
+                        <h3 class="text-xl font-bold mt-2 text-blue-800">${vehicle.name}</h3>
+                        <p class="text-sm text-gray-700">${vehicle.technical}</p>
+                        
+                        <div class="vehicle-specs">
+                            <p><strong>Motor:</strong> ${vehicle.specs.Motor || "N/A"}</p>
+                            <p><strong>Leistung:</strong> ${vehicle.specs.Leistung || "N/A"}</p>
+                            <p><strong>Baujahr:</strong> ${vehicle.specs.Baujahr || "N/A"}</p>
+                            <p><strong>Besonderheiten:</strong> ${vehicle.specs.Besonderheiten || "N/A"}</p>
                         </div>
-                        <div className="mt-1 md:mt-0">
-                          <a
-                            href={createTuevEmailLink(vehicle)}
-                            className="text-blue-600 hover:text-blue-800 underline text-sm md:ml-4"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            E-Mail-Erinnerung senden
-                          </a>
+                        
+                        <div class="mt-2 text-sm">
+                            <p><strong>Marktpreis:</strong> ${vehicle.marketPrice}</p>
+                            <p><strong>Garage:</strong> ${vehicle.garage.replace(/_/g, " ")}</p>
                         </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
+                        
+                        <button class="maintenance-btn">Wartung</button>
+                    `;
+                    
+                    vehiclesContainer.appendChild(vehicleCard);
+                });
+            }
 
-            {/* FAHRZEUG-ÜBERSICHT */}
-            <main className="w-full max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                {filteredVehicles.length > 0 ? (
-                  filteredVehicles.map((vehicle) => (
-                    <VehicleCard
-                      key={vehicle.id}
-                      vehicle={vehicle}
-                      onClick={() => openVehicleDetails(vehicle.id)}
-                      onMaintenanceClick={(e) => openMaintenanceModal(vehicle.id, e)}
-                      isTuevDueSoon={vehicle.tuevDate && isTuevDueSoon(vehicle.tuevDate)}
-                    />
-                  ))
-                ) : (
-                  <div className="col-span-full text-center p-8 bg-gray-100 rounded-lg">
-                    <p className="text-lg text-gray-600">Keine Fahrzeuge für den Filter "{filterType}" gefunden.</p>
-                  </div>
-                )}
-              </div>
+            // Wartungstabelle anzeigen
+            function displayMaintenanceTable() {
+                maintenanceTable.innerHTML = '';
+                
+                vehicles.forEach(vehicle => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="font-medium">${vehicle.name}</td>
+                        <td class="text-center"><span class="check-incomplete">✗</span></td>
+                        <td class="text-center"><span class="check-incomplete">✗</span></td>
+                        <td class="text-center"><span class="check-incomplete">✗</span></td>
+                        <td class="text-center"><span class="check-incomplete">✗</span></td>
+                        <td class="text-center"><span class="text-gray-400">Nicht eingetragen</span></td>
+                    `;
+                    maintenanceTable.appendChild(row);
+                });
+            }
 
-              {/* KURZ-ÜBERSICHT WARTUNGEN */}
-              <div className="bg-white rounded-lg shadow-md p-4 mb-6 overflow-hidden">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 space-y-2 md:space-y-0">
-                  <h2 className="text-xl font-bold text-blue-800">Übersicht: Anstehende Wartungen</h2>
-                  <div className="flex items-center">
-                    <label className="mr-2">Jahr:</label>
-                    <select
-                      value={selectedYear}
-                      onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                      className="border rounded px-2 py-1 text-sm"
-                    >
-                      {years.map((y) => (
-                        <option key={y} value={y}>
-                          {y}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+            // Filter-Event
+            filterSelect.addEventListener('change', function() {
+                const selectedType = this.value;
+                let filteredVehicles;
+                
+                if (selectedType === 'Alle') {
+                    filteredVehicles = vehicles;
+                } else {
+                    filteredVehicles = vehicles.filter(vehicle => vehicle.type === selectedType);
+                }
+                
+                displayVehicles(filteredVehicles);
+            });
 
-                <div className="overflow-x-auto">
-                  <table className="min-w-full border-collapse">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="p-2 text-left border">Fahrzeug</th>
-                        {maintenanceTasks.map((task) => (
-                          <th key={task} className="p-2 text-left border">
-                            {task}
-                          </th>
-                        ))}
-                        <th className="p-2 text-left border">TÜV</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredVehicles.map((vehicle) => {
-                        const vehicleData = maintenanceData[vehicle.id] || {};
-                        const yearData = vehicleData[selectedYear] || {};
-                        return (
-                          <tr key={vehicle.id} className="hover:bg-gray-50">
-                            <td className="p-2 border font-medium">{vehicle.name}</td>
-                            {maintenanceTasks.map((task) => {
-                              const isComplete = !!yearData[task];
-                              return (
-                                <td key={task} className="p-2 border text-center">
-                                  <span className={isComplete ? "text-green-600" : "text-red-600"}>
-                                    {isComplete ? "✓" : "✗"}
-                                  </span>
-                                </td>
-                              );
-                            })}
-                            <td className="p-2 border text-center">
-                              {vehicle.tuevDate ? (
-                                <span className={isTuevDueSoon(vehicle.tuevDate) ? "text-yellow-600 font-bold" : ""}>
-                                  {new Date(vehicle.tuevDate).toLocaleDateString()}
-                                </span>
-                              ) : (
-                                <span className="text-gray-400">Nicht eingetragen</span>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+            // Jahr-Änderung
+            yearSelect.addEventListener('change', function() {
+                // Würde normalerweise die Wartungsdaten für das ausgewählte Jahr laden
+                displayMaintenanceTable();
+            });
 
-                <div className="mt-3 text-right">
-                  <button
-                    onClick={handleAddMaintenanceTask}
-                    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                  >
-                    Wartungsdienst hinzufügen
-                  </button>
-                </div>
-              </div>
-            </main>
-
-            {/* MODALS */}
-            {selectedVehicle && (
-              <VehicleDetailsModal
-                vehicle={selectedVehicle}
-                onClose={closeModal}
-                garages={garages}
-                onImageUpload={handleImageUpload}
-                onUpdateVehicle={handleVehicleUpdate}
-                onNoteChange={handleNoteChange}
-                onTuevDateChange={handleTuevDateChange}
-              />
-            )}
-
-            {maintenanceModalVehicle && (
-              <MaintenanceModal
-                vehicle={maintenanceModalVehicle}
-                year={selectedYear}
-                setYear={setSelectedYear}
-                tasks={maintenanceTasks}
-                maintenanceData={maintenanceData}
-                onToggleTask={handleTaskToggle}
-                onClose={closeModal}
-                onAddMaintenanceRecord={addMaintenanceRecordGlobal}
-              />
-            )}
-
-            {showAllMaintenanceHistory && (
-              <AllMaintenanceHistoryModal
-                entries={allMaintenanceEntries}
-                onClose={closeModal}
-              />
-            )}
-
-            {/* FOOTER */}
-            <footer className="w-full max-w-4xl mx-auto mt-8 py-4 text-center text-gray-500 text-sm">
-              <p>© {new Date().getFullYear()} Andys Fuhrpark - Alle Rechte vorbehalten</p>
-              <p>Version 1.2.0</p>
-            </footer>
-          </div>
-        );
-      }
-
-      // App nach DOM-Laden rendern
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM vollständig geladen - Starte Rendering");
-        try {
-          ReactDOM.render(<FuhrparkApp />, document.getElementById("root"));
-          console.log("App erfolgreich gerendert");
-        } catch (error) {
-          console.error("Fehler beim Rendern der App:", error);
-          // Fallback für Fehlerfälle
-          document.getElementById("root").innerHTML = `
-            <div class="p-8 bg-red-100 rounded-lg max-w-lg mx-auto mt-8">
-              <h2 class="text-2xl font-bold text-red-700 mb-4">Fehler beim Laden der App</h2>
-              <p class="mb-4">Es ist ein Problem beim Starten der Fahrzeugpark-App aufgetreten.</p>
-              <p>Fehlerdetails: ${error.message}</p>
-              <button onclick="location.reload()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
-                App neu laden
-              </button>
-            </div>
-          `;
-        }
-      });
+            // Initiale Anzeige
+            displayVehicles(vehicles);
+            displayMaintenanceTable();
+            
+            // Debug-Info in der Konsole
+            console.log("Fahrzeuge geladen:", vehicles.length);
+        });
     </script>
-  </body>
+</body>
 </html>
