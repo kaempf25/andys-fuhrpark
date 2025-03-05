@@ -2,11 +2,11 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Fahrzeugpark Andy</title>
     <!-- React und ReactDOM als UMD-Bundles -->
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <!-- Babel für In-Browser-Compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Tailwind CSS für schnelles, buntes Styling -->
@@ -14,7 +14,7 @@
   </head>
   <body class="bg-gray-100">
     <div id="root"></div>
-    <script type="text/babel">
+  <script type="text/babel">
       /* ----------------------------------------------------
          1) Beispiel-Daten (Garagen, Fahrzeuge, Wartungstasks)
       ----------------------------------------------------- */
@@ -89,7 +89,7 @@
           tuevDate: "",
           specs: {
             Motor: "3,0L V6",
-            Leistung: "231 PS",
+            Leistung: "320 PS",
             Baujahr: "1993",
             Besonderheiten: "Hydraulisches Verdeck, automatischer Überrollbügel"
           }
@@ -106,7 +106,7 @@
           tuevDate: "",
           specs: {
             Motor: "3,2L V6",
-            Leistung: "218 PS",
+            Leistung: "198 PS",
             Baujahr: "2005",
             Besonderheiten: "Elektrisches Verdeck, Lederausstattung"
           }
@@ -581,7 +581,7 @@
 
             {/* FAHRZEUG-ÜBERSICHT */}
             <main className="w-full max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {filteredVehicles.map((vehicle) => (
                   <VehicleCard
                     key={vehicle.id}
@@ -723,29 +723,42 @@
             className="border rounded-lg shadow-lg p-4 bg-gradient-to-br from-blue-100 to-purple-100 relative cursor-pointer"
             onClick={onClick}
           >
-            <img src={vehicle.imageUrl} alt={vehicle.name} className="w-full h-40 object-cover rounded" />
+            {vehicle.imageUrl && (
+              <div className="w-full h-40 bg-gray-200 rounded overflow-hidden">
+                <img 
+                  src={vehicle.imageUrl} 
+                  alt={vehicle.name} 
+                  className="w-full h-40 object-cover rounded"
+                  onError={(e) => {
+                    console.log(`Error loading image for ${vehicle.name}`);
+                    e.target.onerror = null;
+                    e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24"><path fill="%23cccccc" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
+                  }}
+                />
+              </div>
+            )}
             <h2 className="text-xl font-bold mt-2 text-blue-800">{vehicle.name}</h2>
             <p className="text-sm text-gray-700">{vehicle.technical}</p>
             <div className="mt-2 text-sm text-gray-800">
               <p>
-                <strong>Motor:</strong> {vehicle.specs?.Motor}
+                <strong>Motor:</strong> {vehicle.specs?.Motor || "N/A"}
               </p>
               <p>
-                <strong>Leistung:</strong> {vehicle.specs?.Leistung}
+                <strong>Leistung:</strong> {vehicle.specs?.Leistung || "N/A"}
               </p>
               <p>
-                <strong>Baujahr:</strong> {vehicle.specs?.Baujahr}
+                <strong>Baujahr:</strong> {vehicle.specs?.Baujahr || "N/A"}
               </p>
               <p>
-                <strong>Besonderheiten:</strong> {vehicle.specs?.Besonderheiten}
+                <strong>Besonderheiten:</strong> {vehicle.specs?.Besonderheiten || "N/A"}
               </p>
             </div>
             <div className="mt-2 text-sm">
               <p>
-                <strong>Marktpreis:</strong> {vehicle.marketPrice}
+                <strong>Marktpreis:</strong> {vehicle.marketPrice || "N/A"}
               </p>
               <p>
-                <strong>Garage:</strong> {vehicle.garage?.replace(/_/g, " ")}
+                <strong>Garage:</strong> {vehicle.garage?.replace(/_/g, " ") || "N/A"}
               </p>
               {vehicle.tuevDate && (
                 <p className={isTuevDueSoon ? "font-bold text-yellow-700" : ""}>
@@ -755,7 +768,10 @@
               )}
             </div>
             <button
-              onClick={onMaintenanceClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMaintenanceClick(e);
+              }}
               className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full shadow-md hover:bg-green-600"
             >
               Wartung
@@ -1063,7 +1079,18 @@
       /* ----------------------------------------------------
          4) App in DOM rendern
       ----------------------------------------------------- */
-      ReactDOM.render(<FuhrparkApp />, document.getElementById("root"));
+      document.addEventListener('DOMContentLoaded', function() {
+        // Überprüfen ob der DOM vollständig geladen ist
+        console.log("DOM vollständig geladen");
+        
+        try {
+          console.log("Versuche FuhrparkApp zu rendern...");
+          ReactDOM.render(<FuhrparkApp />, document.getElementById("root"));
+          console.log("FuhrparkApp erfolgreich gerendert");
+        } catch (error) {
+          console.error("Fehler beim Rendern der FuhrparkApp:", error);
+        }
+      });
     </script>
   </body>
 </html>
