@@ -243,6 +243,17 @@
         <!-- Header -->
         <header>
             <h1 class="header-gradient">Fahrzeugpark Andy</h1>
+            
+            <!-- Datensynchronisation -->
+            <div class="bg-blue-100 p-3 rounded-lg mb-4 border border-blue-300">
+                <h3 class="font-bold text-blue-800 mb-2">Datensynchronisation</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button id="export-btn" class="btn btn-green">Daten exportieren</button>
+                    <button id="import-btn" class="btn">Daten importieren</button>
+                    <input type="file" id="import-file" accept=".json" style="display:none">
+                </div>
+            </div>
+            
             <div class="flex flex-wrap justify-between items-center mb-4">
                 <div>
                     <label for="filter" class="font-semibold">Fahrzeugtyp:</label>
@@ -258,11 +269,6 @@
                 <div>
                     <button id="history-btn" class="btn">Wartungshistorie</button>
                     <button id="notification-btn" class="btn ml-2">Benachrichtigungen</button>
-                    <div class="mt-2">
-                        <button id="export-btn" class="btn btn-green">Daten exportieren</button>
-                        <button id="import-btn" class="btn ml-2">Daten importieren</button>
-                        <input type="file" id="import-file" accept=".json" style="display:none">
-                    </div>
                 </div>
             </div>
         </header>
