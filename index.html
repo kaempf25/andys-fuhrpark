@@ -410,11 +410,6 @@
     </div>
 
     <script>
-        // Überprüft, ob ein String einen Umlaut enthält
-        function hasUmlauts(str) {
-            return /[äöüÄÖÜß]/.test(str);
-        }
-        
         document.addEventListener('DOMContentLoaded', function() {
             // Grundlegende Daten
             const garages = [
@@ -425,23 +420,6 @@
             ];
 
             const initialVehicles = [
-                {
-                    id: "anhaenger-2004",
-                    name: "Anhänger (2004)",
-                    type: "Anhänger",
-                    technical: "Nutzlastanhänger Baujahr 2004",
-                    imageUrl: "./anhaenger.jpg",
-                    marketPrice: "200€",
-                    garage: "Mumprow",
-                    note: "",
-                    tuevDate: "",
-                    specs: {
-                        Motor: "Ohne",
-                        Leistung: "-",
-                        Baujahr: "2004",
-                        Besonderheiten: "Nutzlast bis 750kg"
-                    }
-                },
                 {
                     id: "mercedes-w113",
                     name: "Mercedes W113 230 SL (Pagode)",
@@ -498,7 +476,7 @@
                     name: "Mercedes CLK Cabrio",
                     type: "Auto",
                     technical: "Elegantes Cabriolet mit sportlichem Charakter.",
-                    imageUrl: "./Mervedes CLK 208.jpeg",
+                    imageUrl: "./Mercedes W208 CLK.jpeg",
                     marketPrice: "12.000€",
                     garage: "Sparkasse_Avenwedde",
                     note: "",
@@ -508,6 +486,74 @@
                         Leistung: "198 PS",
                         Baujahr: "2005",
                         Besonderheiten: "Elektrisches Verdeck, Lederausstattung"
+                    }
+                },
+                {
+                    id: "bmw-r80",
+                    name: "BMW R80",
+                    type: "Motorrad",
+                    technical: "Klassisches BMW Boxer-Motorrad mit Kardanantrieb.",
+                    imageUrl: "./bmw-r80.jpeg",
+                    marketPrice: "7.500€",
+                    garage: "Mumprow",
+                    note: "",
+                    tuevDate: "",
+                    specs: {
+                        Motor: "0,8L Boxer-Twin",
+                        Leistung: "50 PS",
+                        Baujahr: "1982",
+                        Besonderheiten: "Luftgekühlt, Kardanantrieb, Doppelscheibenbremse vorne"
+                    }
+                },
+                {
+                    id: "vespa-300",
+                    name: "Vespa 300 GTS",
+                    type: "Roller",
+                    technical: "Großraum-Vespa mit kraftvollem Motor und moderner Technik.",
+                    imageUrl: "./vespa.jpeg",
+                    marketPrice: "6.200€",
+                    garage: "Spexarder_Strasse",
+                    note: "",
+                    tuevDate: "",
+                    specs: {
+                        Motor: "300 ccm",
+                        Leistung: "24 PS",
+                        Baujahr: "2018",
+                        Besonderheiten: "ABS, ASR, LED-Beleuchtung"
+                    }
+                },
+                {
+                    id: "bmw-r1200gs",
+                    name: "BMW R1200GS",
+                    type: "Motorrad",
+                    technical: "Vielseitiges Reise-Enduro Motorrad für Straße und Gelände.",
+                    imageUrl: "./bmw-r1200gs.jpeg",
+                    marketPrice: "14.900€",
+                    garage: "Mumprow",
+                    note: "",
+                    tuevDate: "",
+                    specs: {
+                        Motor: "1,2L Boxer-Twin",
+                        Leistung: "125 PS",
+                        Baujahr: "2015",
+                        Besonderheiten: "Kardanantrieb, Telelever-Federung, Elektronisches Fahrwerk"
+                    }
+                },
+                {
+                    id: "anhaenger-2004",
+                    name: "Anhänger (2004)",
+                    type: "Anhänger",
+                    technical: "Nutzlastanhänger Baujahr 2004",
+                    imageUrl: "./anhaenger.jpg",
+                    marketPrice: "200€",
+                    garage: "Mumprow",
+                    note: "",
+                    tuevDate: "",
+                    specs: {
+                        Motor: "Ohne",
+                        Leistung: "-",
+                        Baujahr: "2004",
+                        Besonderheiten: "Nutzlast bis 750kg"
                     }
                 },
                 {
@@ -528,20 +574,20 @@
                     }
                 },
                 {
-                    id: "man-traktor-201",
-                    name: "MAN Traktor 201",
-                    type: "Landmaschine",
-                    technical: "Klassischer Traktor für Feldarbeiten und leichte Transportaufgaben.",
-                    imageUrl: "./MAN-Traktor.jpeg",
-                    marketPrice: "4.500€",
-                    garage: "Amrumweg",
+                    id: "smart-a451",
+                    name: "Smart ForTwo A451",
+                    type: "Auto",
+                    technical: "Kompakter Stadtflitzer mit sparsamem Antrieb.",
+                    imageUrl: "./smart.jpg",
+                    marketPrice: "5.600€",
+                    garage: "Sparkasse_Avenwedde",
                     note: "",
                     tuevDate: "",
                     specs: {
-                        Motor: "2,8L Diesel",
-                        Leistung: "28 PS",
-                        Baujahr: "1963",
-                        Besonderheiten: "Restaurierter Zustand, Originalteile"
+                        Motor: "1,0L Dreizylinder",
+                        Leistung: "71 PS",
+                        Baujahr: "2010",
+                        Besonderheiten: "Tridion-Sicherheitszelle, Panoramadach, Start-Stop-Automatik"
                     }
                 }
             ];
@@ -697,7 +743,6 @@
 
             // Fahrzeuge anzeigen
             function displayVehicles(vehiclesToShow) {
-                console.log("displayVehicles aufgerufen mit", vehiclesToShow.length, "Fahrzeugen");
                 vehiclesContainer.innerHTML = '';
                 
                 if(vehiclesToShow.length === 0) {
@@ -922,29 +967,21 @@
             // Gefilterte Fahrzeuge bekommen
             function getFilteredVehicles() {
                 const selectedType = filterSelect.value;
-                console.log("Filter ausgewählt:", selectedType);
-                console.log("Verfügbare Fahrzeugtypen:", [...new Set(vehicles.map(v => v.type))]);
                 
-                // Prüft, ob der Typ Umlaute enthält, da diese Probleme verursachen könnten
-                if (hasUmlauts(selectedType)) {
-                    console.log("Achtung: Der Filtertyp enthält Umlaute, was zu Problemen führen könnte");
-                }
+                // Debug-Ausgabe hinzufügen
+                console.log("Filter-Typ:", selectedType);
+                console.log("Verfügbare Fahrzeugtypen:", [...new Set(vehicles.map(v => v.type))]);
                 
                 if (selectedType === 'Alle') {
                     return vehicles;
                 } else {
-                    // Statt auf exakte Gleichheit zu prüfen, prüfen wir, ob es enthält oder normalisiert gleich ist
                     const filtered = vehicles.filter(vehicle => {
-                        const vehicleType = vehicle.type || '';
-                        const typesMatch = vehicleType === selectedType || 
-                                         vehicleType.includes(selectedType) || 
-                                         selectedType.includes(vehicleType);
-                        
-                        console.log(`Fahrzeug ${vehicle.name} hat Typ ${vehicleType}, Übereinstimmung mit ${selectedType}: ${typesMatch}`);
-                        return typesMatch;
+                        const match = vehicle.type === selectedType;
+                        console.log(`Fahrzeug: ${vehicle.name}, Typ: ${vehicle.type}, Match: ${match}`);
+                        return match;
                     });
                     
-                    console.log(`Gefilterte Fahrzeuge für Typ '${selectedType}':`, filtered.length);
+                    console.log(`Gefilterte Fahrzeuge: ${filtered.length}`);
                     return filtered;
                 }
             }
@@ -1153,21 +1190,9 @@
 
             // Event-Listener
             
-            // Filter-Änderung - direktes Filtern ohne komplexe Funktionen
+            // Filter-Änderung
             filterSelect.addEventListener('change', function() {
-                const selectedType = this.value;
-                console.log("Filter geändert zu:", selectedType);
-                
-                let filtered;
-                if (selectedType === 'Alle') {
-                    filtered = vehicles;
-                } else {
-                    filtered = vehicles.filter(v => v.type === selectedType);
-                    console.log(`Fahrzeuge mit Typ "${selectedType}":`, filtered.map(v => v.name));
-                }
-                
-                console.log("Anzahl gefilterter Fahrzeuge:", filtered.length);
-                displayVehicles(filtered);
+                displayVehicles(getFilteredVehicles());
                 displayMaintenanceTable();
             });
             
@@ -1231,33 +1256,17 @@
                 }
             });
             
-            // Fehlerhafte Fahrzeuge korrigieren
-            vehicles.forEach(vehicle => {
-                if (vehicle.type === "Anhänger" && hasUmlauts(vehicle.type)) {
-                    console.log(`Korrigiere Typ für ${vehicle.name} von ${vehicle.type} zu 'Anhänger'`);
-                    // Manchmal werden Umlaute falsch codiert - stellen wir sicher, dass sie korrekt sind
-                    vehicle.type = "Anhänger";
-                }
-            });
-            
             // Initialisierung
             populateYears();
             populateGarages();
             
-            // Debug-Ausgabe für Fahrzeugtypen
-            console.log("Alle Fahrzeuge:", vehicles);
-            console.log("Fahrzeugtypen in Daten:", vehicles.map(v => v.type));
-            console.log("Filter-Optionen:", Array.from(filterSelect.options).map(o => o.value));
-            
-            // Wir sehen uns speziell den Anhänger an
-            const anhaenger = vehicles.find(v => v.id === "anhaenger-2004");
-            if (anhaenger) {
-                console.log("Anhänger-Fahrzeug gefunden:", anhaenger);
-                console.log("Anhänger Typ:", anhaenger.type);
-                console.log("Umlaute im Typ?", hasUmlauts(anhaenger.type));
-            } else {
-                console.log("FEHLER: Anhänger nicht gefunden!");
-            }
+            // Immer Daten zurücksetzen, um neuen Fuhrpark zu verwenden
+            localStorage.clear();
+            vehicles = initialVehicles;
+            maintenanceTasks = defaultMaintenanceTasks;
+            maintenanceData = {};
+            maintenanceRecords = {};
+            saveData();
             
             displayVehicles(getFilteredVehicles());
             displayMaintenanceTable();
