@@ -410,6 +410,11 @@
     </div>
 
     <script>
+        // Überprüft, ob ein String einen Umlaut enthält
+        function hasUmlauts(str) {
+            return /[äöüÄÖÜß]/.test(str);
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Grundlegende Daten
             const garages = [
@@ -692,6 +697,7 @@
 
             // Fahrzeuge anzeigen
             function displayVehicles(vehiclesToShow) {
+                console.log("displayVehicles aufgerufen mit", vehiclesToShow.length, "Fahrzeugen");
                 vehiclesContainer.innerHTML = '';
                 
                 if(vehiclesToShow.length === 0) {
@@ -916,9 +922,31 @@
             // Gefilterte Fahrzeuge bekommen
             function getFilteredVehicles() {
                 const selectedType = filterSelect.value;
-                return selectedType === 'Alle' 
-                    ? vehicles 
-                    : vehicles.filter(vehicle => vehicle.type === selectedType);
+                console.log("Filter ausgewählt:", selectedType);
+                console.log("Verfügbare Fahrzeugtypen:", [...new Set(vehicles.map(v => v.type))]);
+                
+                // Prüft, ob der Typ Umlaute enthält, da diese Probleme verursachen könnten
+                if (hasUmlauts(selectedType)) {
+                    console.log("Achtung: Der Filtertyp enthält Umlaute, was zu Problemen führen könnte");
+                }
+                
+                if (selectedType === 'Alle') {
+                    return vehicles;
+                } else {
+                    // Statt auf exakte Gleichheit zu prüfen, prüfen wir, ob es enthält oder normalisiert gleich ist
+                    const filtered = vehicles.filter(vehicle => {
+                        const vehicleType = vehicle.type || '';
+                        const typesMatch = vehicleType === selectedType || 
+                                         vehicleType.includes(selectedType) || 
+                                         selectedType.includes(vehicleType);
+                        
+                        console.log(`Fahrzeug ${vehicle.name} hat Typ ${vehicleType}, Übereinstimmung mit ${selectedType}: ${typesMatch}`);
+                        return typesMatch;
+                    });
+                    
+                    console.log(`Gefilterte Fahrzeuge für Typ '${selectedType}':`, filtered.length);
+                    return filtered;
+                }
             }
 
             // Fahrzeug-Details-Modal öffnen
@@ -1125,9 +1153,21 @@
 
             // Event-Listener
             
-            // Filter-Änderung
+            // Filter-Änderung - direktes Filtern ohne komplexe Funktionen
             filterSelect.addEventListener('change', function() {
-                displayVehicles(getFilteredVehicles());
+                const selectedType = this.value;
+                console.log("Filter geändert zu:", selectedType);
+                
+                let filtered;
+                if (selectedType === 'Alle') {
+                    filtered = vehicles;
+                } else {
+                    filtered = vehicles.filter(v => v.type === selectedType);
+                    console.log(`Fahrzeuge mit Typ "${selectedType}":`, filtered.map(v => v.name));
+                }
+                
+                console.log("Anzahl gefilterter Fahrzeuge:", filtered.length);
+                displayVehicles(filtered);
                 displayMaintenanceTable();
             });
             
@@ -1191,9 +1231,34 @@
                 }
             });
             
+            // Fehlerhafte Fahrzeuge korrigieren
+            vehicles.forEach(vehicle => {
+                if (vehicle.type === "Anhänger" && hasUmlauts(vehicle.type)) {
+                    console.log(`Korrigiere Typ für ${vehicle.name} von ${vehicle.type} zu 'Anhänger'`);
+                    // Manchmal werden Umlaute falsch codiert - stellen wir sicher, dass sie korrekt sind
+                    vehicle.type = "Anhänger";
+                }
+            });
+            
             // Initialisierung
             populateYears();
             populateGarages();
+            
+            // Debug-Ausgabe für Fahrzeugtypen
+            console.log("Alle Fahrzeuge:", vehicles);
+            console.log("Fahrzeugtypen in Daten:", vehicles.map(v => v.type));
+            console.log("Filter-Optionen:", Array.from(filterSelect.options).map(o => o.value));
+            
+            // Wir sehen uns speziell den Anhänger an
+            const anhaenger = vehicles.find(v => v.id === "anhaenger-2004");
+            if (anhaenger) {
+                console.log("Anhänger-Fahrzeug gefunden:", anhaenger);
+                console.log("Anhänger Typ:", anhaenger.type);
+                console.log("Umlaute im Typ?", hasUmlauts(anhaenger.type));
+            } else {
+                console.log("FEHLER: Anhänger nicht gefunden!");
+            }
+            
             displayVehicles(getFilteredVehicles());
             displayMaintenanceTable();
             showTuevReminders();
