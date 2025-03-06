@@ -236,6 +236,11 @@
             cursor: pointer;
             font-size: 1.25rem;
         }
+        
+        /* Entferne JavaScript-Code, der sichtbar ist */
+        .js-code-display {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-100 p-4">
@@ -1384,6 +1389,9 @@
             // Initialisierung
             populateYears();
             populateGarages();
+            
+            // Setze den Filter standardmäßig auf "Alle"
+            filterSelect.value = "Alle";
             
             // Immer Daten zurücksetzen, um neuen Fuhrpark zu verwenden
             localStorage.clear();
