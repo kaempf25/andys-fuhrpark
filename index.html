@@ -1,16 +1,4 @@
-// Daten speichern
-            function saveData() {
-                try {
-                    localStorage.setItem('vehicles', JSON.stringify(vehicles));
-                    localStorage.setItem('maintenanceTasks', JSON.stringify(maintenanceTasks));
-                    localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
-                    localStorage.setItem('maintenanceRecords', JSON.stringify(maintenanceRecords));
-                    console.log('Daten gespeichert');
-                } catch (error) {
-                    console.error('Fehler beim Speichern der Daten:', error);
-                    alert('Fehler beim Speichern der Daten. Möglicherweise ist Ihr Speicherplatz voll.');
-                }
-            }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -236,11 +224,6 @@
             cursor: pointer;
             font-size: 1.25rem;
         }
-        
-        /* Entferne JavaScript-Code, der sichtbar ist */
-        .js-code-display {
-            display: none;
-        }
     </style>
 </head>
 <body class="bg-gray-100 p-4">
@@ -437,6 +420,7 @@
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Grundlegende Daten
@@ -1013,20 +997,10 @@
             function getFilteredVehicles() {
                 const selectedType = filterSelect.value;
                 
-                // Debug-Ausgabe hinzufügen
-                console.log("Filter-Typ:", selectedType);
-                console.log("Verfügbare Fahrzeugtypen:", [...new Set(vehicles.map(v => v.type))]);
-                
                 if (selectedType === 'Alle') {
                     return vehicles;
                 } else {
-                    const filtered = vehicles.filter(vehicle => {
-                        const match = vehicle.type === selectedType;
-                        console.log(`Fahrzeug: ${vehicle.name}, Typ: ${vehicle.type}, Match: ${match}`);
-                        return match;
-                    });
-                    
-                    console.log(`Gefilterte Fahrzeuge: ${filtered.length}`);
+                    const filtered = vehicles.filter(vehicle => vehicle.type === selectedType);
                     return filtered;
                 }
             }
@@ -1201,6 +1175,12 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 
+                // Prüfen, ob die Datei ein Bild ist
+                if (!file.type.startsWith('image/')) {
+                    alert('Bitte wählen Sie eine Bilddatei aus.');
+                    return;
+                }
+                
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     // Fahrzeug finden
@@ -1215,9 +1195,27 @@
                     
                     // Speichern
                     saveData();
+                    
+                    // Erfolgsbenachrichtigung
+                    alert('Das Bild wurde erfolgreich aktualisiert.');
                 };
+                
                 reader.readAsDataURL(file);
             });
+
+            // Daten speichern
+            function saveData() {
+                try {
+                    localStorage.setItem('vehicles', JSON.stringify(vehicles));
+                    localStorage.setItem('maintenanceTasks', JSON.stringify(maintenanceTasks));
+                    localStorage.setItem('maintenanceData', JSON.stringify(maintenanceData));
+                    localStorage.setItem('maintenanceRecords', JSON.stringify(maintenanceRecords));
+                    console.log('Daten gespeichert');
+                } catch (error) {
+                    console.error('Fehler beim Speichern der Daten:', error);
+                    alert('Fehler beim Speichern der Daten. Möglicherweise ist Ihr Speicherplatz voll.');
+                }
+            }
 
             // Daten exportieren
             function exportData() {
@@ -1340,25 +1338,6 @@
                 addMaintenanceRecordEntry(selectedVehicleId);
             });
             
-            // Schließen-Buttons für Modals
-            document.querySelectorAll('.modal-close').forEach(button => {
-                button.addEventListener('click', closeModals);
-            });
-            
-            // Overlay-Klick zum Schließen
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeModals();
-                    }
-                });
-            });
-            
-            // TÜV-Notification schließen
-            document.querySelector('.notification-close').addEventListener('click', function() {
-                tuevNotification.classList.add('hidden');
-            });
-            
             // Benachrichtigungen-Button
             notificationBtn.addEventListener('click', function() {
                 if ('Notification' in window) {
@@ -1386,6 +1365,25 @@
                 }
             });
             
+            // Schließen-Buttons für Modals
+            document.querySelectorAll('.modal-close').forEach(button => {
+                button.addEventListener('click', closeModals);
+            });
+            
+            // Overlay-Klick zum Schließen
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeModals();
+                    }
+                });
+            });
+            
+            // TÜV-Notification schließen
+            document.querySelector('.notification-close').addEventListener('click', function() {
+                tuevNotification.classList.add('hidden');
+            });
+
             // Initialisierung
             populateYears();
             populateGarages();
