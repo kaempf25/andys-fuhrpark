@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+// Event-Listener
+            
+            // Filter-Änderung<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -236,10 +238,13 @@
             <div class="bg-blue-100 p-3 rounded-lg mb-4 border border-blue-300">
                 <h3 class="font-bold text-blue-800 mb-2">Datensynchronisation</h3>
                 <div class="flex flex-wrap gap-2">
-                    <button id="export-btn" class="btn btn-green">Daten exportieren</button>
-                    <button id="import-btn" class="btn">Daten importieren</button>
+                    <button id="github-load-btn" class="btn bg-purple-700 hover:bg-purple-800">Von GitHub laden</button>
+                    <button id="github-export-btn" class="btn bg-purple-600 hover:bg-purple-700">Für GitHub exportieren</button>
+                    <button id="export-btn" class="btn btn-green">Lokal exportieren</button>
+                    <button id="import-btn" class="btn">Lokal importieren</button>
                     <input type="file" id="import-file" accept=".json" style="display:none">
                 </div>
+                <p class="text-xs text-blue-800 mt-2">GitHub-URL: <span id="github-url-display">https://github.com/kaempf25/andys-fuhrpark/blob/main/fahrzeugdaten.json</span></p>
             </div>
             
             <div class="flex flex-wrap justify-between items-center mb-4">
@@ -477,9 +482,9 @@
                     note: "",
                     tuevDate: "",
                     specs: {
-                        Motor: "5,0L V8",
+                        Motor: "3,0L V6",
                         Leistung: "320 PS",
-                        Baujahr: "1994",
+                        Baujahr: "1993",
                         Besonderheiten: "Hydraulisches Verdeck, automatischer Überrollbügel"
                     }
                 },
@@ -489,14 +494,14 @@
                     type: "Auto",
                     technical: "Elegantes Cabriolet mit sportlichem Charakter.",
                     imageUrl: "./Mervedes W208 CLK.jpeg",
-                    marketPrice: "10.000€",
+                    marketPrice: "12.000€",
                     garage: "Sparkasse_Avenwedde",
                     note: "",
                     tuevDate: "",
                     specs: {
-                        Motor: "2,3L Kompressor",
+                        Motor: "3,2L V6",
                         Leistung: "198 PS",
-                        Baujahr: "1999",
+                        Baujahr: "2005",
                         Besonderheiten: "Elektrisches Verdeck, Lederausstattung"
                     }
                 },
@@ -506,7 +511,7 @@
                     type: "Motorrad",
                     technical: "Klassisches BMW Boxer-Motorrad mit Kardanantrieb.",
                     imageUrl: "./BMW_R80.jpeg",
-                    marketPrice: "5.500€",
+                    marketPrice: "7.500€",
                     garage: "Mumprow",
                     note: "",
                     tuevDate: "",
@@ -530,7 +535,7 @@
                     specs: {
                         Motor: "300 ccm",
                         Leistung: "24 PS",
-                        Baujahr: "2014",
+                        Baujahr: "2018",
                         Besonderheiten: "ABS, ASR, LED-Beleuchtung"
                     }
                 },
@@ -540,7 +545,7 @@
                     type: "Motorrad",
                     technical: "Vielseitiges Reise-Enduro Motorrad für Straße und Gelände.",
                     imageUrl: "./BMW_R1200GS.jpeg",
-                    marketPrice: "12.900€",
+                    marketPrice: "14.900€",
                     garage: "Mumprow",
                     note: "",
                     tuevDate: "",
@@ -581,8 +586,8 @@
                     specs: {
                         Motor: "2,0L TDI",
                         Leistung: "150 PS",
-                        Baujahr: "2017",
-                        Besonderheiten: "Campingausbau, Bett, AHK, Küche"
+                        Baujahr: "2019",
+                        Besonderheiten: "Campingausbau, Aufstelldach, Küche"
                     }
                 },
                 {
@@ -604,7 +609,7 @@
                 },
                 {
                     id: "man-traktor-201",
-                    name: "MAN Traktor 2N1",
+                    name: "MAN Traktor 201",
                     type: "Landmaschine",
                     technical: "Klassischer Traktor für Feldarbeiten und leichte Transportaufgaben.",
                     imageUrl: "./man-traktor.jpeg",
@@ -613,10 +618,10 @@
                     note: "",
                     tuevDate: "",
                     specs: {
-                        Motor: "1,6L Diesel",
+                        Motor: "2,8L Diesel",
                         Leistung: "28 PS",
                         Baujahr: "1963",
-                        Besonderheiten: "Original Zustand, mit 2 Zusatzsitzen"
+                        Besonderheiten: "Restaurierter Zustand, Originalteile"
                     }
                 }
             ];
@@ -1300,9 +1305,132 @@
                 }
             }
 
-            // Event-Listener
+            // GitHub-Integration
+            // URL zu Ihrer JSON-Datei im GitHub-Repository
+            // Diese URL muss angepasst werden, um auf Ihr Repository zu verweisen
+            const githubDataUrl = "https://github.com/kaempf25/andys-fuhrpark/blob/main/fahrzeugdaten.json";
             
-            // Filter-Änderung
+            // Update URL-Anzeige
+            document.getElementById('github-url-display').textContent = githubDataUrl;
+            
+            // Lädt Daten von GitHub
+            async function loadFromGitHub() {
+                try {
+                    // Anzeigen, dass Daten geladen werden
+                    alert("Daten werden von GitHub geladen...");
+                    
+                    const response = await fetch(githubDataUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`GitHub-Daten konnten nicht geladen werden (Status: ${response.status})`);
+                    }
+                    
+                    const importedData = await response.json();
+                    
+                    // Daten validieren
+                    if (!importedData.vehicles || !Array.isArray(importedData.vehicles)) {
+                        throw new Error('Ungültiges Dateiformat: Fahrzeugdaten fehlen oder sind ungültig.');
+                    }
+                    
+                    // Daten übernehmen
+                    vehicles = importedData.vehicles;
+                    maintenanceTasks = importedData.maintenanceTasks || defaultMaintenanceTasks;
+                    maintenanceData = importedData.maintenanceData || {};
+                    maintenanceRecords = importedData.maintenanceRecords || {};
+                    
+                    // Speichern
+                    saveData();
+                    
+                    // UI aktualisieren
+                    displayVehicles(getFilteredVehicles());
+                    displayMaintenanceTable();
+                    showTuevReminders();
+                    
+                    alert(`Daten erfolgreich von GitHub geladen:\n- ${importedData.vehicles.length} Fahrzeuge\n- ${importedData.maintenanceTasks?.length || 0} Wartungsaufgaben`);
+                } catch (error) {
+                    console.error('Fehler beim Laden der Daten von GitHub:', error);
+                    alert(`Fehler beim Laden der Daten von GitHub:\n${error.message}\n\nBitte stellen Sie sicher, dass die URL korrekt ist und die Datei existiert.`);
+                }
+            }
+            
+            // Export für GitHub
+            function exportForGitHub() {
+                try {
+                    // Alle Daten in ein Objekt packen
+                    const exportData = {
+                        vehicles: vehicles,
+                        maintenanceTasks: maintenanceTasks,
+                        maintenanceData: maintenanceData,
+                        maintenanceRecords: maintenanceRecords,
+                        exportedAt: new Date().toISOString(),
+                        version: '1.3.0'
+                    };
+                    
+                    // JSON konvertieren (schön formatiert)
+                    const jsonData = JSON.stringify(exportData, null, 2);
+                    
+                    // Datei zum Download anbieten
+                    const blob = new Blob([jsonData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `fahrzeugdaten.json`;  // Immer der gleiche Name für GitHub
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    alert(`Daten wurden für GitHub exportiert.\n\nBitte laden Sie die Datei "fahrzeugdaten.json" in Ihr GitHub-Repository hoch, um die Daten zu aktualisieren.`);
+                } catch (error) {
+                    console.error('Fehler beim Exportieren der Daten für GitHub:', error);
+                    alert('Fehler beim Exportieren der Daten für GitHub: ' + error.message);
+                }
+            }
+            
+            // Automatisch Daten von GitHub laden beim Start
+            async function autoLoadFromGitHub() {
+                try {
+                    const response = await fetch(githubDataUrl);
+                    
+                    if (!response.ok) {
+                        console.log('Keine GitHub-Daten verfügbar. Verwende lokale Daten.');
+                        return;
+                    }
+                    
+                    const importedData = await response.json();
+                    
+                    // Daten validieren
+                    if (!importedData.vehicles || !Array.isArray(importedData.vehicles)) {
+                        console.log('Ungültiges GitHub-Dateiformat. Verwende lokale Daten.');
+                        return;
+                    }
+                    
+                    // Bestehende lokale Daten prüfen
+                    const hasLocalData = localStorage.getItem('vehicles') !== null;
+                    
+                    // Wenn keine lokalen Daten oder bestätigt, GitHub-Daten übernehmen
+                    if (!hasLocalData || confirm('Es wurden Daten auf GitHub gefunden. Möchten Sie diese laden? Lokale Änderungen gehen verloren.')) {
+                        // Daten übernehmen
+                        vehicles = importedData.vehicles;
+                        maintenanceTasks = importedData.maintenanceTasks || defaultMaintenanceTasks;
+                        maintenanceData = importedData.maintenanceData || {};
+                        maintenanceRecords = importedData.maintenanceRecords || {};
+                        
+                        // Speichern
+                        saveData();
+                        
+                        // UI aktualisieren
+                        displayVehicles(getFilteredVehicles());
+                        displayMaintenanceTable();
+                        showTuevReminders();
+                        
+                        console.log('Daten erfolgreich von GitHub geladen');
+                    }
+                } catch (error) {
+                    console.error('Fehler beim automatischen Laden der Daten von GitHub:', error);
+                    // Kein Alert, um den Benutzer nicht zu stören
+                }
+            }
             filterSelect.addEventListener('change', function() {
                 displayVehicles(getFilteredVehicles());
                 displayMaintenanceTable();
@@ -1349,7 +1477,11 @@
                 }
             });
             
-            // Export-Button
+            // GitHub Buttons
+            document.getElementById('github-load-btn').addEventListener('click', loadFromGitHub);
+            document.getElementById('github-export-btn').addEventListener('click', exportForGitHub);
+            
+            // Export-Button umbenannt
             document.getElementById('export-btn').addEventListener('click', exportData);
             
             // Import-Button und Datei-Input
@@ -1391,17 +1523,22 @@
             // Setze den Filter standardmäßig auf "Alle"
             filterSelect.value = "Alle";
             
-            // Immer Daten zurücksetzen, um neuen Fuhrpark zu verwenden
-            localStorage.clear();
-            vehicles = initialVehicles;
-            maintenanceTasks = defaultMaintenanceTasks;
-            maintenanceData = {};
-            maintenanceRecords = {};
-            saveData();
-            
-            displayVehicles(getFilteredVehicles());
-            displayMaintenanceTable();
-            showTuevReminders();
+            // Versuche, Daten von GitHub zu laden, dann lokale Daten zurücksetzen
+            autoLoadFromGitHub().then(() => {
+                // Verwende die geladenen Daten oder setze auf Standardwerte zurück
+                if (!localStorage.getItem('vehicles')) {
+                    vehicles = initialVehicles;
+                    maintenanceTasks = defaultMaintenanceTasks;
+                    maintenanceData = {};
+                    maintenanceRecords = {};
+                    saveData();
+                }
+                
+                // Anzeige aktualisieren
+                displayVehicles(getFilteredVehicles());
+                displayMaintenanceTable();
+                showTuevReminders();
+            });
             
             console.log('App initialisiert');
         });
