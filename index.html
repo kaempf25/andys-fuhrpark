@@ -244,7 +244,7 @@
                     <button id="import-btn" class="btn">Lokal importieren</button>
                     <input type="file" id="import-file" accept=".json" style="display:none">
                 </div>
-                <p class="text-xs text-blue-800 mt-2">GitHub-URL: <span id="github-url-display">https://github.com/kaempf25/andys-fuhrpark/blob/main/fahrzeugdaten.json</span></p>
+                <p class="text-xs text-blue-800 mt-2">GitHub-URL: <span id="github-url-display">https://raw.githubusercontent.com/USERNAME/REPO/main/fahrzeugdaten.json</span></p>
             </div>
             
             <div class="flex flex-wrap justify-between items-center mb-4">
@@ -1307,8 +1307,7 @@
 
             // GitHub-Integration
             // URL zu Ihrer JSON-Datei im GitHub-Repository
-            // Diese URL muss angepasst werden, um auf Ihr Repository zu verweisen
-            const githubDataUrl = "https://github.com/kaempf25/andys-fuhrpark/blob/main/fahrzeugdaten.json";
+            const githubDataUrl = "https://raw.githubusercontent.com/kaempf25/andys-fuhrpark/main/fahrzeugdaten.json";
             
             // Update URL-Anzeige
             document.getElementById('github-url-display').textContent = githubDataUrl;
@@ -1319,7 +1318,9 @@
                     // Anzeigen, dass Daten geladen werden
                     alert("Daten werden von GitHub geladen...");
                     
-                    const response = await fetch(githubDataUrl);
+                    // Cache-Umgehung durch Hinzufügen eines Zeitstempels
+                    const cacheBuster = `?timestamp=${new Date().getTime()}`;
+                    const response = await fetch(githubDataUrl + cacheBuster);
                     
                     if (!response.ok) {
                         throw new Error(`GitHub-Daten konnten nicht geladen werden (Status: ${response.status})`);
@@ -1390,7 +1391,9 @@
             // Automatisch Daten von GitHub laden beim Start
             async function autoLoadFromGitHub() {
                 try {
-                    const response = await fetch(githubDataUrl);
+                    // Cache-Umgehung durch Hinzufügen eines Zeitstempels
+                    const cacheBuster = `?timestamp=${new Date().getTime()}`;
+                    const response = await fetch(githubDataUrl + cacheBuster);
                     
                     if (!response.ok) {
                         console.log('Keine GitHub-Daten verfügbar. Verwende lokale Daten.');
