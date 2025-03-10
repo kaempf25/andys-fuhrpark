@@ -8,7 +8,7 @@
       "imageUrl": "./Mercedes w113.jpeg",
       "marketPrice": "80.000€",
       "garage": "Spexarder_Strasse",
-      "note": "",
+      "note": "Versicherung: 489,- (davon 351,- f. VK)\nSteuer: 191,-",
       "tuevDate": "2026-10-01",
       "specs": {
         "Motor": "2,3L Reihen-Sechszylinder",
@@ -25,7 +25,7 @@
       "imageUrl": "./Mercedes_R107.jpeg",
       "marketPrice": "30.000€",
       "garage": "Spexarder_Strasse",
-      "note": "",
+      "note": "Versicherung: 178,- von März - Okt.\nSteuer: 123,- von März - Okt.",
       "tuevDate": "2025-04-01",
       "specs": {
         "Motor": "5,6L V8",
@@ -42,7 +42,7 @@
       "imageUrl": "./Mercedes R129.jpeg",
       "marketPrice": "25.000€",
       "garage": "Spexarder_Strasse",
-      "note": "Egine Check leuchtet auf. Muss repariert werden",
+      "note": "Versicherung: 164,- von April - Okt.\nSteuer: 215,-\n\nEngine Check leuchtet auf. Muss repariert werden",
       "tuevDate": "2026-10-01",
       "specs": {
         "Motor": "3,0L V6",
@@ -59,7 +59,7 @@
       "imageUrl": "./Mervedes W208 CLK.jpeg",
       "marketPrice": "12.000€",
       "garage": "Sparkasse_Avenwedde",
-      "note": "Neue Scheibe in 2024 für 1040 €",
+      "note": "Versicherung: 167,82 von März - Okt.\nSteuer: 104,- von März - Okt.\nNeue Scheibe in 2024 für 1040 €",
       "tuevDate": "2025-06-01",
       "specs": {
         "Motor": "3,2L V6",
@@ -76,7 +76,7 @@
       "imageUrl": "./BMW_R80.jpeg",
       "marketPrice": "7.500€",
       "garage": "Spexarder_Strasse",
-      "note": "",
+      "note": "Versicherung: 67,-\nSteuer: 58,-",
       "tuevDate": "2026-08-01",
       "specs": {
         "Motor": "0,8L Boxer-Twin",
@@ -93,7 +93,7 @@
       "imageUrl": "./Vespa 300.jpeg",
       "marketPrice": "6.200€",
       "garage": "Amrumweg",
-      "note": "",
+      "note": "Versicherung: 17,-\nSteuer: 22,-",
       "tuevDate": "2026-05-01",
       "specs": {
         "Motor": "300 ccm",
@@ -110,7 +110,7 @@
       "imageUrl": "./BMW_R1200GS.jpeg",
       "marketPrice": "14.900€",
       "garage": "Sparkasse_Avenwedde",
-      "note": "",
+      "note": "Versicherung: 105,-\nSteuer: 80,-",
       "tuevDate": "2026-06-01",
       "specs": {
         "Motor": "1,2L Boxer-Twin",
@@ -127,7 +127,7 @@
       "imageUrl": "./anhaenger.jpg",
       "marketPrice": "200€",
       "garage": "Amrumweg",
-      "note": "",
+      "note": "Versicherung: 17,-\nSteuer: 29,-",
       "tuevDate": "2025-06-01",
       "specs": {
         "Motor": "Ohne",
@@ -144,7 +144,7 @@
       "imageUrl": "./VW T6.jpeg",
       "marketPrice": "18.000€",
       "garage": "Amrumweg",
-      "note": "",
+      "note": "Versicherung: 522,-\nSteuer: 172,-",
       "tuevDate": "2026-10-01",
       "specs": {
         "Motor": "2,0L TDI",
@@ -161,7 +161,7 @@
       "imageUrl": "./smart.jpg",
       "marketPrice": "5.600€",
       "garage": "Amrumweg",
-      "note": "",
+      "note": "Versicherung: 120,- \nSteuer: 67,-",
       "tuevDate": "2026-06-01",
       "specs": {
         "Motor": "1,0L Dreizylinder",
@@ -178,7 +178,7 @@
       "imageUrl": "./man-traktor.jpeg",
       "marketPrice": "4.500€",
       "garage": "Mumprow",
-      "note": "",
+      "note": "nicht angemeldet",
       "tuevDate": "2005-05-01",
       "specs": {
         "Motor": "2,8L Diesel",
@@ -205,6 +205,6 @@
     }
   },
   "maintenanceRecords": {},
-  "exportedAt": "2025-03-07T08:26:42.166Z",
+  "exportedAt": "2025-03-10T07:49:25.125Z",
   "version": "1.3.0"
 }
