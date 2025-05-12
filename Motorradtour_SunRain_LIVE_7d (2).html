@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-easybutton/2.4.0/easy-button.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-easybutton/2.4.0/easy-button.min.css"/>
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_1179d4c9bebd510db54b27fd433817a1 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+<script>
+var cityData = {"Dubrovnik": {"lat": 42.6507, "lon": 18.0944}, "Makarska": {"lat": 43.2951, "lon": 17.0148}, "Split": {"lat": 43.5081, "lon": 16.4402}, "Zadar": {"lat": 44.1194, "lon": 15.2314}, "Rijeka": {"lat": 45.3271, "lon": 14.4422}, "Koper": {"lat": 45.5481, "lon": 13.73}, "Triest": {"lat": 45.6495, "lon": 13.7768}, "Venedig": {"lat": 45.4408, "lon": 12.3155}, "Chioggia": {"lat": 45.2175, "lon": 12.2852}, "Ravenna": {"lat": 44.4184, "lon": 12.2035}, "Rimini": {"lat": 44.0678, "lon": 12.5695}, "Ancona": {"lat": 43.6158, "lon": 13.5189}, "Pescara": {"lat": 42.4618, "lon": 14.2161}, "Termoli": {"lat": 42.0059, "lon": 15.0004}, "Neapel": {"lat": 40.8518, "lon": 14.2681}, "Salerno": {"lat": 40.6824, "lon": 14.7681}, "Rom\u202f(Ostia)": {"lat": 41.732, "lon": 12.2897}, "Civitavecchia": {"lat": 42.0924, "lon": 11.7954}, "Grosseto": {"lat": 42.7597, "lon": 11.1126}, "Livorno": {"lat": 43.5485, "lon": 10.3106}, "La\u202fSpezia\u202f/\u202fCinque\u202fTerre": {"lat": 44.1446, "lon": 9.6544}, "Genua": {"lat": 44.4056, "lon": 8.9463}, "Sanremo": {"lat": 43.819, "lon": 7.7741}, "Nizza\u00a0(Nice)": {"lat": 43.7102, "lon": 7.262}, "Cannes": {"lat": 43.5528, "lon": 7.0174}, "Marseille": {"lat": 43.2965, "lon": 5.3698}, "Montpellier": {"lat": 43.6108, "lon": 3.8767}, "Perpignan": {"lat": 42.6886, "lon": 2.8948}, "Biarritz": {"lat": 43.483, "lon": -1.5586}, "Barcelona": {"lat": 41.3851, "lon": 2.1734}, "Tarragona": {"lat": 41.1189, "lon": 1.2445}, "Valencia": {"lat": 39.4699, "lon": -0.3763}, "Alicante": {"lat": 38.3452, "lon": -0.481}, "Cartagena": {"lat": 37.6257, "lon": -0.9966}, "Almer\u00eda": {"lat": 36.834, "lon": -2.4637}, "M\u00e1laga": {"lat": 36.7213, "lon": -4.4214}, "Marbella": {"lat": 36.5101, "lon": -4.8825}, "Gibraltar": {"lat": 36.1408, "lon": -5.3536}, "Garda\u00a0(Stadt)": {"lat": 45.544, "lon": 10.7357}, "Quimper": {"lat": 47.994, "lon": -4.0963}, "Isselhorst": {"lat": 51.9458, "lon": 8.4111}};
+var days     = 7;
+var tz       = "Europe/Berlin";
+function mCol(mm){ return mm>10?'darkblue':(mm>2?'green':'yellow'); }
+function rCol(mm){ return mm>5?'darkblue':(mm>1?'green':'yellow'); }
+
+async function refresh(btn,map){
+ btn && btn.disable();
+ const part="&forecast_days="+days+"&daily=precipitation_sum&timezone="+tz;
+ for(const [city,info] of Object.entries(cityData)){
+   const url="https://api.open-meteo.com/v1/forecast?latitude="+info.lat+"&longitude="+info.lon+part;
+   try{
+     const js=await (await fetch(url)).json();
+     const arr=js.daily.precipitation_sum;
+     const sum=arr.reduce((a,b)=>a+b,0);
+     let popup="<b>"+city+"</b><br><u>Nächste 7 Tage</u><br>";
+     arr.forEach((mm,i)=>{
+        const d=new Date(js.daily.time[i]).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'});
+        popup+="<div style='background:"+rCol(mm)+";padding:2px 4px;'>"+d+": "+mm.toFixed(1)+" mm</div>";
+     });
+     map.eachLayer(l=>{
+        if(l.options && l.options.name===city){
+          l.setStyle({color:mCol(sum),fillColor:mCol(sum)});
+          l.setPopupContent(popup);
+        }
+     });
+   }catch(e){ console.log('Fetch error',city,e); }
+ }
+ btn && btn.enable();
+}
+L.easyButton('fa-sync',function(btn,map){ refresh(btn,map); },
+             'Regenprognose (7 Tage) aktualisieren').addTo(m);
+</script>
+    
+            <div class="folium-map" id="map_1179d4c9bebd510db54b27fd433817a1" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_1179d4c9bebd510db54b27fd433817a1 = L.map(
+                "map_1179d4c9bebd510db54b27fd433817a1",
+                {
+                    center: [43.0, 8.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 5,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_f25dfa2e7e573247e1a4f5565c1cb3b4 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_f25dfa2e7e573247e1a4f5565c1cb3b4.addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+            var circle_marker_ec36ade0eaab0b3a0e544ae6e77219f1 = L.circleMarker(
+                [42.6507, 18.0944],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_be0b874f09e055f9c4849d1336831967 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_7ede6f96b165c09dc215d5b622ca6c85 = $(`<div id="html_7ede6f96b165c09dc215d5b622ca6c85" style="width: 100.0%; height: 100.0%;"><b>Dubrovnik</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 1.9 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>18.05: 6.9 mm</div></div>`)[0];
+                popup_be0b874f09e055f9c4849d1336831967.setContent(html_7ede6f96b165c09dc215d5b622ca6c85);
+            
+        
+
+        circle_marker_ec36ade0eaab0b3a0e544ae6e77219f1.bindPopup(popup_be0b874f09e055f9c4849d1336831967)
+        ;
+
+        
+    
+    
+            var circle_marker_81099bb8e5bcd270acb22bcfbe301822 = L.circleMarker(
+                [43.2951, 17.0148],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_9bbd2755b97a5638cc5153310264bf6f = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_1751c6209cbaf1e9c632c03ed82af970 = $(`<div id="html_1751c6209cbaf1e9c632c03ed82af970" style="width: 100.0%; height: 100.0%;"><b>Makarska</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.5 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>18.05: 2.7 mm</div></div>`)[0];
+                popup_9bbd2755b97a5638cc5153310264bf6f.setContent(html_1751c6209cbaf1e9c632c03ed82af970);
+            
+        
+
+        circle_marker_81099bb8e5bcd270acb22bcfbe301822.bindPopup(popup_9bbd2755b97a5638cc5153310264bf6f)
+        ;
+
+        
+    
+    
+            var circle_marker_280b6a68069b96c894bc04e0df059112 = L.circleMarker(
+                [43.5081, 16.4402],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_6dba96f1cfabdc68a03423fdf281722f = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_9bbba69b215fa97db49db6ec8e2c4424 = $(`<div id="html_9bbba69b215fa97db49db6ec8e2c4424" style="width: 100.0%; height: 100.0%;"><b>Split</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>18.05: 3.3 mm</div></div>`)[0];
+                popup_6dba96f1cfabdc68a03423fdf281722f.setContent(html_9bbba69b215fa97db49db6ec8e2c4424);
+            
+        
+
+        circle_marker_280b6a68069b96c894bc04e0df059112.bindPopup(popup_6dba96f1cfabdc68a03423fdf281722f)
+        ;
+
+        
+    
+    
+            var circle_marker_b28925956381ef07a3b486cbb928436b = L.circleMarker(
+                [44.1194, 15.2314],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_616bae7e6525f39c5c37859c4f8c8e6c = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_6f4f9f7e6b0a6db4bf72e02105843331 = $(`<div id="html_6f4f9f7e6b0a6db4bf72e02105843331" style="width: 100.0%; height: 100.0%;"><b>Zadar</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 1.5 mm</div></div>`)[0];
+                popup_616bae7e6525f39c5c37859c4f8c8e6c.setContent(html_6f4f9f7e6b0a6db4bf72e02105843331);
+            
+        
+
+        circle_marker_b28925956381ef07a3b486cbb928436b.bindPopup(popup_616bae7e6525f39c5c37859c4f8c8e6c)
+        ;
+
+        
+    
+    
+            var circle_marker_c6df058b85c5a545d2ceff6b38229bdb = L.circleMarker(
+                [45.3271, 14.4422],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_9012936a9ab3cb7397cbe8873f103e0a = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_bda26a105a882fc3a5aa5c5af82a1cb8 = $(`<div id="html_bda26a105a882fc3a5aa5c5af82a1cb8" style="width: 100.0%; height: 100.0%;"><b>Rijeka</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.2 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 1.2 mm</div><div style='background:green;padding:2px 4px;'>16.05: 2.1 mm</div><div style='background:green;padding:2px 4px;'>17.05: 2.7 mm</div><div style='background:green;padding:2px 4px;'>18.05: 3.3 mm</div></div>`)[0];
+                popup_9012936a9ab3cb7397cbe8873f103e0a.setContent(html_bda26a105a882fc3a5aa5c5af82a1cb8);
+            
+        
+
+        circle_marker_c6df058b85c5a545d2ceff6b38229bdb.bindPopup(popup_9012936a9ab3cb7397cbe8873f103e0a)
+        ;
+
+        
+    
+    
+            var circle_marker_80384714cb483ad0751e2948f0b6dedb = L.circleMarker(
+                [45.5481, 13.73],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_da0907c1dfb12abe6b1ed5170cc7e12b = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_23270e4851783efc0fb416596186e640 = $(`<div id="html_23270e4851783efc0fb416596186e640" style="width: 100.0%; height: 100.0%;"><b>Koper</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.9 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.6 mm</div><div style='background:green;padding:2px 4px;'>18.05: 2.7 mm</div></div>`)[0];
+                popup_da0907c1dfb12abe6b1ed5170cc7e12b.setContent(html_23270e4851783efc0fb416596186e640);
+            
+        
+
+        circle_marker_80384714cb483ad0751e2948f0b6dedb.bindPopup(popup_da0907c1dfb12abe6b1ed5170cc7e12b)
+        ;
+
+        
+    
+    
+            var circle_marker_d515bf294c2fea5eb1db434eea223c30 = L.circleMarker(
+                [45.6495, 13.7768],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_b5e73eadfa252f89589a9c755223d16c = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_5f4c42dbee106c08c11a49d57b48edca = $(`<div id="html_5f4c42dbee106c08c11a49d57b48edca" style="width: 100.0%; height: 100.0%;"><b>Triest</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 1.4 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.9 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.6 mm</div><div style='background:green;padding:2px 4px;'>18.05: 2.7 mm</div></div>`)[0];
+                popup_b5e73eadfa252f89589a9c755223d16c.setContent(html_5f4c42dbee106c08c11a49d57b48edca);
+            
+        
+
+        circle_marker_d515bf294c2fea5eb1db434eea223c30.bindPopup(popup_b5e73eadfa252f89589a9c755223d16c)
+        ;
+
+        
+    
+    
+            var circle_marker_af75da55f3041005c399c83bb5463135 = L.circleMarker(
+                [45.4408, 12.3155],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_096f96b5b7093f3caf49d43e69864767 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_1ee645a049bdb4f9517dc66a620bba8d = $(`<div id="html_1ee645a049bdb4f9517dc66a620bba8d" style="width: 100.0%; height: 100.0%;"><b>Venedig</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 1.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.7 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>15.05: 2.4 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.6 mm</div></div>`)[0];
+                popup_096f96b5b7093f3caf49d43e69864767.setContent(html_1ee645a049bdb4f9517dc66a620bba8d);
+            
+        
+
+        circle_marker_af75da55f3041005c399c83bb5463135.bindPopup(popup_096f96b5b7093f3caf49d43e69864767)
+        ;
+
+        
+    
+    
+            var circle_marker_d361e4806a6b8badc8a695dd883fbb54 = L.circleMarker(
+                [45.2175, 12.2852],
+                {"bubblingMouseEvents": true, "color": "darkblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "darkblue", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_67e4e6938f121fa2253df3ea73ba6101 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_69d33de63a8c7bc01ad995e6848316e4 = $(`<div id="html_69d33de63a8c7bc01ad995e6848316e4" style="width: 100.0%; height: 100.0%;"><b>Chioggia</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.3 mm</div><div style='background:darkblue;padding:2px 4px;'>13.05: 35.2 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>15.05: 3.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_67e4e6938f121fa2253df3ea73ba6101.setContent(html_69d33de63a8c7bc01ad995e6848316e4);
+            
+        
+
+        circle_marker_d361e4806a6b8badc8a695dd883fbb54.bindPopup(popup_67e4e6938f121fa2253df3ea73ba6101)
+        ;
+
+        
+    
+    
+            var circle_marker_252d8d1de5a3677291dba96068a90df7 = L.circleMarker(
+                [44.4184, 12.2035],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_8e288163b046d3d467fc53324825ab26 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_62ca3c49478851083ef3d69520b0b16a = $(`<div id="html_62ca3c49478851083ef3d69520b0b16a" style="width: 100.0%; height: 100.0%;"><b>Ravenna</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>13.05: 2.2 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>16.05: 2.1 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.3 mm</div></div>`)[0];
+                popup_8e288163b046d3d467fc53324825ab26.setContent(html_62ca3c49478851083ef3d69520b0b16a);
+            
+        
+
+        circle_marker_252d8d1de5a3677291dba96068a90df7.bindPopup(popup_8e288163b046d3d467fc53324825ab26)
+        ;
+
+        
+    
+    
+            var circle_marker_7262f03cdc63397a66a22c60219de086 = L.circleMarker(
+                [44.0678, 12.5695],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_dac2df96f65ebaf5fc1a2b541e46a251 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_2e4ae0152b010bfb16753e2537bbba24 = $(`<div id="html_2e4ae0152b010bfb16753e2537bbba24" style="width: 100.0%; height: 100.0%;"><b>Rimini</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>13.05: 6.5 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 1.8 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_dac2df96f65ebaf5fc1a2b541e46a251.setContent(html_2e4ae0152b010bfb16753e2537bbba24);
+            
+        
+
+        circle_marker_7262f03cdc63397a66a22c60219de086.bindPopup(popup_dac2df96f65ebaf5fc1a2b541e46a251)
+        ;
+
+        
+    
+    
+            var circle_marker_fbd1485d6cd3e84e21189d3ec538c29a = L.circleMarker(
+                [43.6158, 13.5189],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_9ae3f82bb290bf7aa82cc656c271f020 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_1c59b8485f1d565aee1ac051582087db = $(`<div id="html_1c59b8485f1d565aee1ac051582087db" style="width: 100.0%; height: 100.0%;"><b>Ancona</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.7 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_9ae3f82bb290bf7aa82cc656c271f020.setContent(html_1c59b8485f1d565aee1ac051582087db);
+            
+        
+
+        circle_marker_fbd1485d6cd3e84e21189d3ec538c29a.bindPopup(popup_9ae3f82bb290bf7aa82cc656c271f020)
+        ;
+
+        
+    
+    
+            var circle_marker_5de93083c48739d806598e80592ffd78 = L.circleMarker(
+                [42.4618, 14.2161],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_3b9445a6ce1da9552657765d2a51047b = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_b485f4fc72550adda4c90b781711c31f = $(`<div id="html_b485f4fc72550adda4c90b781711c31f" style="width: 100.0%; height: 100.0%;"><b>Pescara</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>13.05: 5.5 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.9 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 1.8 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 1.2 mm</div></div>`)[0];
+                popup_3b9445a6ce1da9552657765d2a51047b.setContent(html_b485f4fc72550adda4c90b781711c31f);
+            
+        
+
+        circle_marker_5de93083c48739d806598e80592ffd78.bindPopup(popup_3b9445a6ce1da9552657765d2a51047b)
+        ;
+
+        
+    
+    
+            var circle_marker_ca375df2e29596595cf399406129d574 = L.circleMarker(
+                [42.0059, 15.0004],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_4c94d53a5455fc143b98b960af7388d7 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_5e8ea1e5e35df7dc94772d081e6c8017 = $(`<div id="html_5e8ea1e5e35df7dc94772d081e6c8017" style="width: 100.0%; height: 100.0%;"><b>Termoli</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>13.05: 2.1 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>16.05: 4.8 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_4c94d53a5455fc143b98b960af7388d7.setContent(html_5e8ea1e5e35df7dc94772d081e6c8017);
+            
+        
+
+        circle_marker_ca375df2e29596595cf399406129d574.bindPopup(popup_4c94d53a5455fc143b98b960af7388d7)
+        ;
+
+        
+    
+    
+            var circle_marker_2a206dcc2b76c1e9af734a783e5e8e99 = L.circleMarker(
+                [40.8518, 14.2681],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_2f3616b4d9f4a8137d6e49801ead017c = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_38e3ee59bb40f4d0c4b44861dfb97a7d = $(`<div id="html_38e3ee59bb40f4d0c4b44861dfb97a7d" style="width: 100.0%; height: 100.0%;"><b>Neapel</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.6 mm</div></div>`)[0];
+                popup_2f3616b4d9f4a8137d6e49801ead017c.setContent(html_38e3ee59bb40f4d0c4b44861dfb97a7d);
+            
+        
+
+        circle_marker_2a206dcc2b76c1e9af734a783e5e8e99.bindPopup(popup_2f3616b4d9f4a8137d6e49801ead017c)
+        ;
+
+        
+    
+    
+            var circle_marker_758c84216ddb14a241673b29966bd421 = L.circleMarker(
+                [40.6824, 14.7681],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_4c3e5d5ccb5ffb3d8821f399ab9be269 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_b48da62bd9958c2236a32d8b32a3ec56 = $(`<div id="html_b48da62bd9958c2236a32d8b32a3ec56" style="width: 100.0%; height: 100.0%;"><b>Salerno</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 1.2 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.8 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.6 mm</div></div>`)[0];
+                popup_4c3e5d5ccb5ffb3d8821f399ab9be269.setContent(html_b48da62bd9958c2236a32d8b32a3ec56);
+            
+        
+
+        circle_marker_758c84216ddb14a241673b29966bd421.bindPopup(popup_4c3e5d5ccb5ffb3d8821f399ab9be269)
+        ;
+
+        
+    
+    
+            var circle_marker_2c21b19c2933aa168608f8b1707c24f6 = L.circleMarker(
+                [41.732, 12.2897],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_6121833b8c22467ebdaddf187367ce9e = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_18e25f823383e5ff1f287fe1b47b947f = $(`<div id="html_18e25f823383e5ff1f287fe1b47b947f" style="width: 100.0%; height: 100.0%;"><b>Rom (Ostia)</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.2 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.9 mm</div><div style='background:green;padding:2px 4px;'>18.05: 3.0 mm</div></div>`)[0];
+                popup_6121833b8c22467ebdaddf187367ce9e.setContent(html_18e25f823383e5ff1f287fe1b47b947f);
+            
+        
+
+        circle_marker_2c21b19c2933aa168608f8b1707c24f6.bindPopup(popup_6121833b8c22467ebdaddf187367ce9e)
+        ;
+
+        
+    
+    
+            var circle_marker_c5a2d192b0fe20120551cc26f656eb77 = L.circleMarker(
+                [42.0924, 11.7954],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_9dd0ae017580099e3f35aaef1bd036e9 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_b1958c17bdf2f4eac171b9abbe38d5ae = $(`<div id="html_b1958c17bdf2f4eac171b9abbe38d5ae" style="width: 100.0%; height: 100.0%;"><b>Civitavecchia</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>17.05: 3.3 mm</div><div style='background:green;padding:2px 4px;'>18.05: 3.0 mm</div></div>`)[0];
+                popup_9dd0ae017580099e3f35aaef1bd036e9.setContent(html_b1958c17bdf2f4eac171b9abbe38d5ae);
+            
+        
+
+        circle_marker_c5a2d192b0fe20120551cc26f656eb77.bindPopup(popup_9dd0ae017580099e3f35aaef1bd036e9)
+        ;
+
+        
+    
+    
+            var circle_marker_4704933ca6962b836a3e14d19d4c2fdb = L.circleMarker(
+                [42.7597, 11.1126],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_2e4f4fd6556ae160c317f8b22abeca51 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_65e502e213eeb950aa3499a30361c909 = $(`<div id="html_65e502e213eeb950aa3499a30361c909" style="width: 100.0%; height: 100.0%;"><b>Grosseto</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.6 mm</div><div style='background:green;padding:2px 4px;'>18.05: 2.4 mm</div></div>`)[0];
+                popup_2e4f4fd6556ae160c317f8b22abeca51.setContent(html_65e502e213eeb950aa3499a30361c909);
+            
+        
+
+        circle_marker_4704933ca6962b836a3e14d19d4c2fdb.bindPopup(popup_2e4f4fd6556ae160c317f8b22abeca51)
+        ;
+
+        
+    
+    
+            var circle_marker_a2ca282434351c66ebddb5eca54c2701 = L.circleMarker(
+                [43.5485, 10.3106],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_6381d9495e9f2d1fc9749b4154f4499d = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_0e4ad401c28335317e2dbbff1fe6889e = $(`<div id="html_0e4ad401c28335317e2dbbff1fe6889e" style="width: 100.0%; height: 100.0%;"><b>Livorno</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.6 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.8 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 1.2 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_6381d9495e9f2d1fc9749b4154f4499d.setContent(html_0e4ad401c28335317e2dbbff1fe6889e);
+            
+        
+
+        circle_marker_a2ca282434351c66ebddb5eca54c2701.bindPopup(popup_6381d9495e9f2d1fc9749b4154f4499d)
+        ;
+
+        
+    
+    
+            var circle_marker_936db53ecf4ff7d48610b8fb832de831 = L.circleMarker(
+                [44.1446, 9.6544],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_a1a279bbf988dd8308fd8b847ed88b77 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_dedce748aa986c8089427320bfa15514 = $(`<div id="html_dedce748aa986c8089427320bfa15514" style="width: 100.0%; height: 100.0%;"><b>La Spezia / Cinque Terre</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.2 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 1.8 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_a1a279bbf988dd8308fd8b847ed88b77.setContent(html_dedce748aa986c8089427320bfa15514);
+            
+        
+
+        circle_marker_936db53ecf4ff7d48610b8fb832de831.bindPopup(popup_a1a279bbf988dd8308fd8b847ed88b77)
+        ;
+
+        
+    
+    
+            var circle_marker_c9c1a2bd25d48052130b900cfe2ad338 = L.circleMarker(
+                [44.4056, 8.9463],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_c3a71baa2268ae69ccf011de5b5b7a7a = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_30607fbb5a66ed5afbf668786d784dad = $(`<div id="html_30607fbb5a66ed5afbf668786d784dad" style="width: 100.0%; height: 100.0%;"><b>Genua</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.9 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_c3a71baa2268ae69ccf011de5b5b7a7a.setContent(html_30607fbb5a66ed5afbf668786d784dad);
+            
+        
+
+        circle_marker_c9c1a2bd25d48052130b900cfe2ad338.bindPopup(popup_c3a71baa2268ae69ccf011de5b5b7a7a)
+        ;
+
+        
+    
+    
+            var circle_marker_4eba715ac037068ee6fe39e5c5cd1890 = L.circleMarker(
+                [43.819, 7.7741],
+                {"bubblingMouseEvents": true, "color": "darkblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "darkblue", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_9be76c7ba50e3cdd2a7f8c87be1c0726 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_b7d61515540993db83f4f1734f920698 = $(`<div id="html_b7d61515540993db83f4f1734f920698" style="width: 100.0%; height: 100.0%;"><b>Sanremo</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 1.2 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:darkblue;padding:2px 4px;'>17.05: 10.5 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.3 mm</div></div>`)[0];
+                popup_9be76c7ba50e3cdd2a7f8c87be1c0726.setContent(html_b7d61515540993db83f4f1734f920698);
+            
+        
+
+        circle_marker_4eba715ac037068ee6fe39e5c5cd1890.bindPopup(popup_9be76c7ba50e3cdd2a7f8c87be1c0726)
+        ;
+
+        
+    
+    
+            var circle_marker_24a38f66143b4d981fa98dc29d8a9547 = L.circleMarker(
+                [43.7102, 7.262],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_6ba841d7e80626f16a9a1e6bedaa1a7e = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_f4f0cbf1a1506b2b0f6466e9b7cc351a = $(`<div id="html_f4f0cbf1a1506b2b0f6466e9b7cc351a" style="width: 100.0%; height: 100.0%;"><b>Nizza (Nice)</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.2 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 1.2 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 1.8 mm</div><div style='background:green;padding:2px 4px;'>17.05: 2.7 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_6ba841d7e80626f16a9a1e6bedaa1a7e.setContent(html_f4f0cbf1a1506b2b0f6466e9b7cc351a);
+            
+        
+
+        circle_marker_24a38f66143b4d981fa98dc29d8a9547.bindPopup(popup_6ba841d7e80626f16a9a1e6bedaa1a7e)
+        ;
+
+        
+    
+    
+            var circle_marker_deb754273158251cbe319133f760756b = L.circleMarker(
+                [43.5528, 7.0174],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_69e3f574adc8e72710e63147d0e2d3cf = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_007770bd2ebef450e5b86046b554ad7a = $(`<div id="html_007770bd2ebef450e5b86046b554ad7a" style="width: 100.0%; height: 100.0%;"><b>Cannes</b><br><u>Nächste 7 Tage</u><br><div style='background:green;padding:2px 4px;'>12.05: 2.7 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 1.2 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_69e3f574adc8e72710e63147d0e2d3cf.setContent(html_007770bd2ebef450e5b86046b554ad7a);
+            
+        
+
+        circle_marker_deb754273158251cbe319133f760756b.bindPopup(popup_69e3f574adc8e72710e63147d0e2d3cf)
+        ;
+
+        
+    
+    
+            var circle_marker_025d72350f425f46e8079e3ead04920f = L.circleMarker(
+                [43.2965, 5.3698],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_09873619be6b5062ba8dcdf65d89f506 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_d869a61a3c2e66602efda9df65b5c5ed = $(`<div id="html_d869a61a3c2e66602efda9df65b5c5ed" style="width: 100.0%; height: 100.0%;"><b>Marseille</b><br><u>Nächste 7 Tage</u><br><div style='background:green;padding:2px 4px;'>12.05: 6.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_09873619be6b5062ba8dcdf65d89f506.setContent(html_d869a61a3c2e66602efda9df65b5c5ed);
+            
+        
+
+        circle_marker_025d72350f425f46e8079e3ead04920f.bindPopup(popup_09873619be6b5062ba8dcdf65d89f506)
+        ;
+
+        
+    
+    
+            var circle_marker_d9258e815a338f19fc36dbfb20b6ae29 = L.circleMarker(
+                [43.6108, 3.8767],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_d4b66da2ef56b76ceb6978e2c5e97b54 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_2cec3c9f1b754de078e560106b26cb9e = $(`<div id="html_2cec3c9f1b754de078e560106b26cb9e" style="width: 100.0%; height: 100.0%;"><b>Montpellier</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.2 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_d4b66da2ef56b76ceb6978e2c5e97b54.setContent(html_2cec3c9f1b754de078e560106b26cb9e);
+            
+        
+
+        circle_marker_d9258e815a338f19fc36dbfb20b6ae29.bindPopup(popup_d4b66da2ef56b76ceb6978e2c5e97b54)
+        ;
+
+        
+    
+    
+            var circle_marker_bd92768ae0222d518700bf59670ce943 = L.circleMarker(
+                [42.6886, 2.8948],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_cf1e2700a1d7e97c5ee81360df2dc766 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_831a2b6fe521e21ee198bf41facb08db = $(`<div id="html_831a2b6fe521e21ee198bf41facb08db" style="width: 100.0%; height: 100.0%;"><b>Perpignan</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.4 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_cf1e2700a1d7e97c5ee81360df2dc766.setContent(html_831a2b6fe521e21ee198bf41facb08db);
+            
+        
+
+        circle_marker_bd92768ae0222d518700bf59670ce943.bindPopup(popup_cf1e2700a1d7e97c5ee81360df2dc766)
+        ;
+
+        
+    
+    
+            var circle_marker_f939ed167ca98cb997aff054f7559801 = L.circleMarker(
+                [43.483, -1.5586],
+                {"bubblingMouseEvents": true, "color": "darkblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "darkblue", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_5bfa2d2ffe8a140b058538765dddea3d = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_3ef87059b0b1f5727f4b4bda85d3a113 = $(`<div id="html_3ef87059b0b1f5727f4b4bda85d3a113" style="width: 100.0%; height: 100.0%;"><b>Biarritz</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 1.0 mm</div><div style='background:green;padding:2px 4px;'>13.05: 3.5 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.7 mm</div><div style='background:green;padding:2px 4px;'>15.05: 7.6 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_5bfa2d2ffe8a140b058538765dddea3d.setContent(html_3ef87059b0b1f5727f4b4bda85d3a113);
+            
+        
+
+        circle_marker_f939ed167ca98cb997aff054f7559801.bindPopup(popup_5bfa2d2ffe8a140b058538765dddea3d)
+        ;
+
+        
+    
+    
+            var circle_marker_9c5e4f3ab4c64005da7d2d8f5693a057 = L.circleMarker(
+                [41.3851, 2.1734],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_ea1dd06906ab8c84058de6655fa8e632 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_e94ac9dfbb3b670920e28e898bfd19f4 = $(`<div id="html_e94ac9dfbb3b670920e28e898bfd19f4" style="width: 100.0%; height: 100.0%;"><b>Barcelona</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_ea1dd06906ab8c84058de6655fa8e632.setContent(html_e94ac9dfbb3b670920e28e898bfd19f4);
+            
+        
+
+        circle_marker_9c5e4f3ab4c64005da7d2d8f5693a057.bindPopup(popup_ea1dd06906ab8c84058de6655fa8e632)
+        ;
+
+        
+    
+    
+            var circle_marker_4b4703ebf1992b7488e71daed08aa5f1 = L.circleMarker(
+                [41.1189, 1.2445],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_34267c3f4050c2f4cb232415ddcde1d8 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_7b6117fcfa33eeb3e4f715570d936849 = $(`<div id="html_7b6117fcfa33eeb3e4f715570d936849" style="width: 100.0%; height: 100.0%;"><b>Tarragona</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.5 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_34267c3f4050c2f4cb232415ddcde1d8.setContent(html_7b6117fcfa33eeb3e4f715570d936849);
+            
+        
+
+        circle_marker_4b4703ebf1992b7488e71daed08aa5f1.bindPopup(popup_34267c3f4050c2f4cb232415ddcde1d8)
+        ;
+
+        
+    
+    
+            var circle_marker_14ebea374d6865008b6c0de80276f7e4 = L.circleMarker(
+                [39.4699, -0.3763],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_7cd44c7589f92b86f2e82e66d68cf294 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_0cea46373d463fc77058b01ccaa71cef = $(`<div id="html_0cea46373d463fc77058b01ccaa71cef" style="width: 100.0%; height: 100.0%;"><b>Valencia</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>14.05: 3.2 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.2 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_7cd44c7589f92b86f2e82e66d68cf294.setContent(html_0cea46373d463fc77058b01ccaa71cef);
+            
+        
+
+        circle_marker_14ebea374d6865008b6c0de80276f7e4.bindPopup(popup_7cd44c7589f92b86f2e82e66d68cf294)
+        ;
+
+        
+    
+    
+            var circle_marker_88b75d7827a344ef9ce25faf8cc15339 = L.circleMarker(
+                [38.3452, -0.481],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_790555fe006896775407e388766aee99 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_43c1df0d9b9877ebee2f8823e85b0eb8 = $(`<div id="html_43c1df0d9b9877ebee2f8823e85b0eb8" style="width: 100.0%; height: 100.0%;"><b>Alicante</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>14.05: 4.2 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_790555fe006896775407e388766aee99.setContent(html_43c1df0d9b9877ebee2f8823e85b0eb8);
+            
+        
+
+        circle_marker_88b75d7827a344ef9ce25faf8cc15339.bindPopup(popup_790555fe006896775407e388766aee99)
+        ;
+
+        
+    
+    
+            var circle_marker_36d615a38188a0b7598e3eea70b10eb5 = L.circleMarker(
+                [37.6257, -0.9966],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_f63c5b572f87cb699b048dd889544873 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_8a1b03ecef6d487c81ff193f9d0ddae3 = $(`<div id="html_8a1b03ecef6d487c81ff193f9d0ddae3" style="width: 100.0%; height: 100.0%;"><b>Cartagena</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 1.8 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.3 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_f63c5b572f87cb699b048dd889544873.setContent(html_8a1b03ecef6d487c81ff193f9d0ddae3);
+            
+        
+
+        circle_marker_36d615a38188a0b7598e3eea70b10eb5.bindPopup(popup_f63c5b572f87cb699b048dd889544873)
+        ;
+
+        
+    
+    
+            var circle_marker_67db5311c30f9ac9af53e9a19280f919 = L.circleMarker(
+                [36.834, -2.4637],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_6eeefa6752c9e86db1fab87e293def89 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_1608bdc2ef2583e33ec1907d0173ecd5 = $(`<div id="html_1608bdc2ef2583e33ec1907d0173ecd5" style="width: 100.0%; height: 100.0%;"><b>Almería</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>14.05: 6.5 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 1.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.3 mm</div></div>`)[0];
+                popup_6eeefa6752c9e86db1fab87e293def89.setContent(html_1608bdc2ef2583e33ec1907d0173ecd5);
+            
+        
+
+        circle_marker_67db5311c30f9ac9af53e9a19280f919.bindPopup(popup_6eeefa6752c9e86db1fab87e293def89)
+        ;
+
+        
+    
+    
+            var circle_marker_d148975fde27c9d1e3b2cdb6120a4653 = L.circleMarker(
+                [36.7213, -4.4214],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_b8f5b332eae2f3c7e4c28ff9c42ef0d0 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_c8a579e1c0441d5d7e08509b0fe86a13 = $(`<div id="html_c8a579e1c0441d5d7e08509b0fe86a13" style="width: 100.0%; height: 100.0%;"><b>Málaga</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_b8f5b332eae2f3c7e4c28ff9c42ef0d0.setContent(html_c8a579e1c0441d5d7e08509b0fe86a13);
+            
+        
+
+        circle_marker_d148975fde27c9d1e3b2cdb6120a4653.bindPopup(popup_b8f5b332eae2f3c7e4c28ff9c42ef0d0)
+        ;
+
+        
+    
+    
+            var circle_marker_97184ea622f99911185476a4990a2e11 = L.circleMarker(
+                [36.5101, -4.8825],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_1ddb0f1056eb5e87211585f48dda5b58 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_cf9e48065b9e96ec2c4af9e1bb3da574 = $(`<div id="html_cf9e48065b9e96ec2c4af9e1bb3da574" style="width: 100.0%; height: 100.0%;"><b>Marbella</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.5 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.3 mm</div></div>`)[0];
+                popup_1ddb0f1056eb5e87211585f48dda5b58.setContent(html_cf9e48065b9e96ec2c4af9e1bb3da574);
+            
+        
+
+        circle_marker_97184ea622f99911185476a4990a2e11.bindPopup(popup_1ddb0f1056eb5e87211585f48dda5b58)
+        ;
+
+        
+    
+    
+            var circle_marker_6ae22da49824ca5b9b78ab36985eaeb7 = L.circleMarker(
+                [36.1408, -5.3536],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_eb4a8a784eba533b0423a02a5787e852 = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_9b00e93bfd82a8338acccdbce4138c16 = $(`<div id="html_9b00e93bfd82a8338acccdbce4138c16" style="width: 100.0%; height: 100.0%;"><b>Gibraltar</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_eb4a8a784eba533b0423a02a5787e852.setContent(html_9b00e93bfd82a8338acccdbce4138c16);
+            
+        
+
+        circle_marker_6ae22da49824ca5b9b78ab36985eaeb7.bindPopup(popup_eb4a8a784eba533b0423a02a5787e852)
+        ;
+
+        
+    
+    
+            var circle_marker_8c0f8c4cbe5c62bc98ff84ae1e6452bf = L.circleMarker(
+                [45.544, 10.7357],
+                {"bubblingMouseEvents": true, "color": "darkblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "darkblue", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_863c6ef3673a2cc3c8a1810dbfb0e2df = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_f759263ddebdab17bfe57244c1b6d9cd = $(`<div id="html_f759263ddebdab17bfe57244c1b6d9cd" style="width: 100.0%; height: 100.0%;"><b>Garda (Stadt)</b><br><u>Nächste 7 Tage</u><br><div style='background:green;padding:2px 4px;'>12.05: 2.7 mm</div><div style='background:green;padding:2px 4px;'>13.05: 6.4 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:green;padding:2px 4px;'>15.05: 2.7 mm</div><div style='background:green;padding:2px 4px;'>16.05: 4.8 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_863c6ef3673a2cc3c8a1810dbfb0e2df.setContent(html_f759263ddebdab17bfe57244c1b6d9cd);
+            
+        
+
+        circle_marker_8c0f8c4cbe5c62bc98ff84ae1e6452bf.bindPopup(popup_863c6ef3673a2cc3c8a1810dbfb0e2df)
+        ;
+
+        
+    
+    
+            var circle_marker_d81f8572b6a99a68592be2512b3c077d = L.circleMarker(
+                [47.994, -4.0963],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_8556236d63e8683c1d898ca48980c8fb = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_5022fc2911ceb91988c4bfd678bfd91e = $(`<div id="html_5022fc2911ceb91988c4bfd678bfd91e" style="width: 100.0%; height: 100.0%;"><b>Quimper</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.6 mm</div><div style='background:green;padding:2px 4px;'>13.05: 7.5 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.1 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_8556236d63e8683c1d898ca48980c8fb.setContent(html_5022fc2911ceb91988c4bfd678bfd91e);
+            
+        
+
+        circle_marker_d81f8572b6a99a68592be2512b3c077d.bindPopup(popup_8556236d63e8683c1d898ca48980c8fb)
+        ;
+
+        
+    
+    
+            var circle_marker_fb8ee268a725e17872d43c898173acb9 = L.circleMarker(
+                [51.9458, 8.4111],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.85, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_1179d4c9bebd510db54b27fd433817a1);
+        
+    
+        var popup_af4302fb0f3400e43a7bd8ad16eeb9de = L.popup({
+  "maxWidth": 240,
+});
+
+        
+            
+                var html_e219c80e99978b879229b4f05f20a6d0 = $(`<div id="html_e219c80e99978b879229b4f05f20a6d0" style="width: 100.0%; height: 100.0%;"><b>Isselhorst</b><br><u>Nächste 7 Tage</u><br><div style='background:yellow;padding:2px 4px;'>12.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>13.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>14.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>15.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>16.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>17.05: 0.0 mm</div><div style='background:yellow;padding:2px 4px;'>18.05: 0.0 mm</div></div>`)[0];
+                popup_af4302fb0f3400e43a7bd8ad16eeb9de.setContent(html_e219c80e99978b879229b4f05f20a6d0);
+            
+        
+
+        circle_marker_fb8ee268a725e17872d43c898173acb9.bindPopup(popup_af4302fb0f3400e43a7bd8ad16eeb9de)
+        ;
+
+        
+    
+</script>
+</html>
