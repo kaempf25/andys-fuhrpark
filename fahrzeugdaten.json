@@ -18,40 +18,6 @@
       }
     },
     {
-      "id": "mercedes-r107",
-      "name": "Mercedes R107 560 SL",
-      "type": "Auto",
-      "technical": "Luxuriöses Cabriolet mit 5,6-Liter V8 und ca. 230 PS.",
-      "imageUrl": "./Mercedes_R107.jpeg",
-      "marketPrice": "30.000€",
-      "garage": "Spexarder_Strasse",
-      "note": "Versicherung: 178,- von März - Okt.\nSteuer: 123,- von März - Okt.\n\nTÜV Kosten 154,- €\nBemängelt Spurspangenspiel rechts, Ölverlust zw. Getriebe und Motor (genug Getriebeöl vorhanden - 2024). Nebelleuchte reparieren oder demontieren",
-      "tuevDate": "2027-04-01",
-      "specs": {
-        "Motor": "5,6L V8",
-        "Leistung": "230 PS",
-        "Baujahr": "1986",
-        "Besonderheiten": "Hochkomfort, klassisches Design, luxuriöse Ausstattung"
-      }
-    },
-    {
-      "id": "mercedes-r129",
-      "name": "Mercedes R129 SL",
-      "type": "Auto",
-      "technical": "Sportlicher Roadster mit modernster Technik und elegantem Design.",
-      "imageUrl": "./Mercedes R129.jpeg",
-      "marketPrice": "25.000€",
-      "garage": "Spexarder_Strasse",
-      "note": "Versicherung: 193,- von April - Okt.\nSteuer: 215,-\n\nEngine Check leuchtet auf. Muss repariert werden",
-      "tuevDate": "2026-10-01",
-      "specs": {
-        "Motor": "3,0L V6",
-        "Leistung": "320 PS",
-        "Baujahr": "1993",
-        "Besonderheiten": "Hydraulisches Verdeck, automatischer Überrollbügel"
-      }
-    },
-    {
       "id": "mercedes-clk",
       "name": "Mercedes CLK Cabrio",
       "type": "Auto",
@@ -66,23 +32,6 @@
         "Leistung": "198 PS",
         "Baujahr": "2005",
         "Besonderheiten": "Elektrisches Verdeck, Lederausstattung"
-      }
-    },
-    {
-      "id": "bmw-r80",
-      "name": "BMW R80",
-      "type": "Motorrad",
-      "technical": "Klassisches BMW Boxer-Motorrad mit Kardanantrieb.",
-      "imageUrl": "./BMW_R80.jpeg",
-      "marketPrice": "7.500€",
-      "garage": "Spexarder_Strasse",
-      "note": "Versicherung: 67,-\nSteuer: 58,-",
-      "tuevDate": "2026-08-01",
-      "specs": {
-        "Motor": "0,8L Boxer-Twin",
-        "Leistung": "50 PS",
-        "Baujahr": "1982",
-        "Besonderheiten": "Luftgekühlt, Kardanantrieb, Doppelscheibenbremse vorne"
       }
     },
     {
