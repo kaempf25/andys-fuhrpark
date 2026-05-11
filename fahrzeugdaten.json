@@ -35,6 +35,23 @@
       }
     },
     {
+      "id": "bmw-r80",
+      "name": "BMW R80",
+      "type": "Motorrad",
+      "technical": "Klassisches BMW Boxer-Motorrad mit Kardanantrieb.",
+      "imageUrl": "./BMW_R80.jpeg",
+      "marketPrice": "7.500€",
+      "garage": "Spexarder_Strasse",
+      "note": "Versicherung: 67,-\nSteuer: 58,-",
+      "tuevDate": "2026-08-01",
+      "specs": {
+        "Motor": "0,8L Boxer-Twin",
+        "Leistung": "50 PS",
+        "Baujahr": "1982",
+        "Besonderheiten": "Luftgekühlt, Kardanantrieb, Doppelscheibenbremse vorne"
+      }
+    },
+    {
       "id": "vespa-300",
       "name": "Vespa 300 GTS",
       "type": "Roller",
@@ -43,7 +60,7 @@
       "marketPrice": "6.200€",
       "garage": "Amrumweg",
       "note": "Versicherung: 17,-\nSteuer: 22,-",
-      "tuevDate": "2026-05-01",
+      "tuevDate": "2028-05-01",
       "specs": {
         "Motor": "300 ccm",
         "Leistung": "24 PS",
@@ -60,7 +77,7 @@
       "marketPrice": "14.900€",
       "garage": "Sparkasse_Avenwedde",
       "note": "Versicherung: 105,-\nSteuer: 80,-",
-      "tuevDate": "2026-06-01",
+      "tuevDate": "2028-06-01",
       "specs": {
         "Motor": "1,2L Boxer-Twin",
         "Leistung": "125 PS",
