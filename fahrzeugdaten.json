@@ -110,7 +110,7 @@
       "imageUrl": "./BMW_R100GS_PD.jpg",
       "marketPrice": "6.000€",
       "garage": "Amrumweg",
-      "note": "Kauf 2026, Angebotspreis 6.000 €\nKilometerstand beim Kauf: 28.872 km\nZusätzlich Einzelsitz (hohe Variante) mit Gepäckträger-Verlängerung, Original-Sitzbank vorhanden\nVersicherung: offen\nSteuer: offen",
+      "note": "Kauf 2026, Angebotspreis 6.000 €\nKilometerstand beim Kauf: 28.872 km\nZusätzlich Einzelsitz (hohe Variante) mit Gepäckträger-Verlängerung, Original-Sitzbank vorhanden\nVersicherung: 38,-\nSteuer: 71,-",
       "tuevDate": "2028-08-01",
       "specs": {
         "Motor": "980 ccm Boxer-Twin, luftgekühlt",
@@ -125,7 +125,7 @@
       "type": "Wohnwagen",
       "technical": "Kompakter Klassik-Wohnwagen der ERIBA-Touring-Baureihe mit Hubdach.",
       "imageUrl": "./ERIBA_Triton.jpg",
-      "marketPrice": "",
+      "marketPrice": "3.500€",
       "garage": "Mumprow",
       "note": "Versicherung: 23,88 (DEVK, 1,99 €/Monat)\nSteuer: 29,-",
       "tuevDate": "2027-06-01",
