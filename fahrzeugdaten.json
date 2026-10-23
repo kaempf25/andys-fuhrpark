@@ -103,37 +103,37 @@
       }
     },
     {
-      "id": "smart-a451",
-      "name": "Smart ForTwo A451",
-      "type": "Auto",
-      "technical": "Kompakter Stadtflitzer mit sparsamem Antrieb.",
-      "imageUrl": "./smart.jpg",
-      "marketPrice": "5.600€",
+      "id": "bmw-r100gs-pd",
+      "name": "BMW R100 GS Paris-Dakar",
+      "type": "Motorrad",
+      "technical": "Klassische Reise-Enduro mit luftgekühltem Boxer, Kardan und großem Paris-Dakar-Tank.",
+      "imageUrl": "./BMW_R100GS_PD.jpg",
+      "marketPrice": "6.000€",
       "garage": "Amrumweg",
-      "note": "Versicherung: 120,- \nSteuer: 67,-",
-      "tuevDate": "2028-06-01",
+      "note": "Kauf 2026, Angebotspreis 6.000 €\nKilometerstand beim Kauf: 28.872 km\nZusätzlich Einzelsitz (hohe Variante) mit Gepäckträger-Verlängerung, Original-Sitzbank vorhanden\nVersicherung: offen\nSteuer: offen",
+      "tuevDate": "2028-08-01",
       "specs": {
-        "Motor": "1,0L Dreizylinder",
-        "Leistung": "71 PS",
-        "Baujahr": "2010",
-        "Besonderheiten": "Tridion-Sicherheitszelle, Panoramadach, Start-Stop-Automatik"
+        "Motor": "980 ccm Boxer-Twin, luftgekühlt",
+        "Leistung": "60 PS",
+        "Baujahr": "1989 (EZ 08/1989)",
+        "Besonderheiten": "Paris-Dakar-Ausstattung, großer Tank, Windschild, Handschützer, Kofferträger, Kardanantrieb"
       }
     },
     {
-      "id": "man-traktor-201",
-      "name": "MAN Traktor 201",
-      "type": "Landmaschine",
-      "technical": "Klassischer Traktor für Feldarbeiten und leichte Transportaufgaben.",
-      "imageUrl": "./man-traktor.jpeg",
-      "marketPrice": "4.500€",
+      "id": "eriba-triton",
+      "name": "ERIBA Triton",
+      "type": "Wohnwagen",
+      "technical": "Kompakter Klassik-Wohnwagen der ERIBA-Touring-Baureihe mit Hubdach.",
+      "imageUrl": "./ERIBA_Triton.jpg",
+      "marketPrice": "",
       "garage": "Mumprow",
-      "note": "nicht angemeldet",
-      "tuevDate": "2027-03-28",
+      "note": "Versicherung: offen\nSteuer: offen",
+      "tuevDate": "",
       "specs": {
-        "Motor": "2,8L Diesel",
-        "Leistung": "28 PS",
-        "Baujahr": "1963",
-        "Besonderheiten": "Restaurierter Zustand, Originalteile"
+        "Motor": "Ohne",
+        "Leistung": "-",
+        "Baujahr": "offen",
+        "Besonderheiten": "ERIBA Touring, Hubdach, Zweifarben-Lackierung"
       }
     }
   ],
@@ -159,6 +159,6 @@
     }
   },
   "maintenanceRecords": {},
-  "exportedAt": "2025-06-05T14:22:47.092Z",
+  "exportedAt": "2026-10-23T15:00:00.000Z",
   "version": "1.3.0"
 }
