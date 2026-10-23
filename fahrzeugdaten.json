@@ -94,7 +94,7 @@
       "marketPrice": "18.000€",
       "garage": "Amrumweg",
       "note": "Versicherung: 522,-\nSteuer: 172,-",
-      "tuevDate": "2026-10-01",
+      "tuevDate": "2028-10-01",
       "specs": {
         "Motor": "2,0L TDI",
         "Leistung": "150 PS",
@@ -107,7 +107,7 @@
       "name": "BMW R100 GS Paris-Dakar",
       "type": "Motorrad",
       "technical": "Klassische Reise-Enduro mit luftgekühltem Boxer, Kardan und großem Paris-Dakar-Tank.",
-      "imageUrl": "./BMW_R100GS_PD.jpg",
+      "imageUrl": "./BMW_R100GS_PD_v2.jpg",
       "marketPrice": "6.000€",
       "garage": "Amrumweg",
       "note": "Kauf 2026, Angebotspreis 6.000 €\nKilometerstand beim Kauf: 28.872 km\nZusätzlich Einzelsitz (hohe Variante) mit Gepäckträger-Verlängerung, Original-Sitzbank vorhanden\nVersicherung: 38,-\nSteuer: 71,-",
