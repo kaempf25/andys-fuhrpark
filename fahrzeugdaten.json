@@ -36,18 +36,18 @@
     },
     {
       "id": "vespa-300",
-      "name": "Vespa 300 GTS",
+      "name": "Vespa GTS Super 300",
       "type": "Roller",
       "technical": "Großraum-Vespa mit kraftvollem Motor und moderner Technik.",
       "imageUrl": "./Vespa 300.jpeg",
       "marketPrice": "6.200€",
       "garage": "Amrumweg",
-      "note": "Versicherung: 17,-\nSteuer: 22,-",
+      "note": "Im Besitz seit 22.10.2020\nVersicherung: 17,-\nSteuer: 22,-",
       "tuevDate": "2028-05-01",
       "specs": {
         "Motor": "300 ccm",
-        "Leistung": "24 PS",
-        "Baujahr": "2018",
+        "Leistung": "16 kW (22 PS)",
+        "Baujahr": "2014 (EZ 16.04.2014)",
         "Besonderheiten": "ABS, ASR, LED-Beleuchtung"
       }
     },
