@@ -19,7 +19,7 @@
     },
     {
       "id": "mercedes-clk",
-      "name": "Mercedes CLK Cabrio",
+      "name": "Mercedes CLK 230 Kompressor Cabrio",
       "type": "Auto",
       "technical": "Elegantes Cabriolet mit sportlichem Charakter.",
       "imageUrl": "./Mervedes W208 CLK.jpeg",
@@ -28,9 +28,9 @@
       "note": "Versicherung: 167,82 von März - Okt.\nSteuer: 104,- von März - Okt.\nNeue Scheibe in 2024 für 1040 €\nTÜV 157 € in 2025",
       "tuevDate": "2027-06-01",
       "specs": {
-        "Motor": "3,2L V6",
-        "Leistung": "198 PS",
-        "Baujahr": "2005",
+        "Motor": "2,3L R4 Kompressor",
+        "Leistung": "142 kW (193 PS)",
+        "Baujahr": "1999 (EZ 28.07.1999)",
         "Besonderheiten": "Elektrisches Verdeck, Lederausstattung"
       }
     },
